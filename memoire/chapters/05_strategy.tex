@@ -1,0 +1,79 @@
+\section{Empirical strategy}
+\label{sec:strategy}
+
+This section states what each model estimates, under which assumptions, and what it cannot tell us. It also records which rules were fixed before the results were known.
+
+\subsection{Estimands}
+
+All estimands are short-run associations between a weather shock and yields, within a department and relative to the national conditions of the same year.
+\begin{itemize}
+  \item \textbf{Maize (main question).} The change in the log yield gap between irrigated and rainfed maize associated with one more degree-day above 32\,$^{\circ}$C in July--August, holding soil moisture fixed.
+  \item \textbf{Wheat.} The change in log yield associated with one more degree-day above 32\,$^{\circ}$C in May--June.
+\end{itemize}
+Neither is the effect of a warmer climate, which would include adaptation, nor, for maize, the causal effect of irrigation (\cref{subsec:not-identified}).
+
+\subsection{Maize: the irrigated--rainfed gap}
+
+For department $d$ and year $t$, let $Y^{I}_{dt}$ and $Y^{R}_{dt}$ be the irrigated and rainfed yields. The main model (A1) is
+\begin{equation}
+\label{eq:a1}
+\ln Y^{I}_{dt} - \ln Y^{R}_{dt} = \alpha_d + \gamma_t + \beta\, \mathrm{DD}_{>32,dt} + \delta\, \mathrm{SWI}_{dt} + \varepsilon_{dt},
+\end{equation}
+estimated by weighted least squares, with weights equal to each department's grain maize area in 2010--2012. Heat and soil moisture are measured over July--August with the maize mask.
+
+\paragraph{What the gap removes.} Any factor that shifts both yields by the same proportion in a given department and year drops out of the left-hand side, for instance a disease outbreak or a late frost that hits both modes alike. The department effects $\alpha_d$ absorb stable differences in the gap, such as soils that favour one mode or the typical intensity of irrigation. The year effects $\gamma_t$ absorb anything that moves the gap everywhere at once.
+
+\paragraph{What identifies $\beta$.} After these effects, $\beta$ is identified by how much hotter or cooler a department's July--August was than its own average, relative to other departments the same year. Equation~\eqref{eq:a1} is equivalent to estimating separate heat and moisture slopes for each mode in a stacked model with fully interacted fixed effects; $\beta$ is then the difference between the irrigated and the rainfed heat slopes, $\beta = \beta^{I} - \beta^{R}$. The two slopes are also estimated separately, with the same right-hand side, as secondary hypotheses.
+
+\paragraph{The identifying assumption.} Conditional on the fixed effects and on soil moisture, the year-to-year deviations of a department's summer heat must be unrelated to other determinants of the gap. This would fail if, for instance, the composition of irrigated and rainfed land changed in hot years, an issue discussed in \cref{sec:discussion}.
+
+\paragraph{The soil wetness index.} The SWI comes from a land-surface model driven by observed weather. I treat it as a weather variable. Part of it is a consequence of the heat itself (a hot summer dries the soil), so $\beta$ is a partial association, with heat at a given level of soil moisture, and the coefficient on the SWI is read as an association too.
+
+\subsection{Wheat}
+
+The wheat model of phase 4 (M1, 2010--2025) is
+\begin{equation}
+\label{eq:m1}
+\ln Y_{dt} = \alpha_d + \gamma_t + \beta_1 \mathrm{GDD}_{dt} + \beta_2\, \mathrm{DD}_{>32,dt} + \theta_1 P^{\mathrm{spring}}_{dt} + \theta_2 \mathrm{DD}^{\mathrm{autumn}}_{0,dt} + \theta_3 P^{\mathrm{autumn}}_{dt} + \varepsilon_{dt},
+\end{equation}
+where GDD are growing degree-days between 0 and 32\,$^{\circ}$C in May--June, $P$ is precipitation and $\mathrm{DD}^{\mathrm{autumn}}_{0}$ the warmth of the sowing period. Growing degree-days are measured over the same months as extreme heat; the rainfall and autumn controls precede May--June, so they are not consequences of the heat being studied. A variant (M2) adds the May--June SWI and its square.
+
+The long-series model (M3, 1959--2025; called B1 in the specification) keeps the same variables but replaces $\alpha_d$ with department-by-period effects $\alpha_{d,p}$, where $p$ is the source period of the yield data: 1959--1988 (hand-digitised), 1989--2009 (former Agreste database) and 2010--2025 (current SAA). These effects absorb level breaks between sources. They do not absorb a change in how a source measures year-to-year variation.
+
+To ask whether wheat has become more or less sensitive to heat, the heat slope is allowed to differ across three sub-periods of 22 to 23 years (1959--1981, 1982--2003, 2004--2025). This question is descriptive: varieties, sowing dates and practices changed at the same time.
+
+\subsection{Rules fixed in advance}
+
+Each estimation phase began with a written specification, whose SHA-256 hash was recorded in a decision log before any estimate was computed (\cref{tab:specs}). The specification fixes the sample, the variables, the direction of each test, the family of secondary hypotheses and the list of robustness checks. The four files still match their recorded hashes.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Pre-specified specifications}
+\label{tab:specs}
+\begin{tabular}{>{\raggedright}p{2.4cm}>{\raggedright}p{6.8cm}>{\raggedright\arraybackslash}p{3.6cm}}
+\toprule
+Phase & Content & SHA-256 (first 12 characters) \\
+\midrule
+4 & Wheat 2010--2025: M1, M2, three inferences, 10 robustness checks & \texttt{\SpecFourHash} \\
+5 & Forecasting protocol and benchmarks & \texttt{\SpecFiveHash} \\
+6 & Exploratory maize analysis 2010--2025, valuation, NDVI & \texttt{\SpecSixHash} \\
+4 bis & Maize 2000--2025 (A1) and wheat 1959--2025 (M3) & \texttt{\SpecFourBisHash} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{The decision rules.} The first wheat phase (phase 4) used a strict rule: conclude only on what all three inferences (clustered by department, Conley, bootstrap by year) support. Once the size checks had shown that only the bootstrap by year was reliable on these data, phase 4 bis replaced it: a main hypothesis counts as established only if its one-sided wild cluster bootstrap $p$-value, with clusters by year, is below 0.05 \emph{and} the empirical size of that test, measured on the same data, is at most 10\,\%. For maize, the main hypothesis is $\beta > 0$; for wheat, $\beta_2 < 0$. The four secondary maize hypotheses form one family, corrected with the Holm method.
+
+\paragraph{What I knew when writing the maize specification.} It was not written blind. The exploratory analysis of phase 6 had already estimated a version of model~\eqref{eq:a1} on 2010--2025, with department-wide weather. What had never been used were the years 2000--2009. The specification therefore designates them in advance as a replication sample, and the maize mask as the main measure.
+
+\paragraph{Departures from the plan.} Departures are logged with their reason, but not all were declared before being estimated. Some additions were defined after the first results of their phase but before they were themselves computed: four extra wheat checks (R11--R14) and the robustness check with a 2008 mask of maize parcel blocks. Others were decided after seeing results: the size checks and the comparison of forecasts with the department mean. One departure, the random seed of the bootstrap, went unnoticed until an internal review. \Cref{app:deviations} lists them all.
+
+\subsection{What these models cannot identify}
+\label{subsec:not-identified}
+
+\begin{itemize}
+  \item \textbf{The causal effect of irrigation.} Irrigated and rainfed land differ in soils, farms and varieties. The fixed effects remove the stable part of these differences, not any part that varies with the heat of the year.
+  \item \textbf{The effect of a warmer climate.} Farmers respond to a lasting change in climate. \textcite{merel2021} identify conditions under which panel estimates of weather effects approximate long-run responses; I do not claim that they hold here.
+  \item \textbf{The value of irrigation water.} The data contain no water volumes per crop. The valuation in \cref{sec:maize} is descriptive.
+\end{itemize}

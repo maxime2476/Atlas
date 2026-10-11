@@ -1,0 +1,36 @@
+\section{Deviations from the pre-specified plans}
+\label[appendix]{app:deviations}
+
+The project's decision log records every change to the plans, with its date and reason. This appendix lists them by phase. ``Declared before'' means the change was written in the log before the corresponding estimate was computed.
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Deviations and additions, by phase (from the project's decision log)}
+\label{tab:deviations}
+\begin{tabular}{>{\raggedright}p{1.3cm}>{\raggedright}p{7.3cm}>{\raggedright\arraybackslash}p{4.6cm}}
+\toprule
+Phase & Change & Timing and effect \\
+\midrule
+Long series & \textcite{schauberger2022}: RAW version used instead of FILTERED, although the compatibility criterion had been written for FILTERED; the filter mostly masks years of real losses, so using it would select on the outcome & Logged before any estimate of a weather effect; affects the long wheat panels \\
+4 (wheat) & Joint test of the soil-moisture terms under the bootstrap by year; one-sided bootstrap $p$-value for H1 & Planned tests initially omitted, added before interpretation \\
+4 & Individual bootstrap test on the first soil-moisture term declared not interpretable (slope outside the observed support); test on the second term added & Not pre-specified \\
+4 & Leave-one-year-out estimates; size and power simulation with a placebo (years permuted) & Not pre-specified; added after the first estimates; reported as diagnostics \\
+4 & Four robustness checks R11--R14 (shifted windows, mountain departments, temperature bins) & Added after the first estimates; defined in the log before being computed \\
+4 & Two bugs: bootstrap outcome not re-projected (size 8.7\,\% $\to$ 6.6\,\%); operator precedence in the simulation script & Corrected before any interpretation \\
+4 & Conley matrices that \texttt{fixest} had to correct (not positive definite) & $p$-values set to missing, not reported \\
+5 (forecast) & Comparison with B0 added and put first, because B1 turned out to be weaker than B0 & Decided after seeing results; B1 results still reported \\
+6 (exploratory) & Two maize observations with zero irrigated area dropped; size check on maize & Not foreseen in the specification; reported as such \\
+6 & NDVI protocol (product, quality filter, aggregation, availability rule) & Fixed before the data were received \\
+6 & Missing NDVI values ($\leq 1.1\,\%$ per variable) imputed within each fold by the department's training mean & Not foreseen in the protocol; logged before results \\
+4 bis (maize) & Population: 2025 quality status applied to 2000--2009 & Declared before estimation (no earlier status exists) \\
+4 bis & Factual correction: 18 missing wheat yields in the main sample, not 27 (27 is the count for the population) & Logged before estimation; model unchanged \\
+4 bis & Execution fixes: outcome variable of the maize size simulation, columns of a wheat table; Conley $p$-values set to missing for several maize terms & No effect on the models \\
+4 bis & Seed of the bootstrap 20261010 instead of 20261011 & Not declared; found by the internal review; Monte Carlo error $\approx 0.002$ on $p$ near 0.05 \\
+4 bis & Robustness check with a 2008 mask of maize parcel blocks (Q1-R9) & Declared before estimation, after the review; reading rule fixed in advance \\
+4 bis & Exploratory estimates by heat measure and period; composition check; altitude comparison; residual autocorrelation; 2003 linearity check & Added after the results and the reviews; reported as exploratory \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+All specification files still match the hashes recorded in the log; the script that builds this monograph's tables checks them and stops if one has changed.

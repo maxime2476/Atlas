@@ -1,0 +1,75 @@
+\section{Forecasting wheat yields}
+\label{sec:forecasting}
+
+The econometric question asks whether heat is associated with yields. A separate, practical question is whether the weather known before harvest helps to predict them. This section answers it with a strictly chronological protocol. The answer is no, at least not better than the simplest benchmark.
+
+\subsection{Protocol}
+
+The protocol was fixed in a specification written before any forecast was computed (\cref{tab:specs}).
+\begin{itemize}
+  \item \textbf{Target and sample.} The log yield of soft wheat in the 83 departments of the main sample.
+  \item \textbf{Forecast dates.} 1 June and 1 July of the harvest year. Only weather up to the day before is used: autumn, winter, spring, and May (on 1 June) or May--June (on 1 July). Nine variables per window give 36 variables, fixed in advance.
+  \item \textbf{Validation.} Rolling origin: for each test year $t$ from 2016 to 2025, models are trained on 2010 to $t-1$, between 6 and 15 years. Department means, trends, standardisation and hyperparameters are all estimated within the training years. A variant trains from 1990 with the long wheat series.
+  \item \textbf{Benchmarks.} B0 is the mean log yield of the department over the training years. B1 adds a common linear trend.
+  \item \textbf{Models.} Each model predicts the residual of B1 from the weather variables: ordinary least squares on the variables of model M1, ridge regression, a random forest and gradient boosting. Their settings were fixed in advance; only the ridge penalty is tuned, by an inner leave-one-year-out loop on the training years.
+  \item \textbf{Uncertainty.} The difference in mean squared error between a model and a benchmark is given with a 95\,\% interval from a block bootstrap over the 10 test years.
+\end{itemize}
+Tests check automatically that no variable uses information from after the forecast date. Some leakage cannot be removed: the SAA series were revised after the 2020 census, SIM is a reanalysis, the wheat mask comes from 2015--2017, and the 2025 yields are provisional.
+
+\subsection{The benchmark that matters}
+
+The specification compared models with B1. Under that pre-specified criterion, the random forest on 1 July formally qualifies as a gain: a skill of \RfVsBoneSkill\,\% with an interval excluding zero. But B1 turned out to be a weak benchmark: B0, the plain department mean, beats B1 in all \BzeroBeatsBone{} test years, because French wheat yields have plateaued (\cref{fig:wheat-yield}), so extending a trend hurts. I decided, after seeing these results, to add the comparison with B0, a benchmark already defined in the specification, and logged this change (\cref{app:deviations}). The results against B1 remain in the project tables.
+
+There is a second consequence. The weather models were built, as specified, as corrections to B1, so they inherit its handicap: B1 itself is far worse than B0 (\cref{tab:forecast}). The comparison below therefore tests the models as pre-specified, not the value of weather as such. A model that corrects B0 instead of B1 was not evaluated and would have to be tested on new years.
+
+\subsection{Results}
+
+\begin{table}[H]
+\centering
+\small
+\caption{Forecast skill relative to the department mean (B0), test years 2016--2025}
+\label{tab:forecast}
+\begin{threeparttable}
+\input{tables/forecast}
+\begin{tablenotes}\footnotesize
+\item Skill $= 1 - \mathrm{MSE}/\mathrm{MSE}(\mathrm{B0})$, on log yield, weighted by area. Interval: 95\,\% block bootstrap over test years; $^*$: excludes zero. Positive values in the interval mean worse than B0.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\Cref{tab:forecast} gives the answer.
+\begin{itemize}
+  \item \textbf{Training from 2010:} every model does worse than B0 on average, by \ForecastBestPct\,\% to \ForecastWorstPct\,\%, and the OLS model is significantly worse.
+  \item \textbf{Training from 1990:} ridge, random forest and gradient boosting do better than B0 on average, but their intervals include zero over 10 test years.
+\end{itemize}
+No model, as pre-specified, is significantly better than the department mean.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.95\textwidth]{figures/fig3_prevision_par_annee.pdf}
+\caption{Forecast error by test year on 1 July: department mean (B0) and gradient boosting with weather and NDVI. Each model is trained only on the years before the test year.}
+\label{fig:forecast-year}
+\end{figure}
+
+\subsection{Adding satellite data}
+
+A natural objection is that weather describes the conditions, not the crop. The NDVI, a satellite index of green vegetation, describes the crop itself. I added MODIS NDVI at 250~m (16-day composites from April to June), aggregated to SIM cells and then to departments with the wheat mask. A composite is used only if it ends before the forecast date, a rule checked by an automated test.
+
+\begin{table}[H]
+\centering
+\small
+\caption{What NDVI adds to each model, training from 2010}
+\label{tab:ndvi}
+\begin{threeparttable}
+\input{tables/ndvi}
+\begin{tablenotes}\footnotesize
+\item Gain: $1 - \mathrm{MSE}(\text{with NDVI})/\mathrm{MSE}(\text{without})$. Interval of the MSE difference with minus without; $^*$: excludes zero (better with NDVI).
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+NDVI helps each model a little: the gain over the same model without NDVI is positive in all \NdviTot{} cases, from \NdviGainMin{} to \NdviGainMax\,\%, and significant in \NdviSig. The largest gain, for ridge on 1 July, mostly reflects the stabilisation of a model that was unstable without NDVI. But no model with NDVI beats the department mean (\cref{tab:ndvi}, last column). The NDVI is measured on 8~km cells weighted by wheat, not on wheat parcels alone, so it mixes crops; a parcel-level index might do better.
+
+\subsection{What the forecasting results mean}
+
+With 6 to 15 training years, the models as pre-specified do not beat a well-chosen naive benchmark, and NDVI adds a small measurable improvement to each of them without changing that conclusion. This is consistent with earlier warnings that validation on future years is much harder than cross-validation \parencite{gouache2015,morales2023}. The main methodological point is the benchmark: had I kept the pre-specified comparison with B1 alone, I would have reported a forecasting gain over B1 that is not a gain over the simplest forecast. Whether weather can improve on B0 itself remains open.

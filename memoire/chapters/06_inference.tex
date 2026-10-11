@@ -1,0 +1,90 @@
+\section{Inference with common shocks}
+\label{sec:inference}
+
+This is the section that decided what the rest of the monograph could claim. It starts from a disagreement between three tests on the same coefficient, explains why they disagree, and describes a simple check that settles which one to trust. The check is cheap and general, so I describe it in enough detail for others to run it.
+
+\subsection{Three tests, one coefficient, two answers}
+
+The first estimation phase (phase 4) studied wheat over 2010--2025. Heat during grain filling was associated with \WheatPct\,\% lower yields per degree-day above 32\,$^{\circ}$C. The specification had planned three ways to compute its uncertainty:
+\begin{itemize}
+  \item standard errors clustered by department, which allow any correlation over time within a department;
+  \item \textcite{conley1999} standard errors, which also allow correlation between departments less than 200~km apart;
+  \item a wild cluster bootstrap with clusters by year, which allows any correlation between departments within a year.
+\end{itemize}
+The first gave $p = \WheatPdep$. The bootstrap gave $p = \WheatPwcr$. The rule fixed in advance was to conclude only on what all three supported, so the result was not established. But the disagreement itself needed an explanation. If the first test was right, the project had a clear finding; if the bootstrap was right, it had none.
+
+\subsection{Why clustering by department fails here}
+
+Write the estimate after removing the fixed effects and controls as
+\begin{equation}
+\hat\beta - \beta = \frac{\sum_{t}\sum_{d} \tilde x_{dt}\, \varepsilon_{dt}}{\sum_t \sum_d \tilde x_{dt}^2},
+\end{equation}
+where $\tilde x_{dt}$ is residual heat. Its variance depends on the covariances between the terms $\tilde x_{dt}\varepsilon_{dt}$. Clustering by department keeps the covariances within a department across years and sets to zero those between departments.
+
+That is exactly the wrong choice for weather. A hot summer is hot in many departments at once, and its intensity varies across space, so residual heat $\tilde x_{dt}$ is correlated across departments within a year. Yield shocks $\varepsilon_{dt}$ share the same structure, since the same summer drives them. The products $\tilde x_{dt}\varepsilon_{dt}$ are therefore correlated across departments in the same year, and clustering by department ignores this. The estimated standard error is too small, and the test rejects too often.
+
+Conley standard errors capture correlation up to 200~km, but a hot summer can cover most of France. Clustering by year captures all of it, at the price of having only as many clusters as years: 16 for wheat over 2010--2025, 26 for maize. With so few clusters, asymptotic cluster-robust tests are unreliable \parencite{cameron2008}. The wild cluster bootstrap addresses that problem.
+
+\subsection{The bootstrap used}
+
+The test is a restricted wild cluster bootstrap (WCR) with clusters by year \parencite{cameron2008}.
+\begin{enumerate}
+  \item The fixed effects and the other regressors are partialled out of the outcome and of heat (Frisch--Waugh--Lovell, weighted).
+  \item Under the null hypothesis $\beta = 0$, the restricted residuals are multiplied, year by year, by a random weight drawn from the six-point distribution of \textcite{webb2023}, which behaves better than the usual two-point weights with few clusters.
+  \item Each simulated outcome is projected again on the fixed effects and the other regressors, as a full re-estimation would do.
+  \item The observed $t$-statistic is compared with the distribution of 9,999 simulated $t$-statistics.
+\end{enumerate}
+
+\paragraph{Getting it right took two attempts.} Step~3 is easy to forget, and my first implementation did forget it. A first size check, with pure noise as a placebo, gave 8.7\,\% false rejections instead of 5\,\%. Re-projecting the simulated outcome brought it to 6.6\,\% (both figures from the project's decision log, \cref{app:deviations}). That check was weak, because pure noise has no component shared by departments within a year, which is precisely what breaks the usual standard errors; I replaced it with the check below. The observed $t$-statistic was also compared with the one computed by \texttt{fixest} with clusters by year; they agree up to the small-sample factor.
+
+\subsection{Measuring the real size of each test}
+
+The question I asked was simple: if heat had no effect at all, how often would each test still say that it does?
+
+To answer it on the real data, I need a heat variable that has the spatial structure of real heat but no link with yields. The placebo is built as follows:
+\begin{itemize}
+  \item take the observed field of heat of another year and assign it to year $t$, for all departments at once;
+  \item use a permutation of years in which no year keeps its own field (a derangement).
+\end{itemize}
+The placebo is as concentrated in space and time as real heat. But since the field comes from another summer, it has no relation with the yields of year $t$. I re-estimate the model with the placebo in place of heat, apply each test, and repeat 300 times (200 for the two exploratory lines of phase 6). A reliable test rejects in about 5\,\% of cases; the Monte Carlo standard error is about 1.3 points with 300 repetitions and 1.5 points with 200. The bootstrap uses 399 draws within each repetition.
+
+Three limits should be kept in mind. The outcome stays fixed, and the placebos are permutations of a limited number of observed fields, not independent draws. Permuting years also destroys any serial correlation of heat within a department, so the check cannot reveal over-rejection by the bootstrap if errors were correlated over time; clustering by year assumes independence across years. As a cheap complement, the first-order autocorrelation of the residuals within departments is small: \ArMaize{} for the maize model and \ArWheat{} for the long wheat model. The check is a diagnostic of how each test behaves on these data, not a proof.
+
+\subsection{Results}
+
+\Cref{tab:sizes} gives the share of false rejections at the nominal 5\,\% level for every main test of the monograph.
+
+\begin{table}[H]
+\centering
+\small
+\caption{False rejection rate (\%) at the nominal 5\,\% level, placebo with years permuted}
+\label{tab:sizes}
+\begin{threeparttable}
+{\setlength{\tabcolsep}{4pt}\input{tables/sizes}}
+\begin{tablenotes}\footnotesize
+\item ``Years'' is the number of clusters for the bootstrap. One-sided tests are those of the pre-specified main hypotheses of phase 4 bis.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+The pattern is the same everywhere. Clustering by department rejects a true null in \SizeDepMin{} to \SizeDepMax\,\% of cases, Conley in \SizeConleyMin{} to \SizeConleyMax\,\%. The bootstrap by year stays between \SizeWcrMin{} and \SizeWcrMaxButOne\,\% in four of the five data sets. The exception is rainfed maize over 2010--2025, at \SizeWcrMax\,\%; with 200 repetitions (Monte Carlo standard error about 1.5 points), this is compatible with the nominal level. The two lines for 2010--2025 come from the exploratory phase 6, with department-wide weather; they are not subject to the decision rule of phase 4 bis. The size of the bootstrap was measured for the main hypotheses only, not for the secondary ones (H2a--H2c) or for tests on 10 years.
+
+\paragraph{The price of a correct test: power.} \Cref{tab:power} adds a true effect to the placebo for wheat over 2010--2025. With a true effect of $-1.5$\,\% per degree-day, close to the point estimate, the two-sided bootstrap test detects it only \WheatPowerWCR\,\% of the time; with $-3.0$\,\%, \WheatPowerWCRDouble\,\%. Clustering by department ``detects'' more, but it also rejects 56\,\% of the time when there is nothing to detect.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Rejection rate (\%) for wheat 2010--2025 when a true effect is added to the placebo}
+\label{tab:power}
+\input{tables/power}
+\end{table}
+
+In other words, the wheat data over 2010--2025 cannot answer the question with a reliable test: the honest result is ``not established, and the test had little chance of establishing it''. This is what motivated the two extensions of phase 4 bis: more years for wheat (1959--2025), and a design with more variation for maize.
+
+\subsection{A simulated example}
+
+The same pattern appears in a simulation where the truth is known. The module released with this monograph (\cref{app:wcr}) simulates 40 regions over 25 years. Exposure and outcome each receive a spatially correlated random field every year, and the true effect is zero. Over 300 simulated panels, clustering by region rejects in \ExDep\,\% of cases, clustering by year (CR1) in \ExCrOne\,\%, and the bootstrap by year in \ExWcr\,\%. With 25 years, the CR1 test by year is acceptable in this design; with few clusters, the bootstrap is the choice recommended by \textcite{cameron2008}.
+
+\subsection{What follows for the rest of the monograph}
+
+From phase 4 bis on, the bootstrap by year is the only inference on which conclusions rest. The two others are still reported, for comparison. Its size is measured on the data of each main hypothesis before the hypothesis is judged, and the decision rule requires it to be at most 10\,\%. The lesson goes beyond this project: in any panel where a shock is shared by units within a period, the placebo check above costs little, and it can change the conclusion.

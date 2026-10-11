@@ -1,0 +1,25 @@
+\section{Reproduction}
+\label[appendix]{app:reproduction}
+
+Everything in this monograph can be rebuilt from public sources with the project's code. This appendix says how, and what is needed.
+
+\paragraph{Environments.} Python~3.12 is managed with \texttt{uv}. Its lock file fixes every package, resolved with no release later than \VerUvDate{} (for instance pandas~\VerPandas, scikit-learn~\VerSklearn, DuckDB~\VerDuckdb, GeoPandas~\VerGeopandas). R~\VerR{} is managed with \texttt{renv}, from a dated snapshot of the Posit package repository (\VerRepoDate), with \texttt{fixest}~\VerFixest. The two languages exchange data through Parquet files with documented schemas.
+
+\paragraph{Raw data.} About 22~GB of raw files, never modified. A manifest lists \ManifestFiles{} files with their URL, access date and SHA-256 hash; an automated test checks every hash. The raw data are not redistributed with the code; the download script rebuilds them.
+
+\paragraph{Pipeline.} The repository's \texttt{data/README.md} gives the commands in order:
+\begin{enumerate}
+  \item downloads and checks;
+  \item weather, crop masks, exposure windows and panels;
+  \item econometrics in R;
+  \item forecasting and NDVI;
+  \item the pre-specified analyses of phase 4 bis;
+  \item figures, then the tables and figures of this monograph.
+\end{enumerate}
+The longest steps are the NDVI processing (orders depend on the NASA queue, then about 30 minutes of aggregation) and the daily weather (about 20 minutes). The NDVI requires a free NASA Earthdata account; all other sources are open without registration.
+
+\paragraph{The numbers in this text.} No estimate or statistic in this monograph was typed by hand; a few historical figures from the decision log are cited as such. A script reads the result tables of the project and writes every number used in the text as a \LaTeX{} macro, together with every table. It also checks that the pre-specified specifications still match their recorded hashes and that the valuation of 2003 is reproduced exactly; it stops otherwise.
+
+\paragraph{Tests.} The test suite (\TestCount{} tests) checks schemas, keys, the cardinality of joins, value ranges, the degree-day formula, the absence of forecasting leakage, the agreement of the maize mask with official statistics, and the integrity of the raw files. Tests that need data are skipped when the data are absent. The R code has no unit tests; it is validated by comparisons with \texttt{fixest} and by the size simulations of \cref{sec:inference}.
+
+\paragraph{Randomness.} All random draws use fixed seeds, recorded in the code. One departure from the seed written in the phase 4 bis specification is listed in \cref{app:deviations}.

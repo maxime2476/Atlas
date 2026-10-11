@@ -1,0 +1,26 @@
+\section{Variable dictionary}
+\label[appendix]{app:variables}
+
+\begin{table}[H]
+\centering
+\footnotesize
+\caption{Main variables}
+\label{tab:variables}
+\begin{tabular}{>{\raggedright}p{3.2cm}>{\raggedright}p{6.9cm}>{\raggedright}p{1.6cm}>{\raggedright\arraybackslash}p{2.1cm}}
+\toprule
+Variable & Definition & Unit & Source \\
+\midrule
+Yield $Y$ & Production over area (unharvested area counted with a zero yield), by department, crop and, for maize, irrigation mode & q/ha (1~q = 100~kg) & SAA; \textcite{schauberger2022} \\
+Gap & $\ln Y^{I} - \ln Y^{R}$, same department and year & log points & SAA \\
+$\mathrm{DD}_{>32}$ & Degree-days above 32\,$^{\circ}$C by double sine, summed over the window, crop-weighted mean of cells & $^{\circ}$C$\cdot$day & SIM2, RPG \\
+GDD & Degree-days between 0 and 32\,$^{\circ}$C ($\mathrm{DD}_0 - \mathrm{DD}_{32}$) & $^{\circ}$C$\cdot$day & SIM2, RPG \\
+SWI & Soil wetness index, mean over the window (about 0 at wilting point, 1 at field capacity) & none & SIM2 \\
+$P$ & Precipitation (rain and snow), summed over the window & mm & SIM2 \\
+Crisis days & Days of July--August with at least one zone of the department at crisis level & days & VigiEau \\
+Weights & Mean area 2010--2012 (wheat; or irrigated plus rainfed grain maize) & ha & SAA \\
+Windows (wheat) & Autumn: Sep--Nov of $t-1$; winter: Dec--Feb; spring: Mar--Apr; grain filling: May--Jun & --- & --- \\
+Window (maize) & July--August & --- & --- \\
+NDVI & Mean and maximum of 16-day composites, April--June, only if ended before the forecast date & none & MODIS \\
+\bottomrule
+\end{tabular}
+\end{table}
