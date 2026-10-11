@@ -19,17 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----------------------------------------------------------------------------
-Scope of this licence
-
-- The MIT licence covers the code of this repository (src/, scripts/, R/, tests/).
-- The text of the research monograph (memoire/) and the documentation (docs/,
-  README.md) are licensed under Creative Commons Attribution 4.0 International
-  (CC BY 4.0): https://creativecommons.org/licenses/by/4.0/
-- The result tables (reports/tables/) and figures are derived from public data
-  sources that keep their own licences (Licence Ouverte / Etalab 2.0, presumed for Agreste, for
-  Agreste, Météo-France, IGN and the Ministry of Ecological Transition;
-  CC BY 4.0 for Schauberger et al. 2022; NASA data policy for MODIS). See
-  docs/sources.md. Reuse must credit these sources.
-- Raw data are not redistributed in this repository.

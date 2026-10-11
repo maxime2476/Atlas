@@ -241,7 +241,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
 
 ## 8. Licence et citation
 
-- **Code** (`src/`, `scripts/`, `R/`, `tests/`) : licence MIT (`LICENSE`).
+- **Code** (`src/`, `scripts/`, `R/`, `tests/`) : licence MIT (`LICENSE`) ; détail par type de contenu dans `NOTICE.md`.
 - **Texte du mémoire et documentation** : CC BY 4.0.
 - **Tables et figures** : dérivées de sources publiques qui gardent leurs propres licences (`docs/sources.md`).
 - **Citation** : `CITATION.cff`.
