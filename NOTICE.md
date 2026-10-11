@@ -4,13 +4,25 @@
 |---|---|
 | Code (`src/`, `scripts/`, `R/`, `tests/`) | MIT (`LICENSE`) |
 | Research monograph (`memoire/`) and documentation (`docs/`, `README.md`) | Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/ |
-| Result tables (`reports/tables/`) and figures | Derived from public data sources that keep their own licences; reuse must credit them |
+| Result tables (`reports/tables/`) and figures | Derived from the data sources below, which keep their own licences; reuse must credit them |
 
-Licences of the data sources (details in `docs/sources.md`):
+Raw data are not redistributed in this repository. `scripts/01_download_raw.py` downloads them and `docs/manifest_raw.csv` lists their URLs, access dates and SHA-256 hashes.
 
-- Licence Ouverte / Etalab 2.0: Météo-France (SIM2), IGN (ADMIN EXPRESS, RPG, altimetry), Ministry of Ecological Transition (VigiEau); presumed for Agreste (SAA);
-- CC BY 4.0: Schauberger et al. (2022), GFZ Data Services;
-- NASA data policy: MODIS MOD13Q1 (LP DAAC);
-- INSEE and Eurostat price series: terms of reuse to be confirmed.
+## Data sources: licences and required attribution
 
-Raw data are not redistributed in this repository; `scripts/01_download_raw.py` downloads them and `docs/manifest_raw.csv` lists their SHA-256 hashes.
+Terms for Agreste, INSEE, Eurostat and NASA were checked on the producers' pages on 2026-10-11. Terms for Météo-France, IGN and VigiEau are those recorded when the data were audited and downloaded (`docs/sources.md`, `docs/phase0bis_cadrage.md`). Access dates are those of the manifest.
+
+| Source | Licence (as stated by the producer) | Attribution used | Accessed |
+|---|---|---|---|
+| Agreste (SSP, French Ministry of Agriculture), *Statistique agricole annuelle* (long series and older series `SAANR_DEVELOPPE_2`) | Free reuse, including commercial, without licence fee, provided the source is cited (legal notice of agreste.agriculture.gouv.fr); Agreste datasets on data.gouv.fr are under Licence Ouverte 2.0 | Source : Agreste, Statistique agricole annuelle | 2026-10-10 and 2026-10-11 |
+| Météo-France, SIM2 daily (SAFRAN-ISBA) | Licence Ouverte / Etalab 2.0 | Source : Météo-France, SIM2 quotidienne | 2026-10-10 to 2026-10-11 |
+| IGN, ADMIN EXPRESS COG CARTO 2026 | Licence Ouverte / Etalab 2.0 | Source : IGN, ADMIN EXPRESS | 2026-10-10 |
+| IGN / ASP, Registre parcellaire graphique (RPG 2.0, 2015-2017; RPG 1.0, 2008) | Licence Ouverte / Etalab 2.0 | Source : IGN, RPG | 2026-10-10 and 2026-10-11 |
+| IGN, altimetry service (RGE ALTI) | Licence Ouverte / Etalab 2.0 | Source : IGN, RGE ALTI | 2026-10-10 |
+| Ministry of Ecological Transition, VigiEau "Donnée Sécheresse" (data.gouv.fr) | Licence Ouverte / Etalab 2.0 | Source : MTE, VigiEau | 2026-10-11 |
+| INSEE, producer price index (IPPAP), BDM series 010776425 and 010776430 | Licence Ouverte / Etalab 2.0 (INSEE legal notice: "Source : Insee", date of update) | Source : Insee | 2026-10-10 and 2026-10-11 |
+| Eurostat, `apri_ap_crpouta` | Reuse authorised provided the source is acknowledged; EU content under CC BY 4.0 (Eurostat copyright notice) | Source : Eurostat | 2026-10-10 and 2026-10-11 |
+| Schauberger et al. (2021), GFZ Data Services, doi:10.5880/PIK.2021.001 | CC BY 4.0 | Cited as a dataset; **changes:** RAW version, yields converted from t/ha to q/ha, departments matched to INSEE codes | 2026-10-10 |
+| NASA LP DAAC, MOD13Q1 v6.1 (Didan 2021, doi:10.5067/MODIS/MOD13Q1.061), via AppEEARS | NASA-led mission data: Creative Commons Zero (CC0); citation requested (NASA Earthdata data use guidance) | Cited as a dataset | 2026-10-10 to 2026-10-11 |
+
+Transformations of the data (aggregation, degree-days, panels) are described in `docs/` and in the monograph; they do not alter the meaning of the source data.

@@ -118,8 +118,10 @@ Tous les choix sont **fixés avant estimation** (`docs/specification_phase4.md` 
 | Réplication sur 2000-2009 seulement (10 années) | +1,1 % (environ deux fois moins que sur 2010-2025) | 0,049 (bilatérale 0,10 ; taille non vérifiée à 10 grappes) |
 | H2b : maïs non irrigué | −2,5 % | < 0,001 (Holm) |
 | H2c : maïs irrigué | −1,0 % | 0,005 (Holm) |
-| H2a : un sol plus humide réduit l'écart | −0,35 par unité de SWI | 0,024 (Holm) |
+| H2a : un sol plus humide est associé à un écart plus faible | −0,35 par unité de SWI | 0,024 (Holm) |
 | H3 : les jours de « crise » VigiEau réduisent l'avantage de l'irrigué (2016-2025) | Signe **opposé** | 0,96 : non soutenue |
+
+**Lecture de H1 :** « établie » au sens de la règle fixée avant les estimations sur 2000-2009 seulement. 62 % des paires (2010-2025) sont les années dont l'analyse exploratoire a suggéré l'hypothèse ; la seule preuve nouvelle est la décennie 2000-2009.
 
 - **Robustesse :** le signe est positif dans les 10 spécifications (figure ci-dessus) et significatif dans 9. Avec le masque maïs, exclure 2003 ou l'année provisoire 2025 ne change pas la conclusion, et l'élargissement à 38 départements non plus (+2,2 %).
 - **Dépendance à la mesure de la chaleur :**

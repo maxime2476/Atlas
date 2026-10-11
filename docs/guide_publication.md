@@ -19,14 +19,14 @@
 
 ## Étapes, dans l'ordre
 
-1. **GitHub (auteur).** Créer un dépôt **vide** (sans README ni licence), public, par exemple `atlas`, et transmettre son adresse.
-2. **Regroupement et envoi (Claude, après accord).**
+1. **GitHub (auteur).** ~~Créer un dépôt vide et public~~ : fait (`maxime2476/Atlas`).
+2. **Regroupement et envoi** : fait.
    - Étiquette de sauvegarde de l'ancien historique (`archive/historique-complet`), conservée en local et non poussée.
    - Un seul commit sur `main`, ajout du remote, puis `git push`.
-3. **Zenodo (auteur).**
+3. **Zenodo** : fait (v1.0.0).
    - Se connecter à Zenodo avec son compte GitHub et activer le dépôt `atlas` dans l'onglet GitHub de Zenodo.
    - Créer sur GitHub une *release* `v1.0.0`. Zenodo l'archive automatiquement et attribue un DOI. Les métadonnées viennent de `.zenodo.json`.
-4. **Mise à jour du mémoire (Claude).**
+4. **Mise à jour du mémoire** : fait.
    - Renseigner `\RepoLink` dans `memoire/main.tex` avec l'adresse GitHub et le DOI Zenodo.
    - Ajouter le DOI au README et à `CITATION.cff`, puis recompiler le PDF.
 5. **HAL (auteur).** Déposer le PDF `memoire/main.pdf` avec les métadonnées ci-dessous.
@@ -42,10 +42,10 @@
 - **Codes JEL :** Q15, Q54, C23, C12.
 - **Licence :** CC BY 4.0.
 - **Lien vers le code :** https://doi.org/10.5281/zenodo.23305096 (version 1.0.0) et https://github.com/maxime2476/Atlas.
-- **Résumé anglais :** `memoire/arxiv_abstract.txt` (généré, moins de 1 920 caractères).
+- **Résumé anglais :** le résumé complet du PDF, ou sa version courte `memoire/arxiv_abstract.txt` (générée, avec les mêmes réserves).
 - **Résumé français :** à relire par l'auteur.
 
-> L'avantage de rendement du maïs irrigué augmente-t-il avec la chaleur estivale extrême ? À partir des rendements départementaux du maïs grain, publiés séparément pour l'irrigué et le non irrigué (2000-2025), de la réanalyse météorologique SAFRAN-ISBA et d'une chaleur mesurée sur les parcelles de maïs, je compare les deux modes de culture dans un même département et une même année. La spécification a été fixée à l'avance, avec son empreinte dans un journal privé. Dans 17 départements, chaque degré-jour au-delà de 32 °C en juillet-août est associé à un écart de rendement plus large d'environ 1,6 % en faveur du maïs irrigué (bootstrap par année, p = 0,007 ; taille empirique de 3,7 %). Le rendement non irrigué est environ 2,6 fois plus sensible à la chaleur que le rendement irrigué. L'estimation garde son signe sur des années jamais utilisées, avec un effet environ deux fois plus faible, mais elle n'est pas significative avec une météo moyennée sur tout le département, qui sous-estime la chaleur dans les départements de relief. C'est une association, et non l'effet causal de l'irrigation. Sur le plan méthodologique, les erreurs-types regroupées par département ou de Conley rejettent à tort l'hypothèse nulle dans 16 à 56 % des simulations placebo sur ces panels. Les rendements du blé sur 1959-2025 et la prévision hors échantillon donnent des résultats nuls.
+> L'avantage de rendement du maïs irrigué augmente-t-il avec la chaleur estivale extrême ? À partir des rendements départementaux du maïs grain, publiés séparément pour l'irrigué et le non irrigué (2000-2025), de la réanalyse météorologique SAFRAN-ISBA et d'une chaleur mesurée sur les parcelles de maïs, je compare les deux modes de culture dans un même département et une même année. La spécification a été fixée à l'avance, alors que des résultats exploratoires sur 2010-2025 étaient déjà connus ; son empreinte figure dans le journal des décisions du projet, publié avec le code. Dans 17 départements, chaque degré-jour au-delà de 32 °C en juillet-août est associé à un écart de rendement plus large d'environ 1,6 % en faveur du maïs irrigué (bootstrap par année, p = 0,007 ; taille empirique de 3,7 %). Le rendement non irrigué est environ 2,6 fois plus sensible à la chaleur que le rendement irrigué. Sur 2000-2009, années jamais utilisées auparavant, l'estimation garde son signe avec le masque maïs (1,1 % contre 2,5 % sur 2010-2025). Elle n'est pas significative quand la chaleur est moyennée sur tout le département ; je propose, après coup, que cette mesure sous-estime la chaleur subie par le maïs dans les départements de relief. C'est une association, et non l'effet causal de l'irrigation. Sur le plan méthodologique, les erreurs-types regroupées par département ou de Conley rejettent à tort l'hypothèse nulle dans 16 à 56 % des simulations placebo sur ces panels. Les rendements du blé sur 1959-2025 et la prévision hors échantillon donnent des résultats nuls.
 
 *Ce résumé français reprend les chiffres du résumé anglais généré. S'ils changent, il faut le mettre à jour à la main.*
 

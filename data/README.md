@@ -1,9 +1,11 @@
 # Données ATLAS
 
-Seuls ces fichiers README sont versionnés. Les données se retrouvent ainsi :
+Seuls ces fichiers README sont versionnés. Prérequis : `uv sync`, `Rscript -e 'renv::restore()'`, R ≥ 4.5, l'outil système `7z` (archives RPG), un compte NASA Earthdata pour le NDVI (voir `README.md`, § 7).
+
+Les fichiers sources sont révisés par leurs producteurs (SAA provisoire 2025, SIM récents, VigiEau) : une reproduction **bit à bit**, contrôlée par `docs/manifest_raw.csv`, n'est garantie qu'avec les fichiers téléchargés les 10 et 11 octobre 2026. Les données se retrouvent ainsi :
 
 ```bash
-# 1. Téléchargements (~22 Go ; NDVI plus bas)
+# 1. Téléchargements (~18 Go ; RPG 2008 et NDVI plus bas, ~5,6 Go)
 uv run python scripts/01_download_raw.py --sim-years 1958-2025 --rpg 2015-2017 --schauberger --prix --saa-ancienne --vigieau
 # extraction des couches RPG : voir data/raw/ign_rpg/README.md (≈ 13 Go, à supprimer après l'étape 07)
 uv run python scripts/02_check_sim.py --all-years                 # contrôles SIM (1958 partiel : attendu)
@@ -47,8 +49,12 @@ Rscript R/16_q1_exploratoire.R                                    # diagnostics 
 uv run python scripts/01_download_raw.py --rpg1 2008              # phase 0 ter : îlots RPG 2008, 4 régions (~0,6 Go)
 uv run python scripts/25_build_maize_mask_2008.py                 # masque maïs 2008 + météo (Q1-R9)
 Rscript R/17_q1_mask2008.R                                        # robustesse Q1-R9
-# 7. Figures et tests
-uv run python scripts/20_figures_rapport.py                       # figures 1 à 5 du README (docs/figures/)
+Rscript R/18_residual_autocorr.R                                  # diagnostic : autocorrélation des résidus
+Rscript R/wcr/exemple.R                                           # exemple simulé du module wcr (Monte-Carlo)
+# 7. Figures, mémoire et tests
+uv run python scripts/20_figures_rapport.py                       # figures du README (PNG) et du mémoire (PDF)
+uv run python scripts/26_tables_memoire.py                        # chiffres et tableaux du mémoire (memoire/tables/)
+(cd memoire && latexmk -pdf main.tex)                             # compilation du mémoire
 uv run pytest
 ```
 

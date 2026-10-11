@@ -1,15 +1,18 @@
 """Étape 15 : évaluation chronologique du module prédictif (docs/specification_phase5.md).
 
-Usage : uv run python scripts/15_forecast_cv.py   (~10 min)
+Usage : uv run python scripts/15_forecast_cv.py              (~10 min)
+        uv run python scripts/15_forecast_cv.py --synthese   (synthèses seules, depuis phase5_metriques_annee.csv)
 Sorties (reports/tables/) :
   phase5_predictions.parquet      toutes les prévisions (date, variante, année test, département, modèle)
   phase5_metriques_annee.csv      RMSE / MAE / skill par modèle et par année test
   phase5_synthese.csv             moyennes, bootstrap par blocs d'années de l'écart de MSE à B1, années gagnées
+  phase5_synthese_vs_B0.csv       idem par rapport à B0 (comparaison ajoutée après les résultats, docs/decisions.md)
   phase5_pertes.csv               détection des pertes (rappel, précision)
   phase5_national.csv             erreur sur le rendement national pondéré
   phase5_importance.csv           importance par permutation (RIDGE, GBM, 1er juillet, variante principale)
 """
 
+import argparse
 import time
 
 import numpy as np
@@ -28,7 +31,45 @@ def wmse(e, w):
     return np.average(e ** 2, weights=w)
 
 
+def synthese(M: pd.DataFrame, ref: str) -> pd.DataFrame:
+    """Moyennes sur les années test et bootstrap par blocs d'années de l'écart de MSE à la référence `ref`.
+
+    Le générateur est réinitialisé pour chaque référence : la synthèse par rapport à B1 est celle de la
+    spécification (phase 5) ; celle par rapport à B0 a été ajoutée après examen des résultats.
+    """
+    rng = np.random.default_rng(SEED)
+    syn = []
+    for (variant, date), g in M.groupby(["variante", "date"]):
+        piv = g.pivot(index="annee_test", columns="modele", values="mse_log")
+        boot_idx = rng.integers(0, len(piv), size=(9999, len(piv)))
+        for m in MODELS:
+            if m == ref and ref == "B0":
+                continue
+            diff = (piv[m] - piv[ref]).to_numpy()  # < 0 : le modèle fait mieux que la référence
+            bd = diff[boot_idx].mean(axis=1)
+            gm = g[g.modele == m]
+            row = {"variante": variant, "date": date, "modele": m}
+            if ref == "B1":
+                row.update({"rmse_log_moyen": np.sqrt(piv[m].mean()), "mae_q_ha_moyenne": gm["mae_q_ha"].mean()})
+            row.update({f"skill_moyen_vs_{ref}": 1 - piv[m].mean() / piv[ref].mean(),
+                        f"ecart_mse_vs_{ref}": diff.mean(), "ic95_bas": np.quantile(bd, 0.025),
+                        "ic95_haut": np.quantile(bd, 0.975), f"annees_meilleur_que_{ref}": int((diff < 0).sum())})
+            if ref == "B1":
+                row["n_annees"] = len(diff)
+            syn.append(row)
+    return pd.DataFrame(syn)
+
+
 def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--synthese", action="store_true", help="recalculer seulement les synthèses")
+    if parser.parse_args().synthese:
+        M = pd.read_csv(TAB / "phase5_metriques_annee.csv")
+        for ref in ["B1", "B0"]:
+            synthese(M, ref).to_csv(TAB / ("phase5_synthese.csv" if ref == "B1" else "phase5_synthese_vs_B0.csv"),
+                                    index=False)
+        print("synthèses écrites : phase5_synthese.csv, phase5_synthese_vs_B0.csv")
+        return
     data = pd.read_parquet(ROOT / "data" / "processed" / "forecast_features.parquet")
     data = data[data["echantillon_principal"]].reset_index(drop=True)
     preds, importances = [], []
@@ -69,24 +110,9 @@ def main() -> None:
     M = pd.DataFrame(rows)
     M.to_csv(TAB / "phase5_metriques_annee.csv", index=False)
 
-    # --- Synthèse et bootstrap par blocs d'années ------------------------------------------------
-    rng = np.random.default_rng(SEED)
-    syn = []
-    for (variant, date), g in M.groupby(["variante", "date"]):
-        piv = g.pivot(index="annee_test", columns="modele", values="mse_log")
-        boot_idx = rng.integers(0, len(piv), size=(9999, len(piv)))
-        for m in MODELS:
-            diff = (piv[m] - piv["B1"]).to_numpy()  # < 0 : le modèle fait mieux que B1
-            bd = diff[boot_idx].mean(axis=1)
-            gm = g[g.modele == m]
-            syn.append({"variante": variant, "date": date, "modele": m,
-                        "rmse_log_moyen": np.sqrt(piv[m].mean()), "mae_q_ha_moyenne": gm["mae_q_ha"].mean(),
-                        "skill_moyen_vs_B1": 1 - piv[m].mean() / piv["B1"].mean(),
-                        "ecart_mse_vs_B1": diff.mean(), "ic95_bas": np.quantile(bd, 0.025),
-                        "ic95_haut": np.quantile(bd, 0.975), "annees_meilleur_que_B1": int((diff < 0).sum()),
-                        "n_annees": len(diff)})
-    S = pd.DataFrame(syn)
-    S.to_csv(TAB / "phase5_synthese.csv", index=False)
+    for ref in ["B1", "B0"]:
+        synthese(M, ref).to_csv(TAB / ("phase5_synthese.csv" if ref == "B1" else "phase5_synthese_vs_B0.csv"), index=False)
+    S = pd.read_csv(TAB / "phase5_synthese.csv")
 
     # --- Détection des pertes et rendement national -------------------------------------------------
     loss_rows, nat_rows = [], []

@@ -35,7 +35,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 
 **Résultat observé :**
 
-- **H1 est établie selon la règle pré-spécifiée** (p = 0,007 < 0,05 et taille de 3,7 % ≤ 10 %).
+- **H1 est établie selon la règle pré-spécifiée** (p = 0,007 < 0,05 et taille de 3,7 % ≤ 10 %), au sens de cette règle seulement : 270 des 435 paires (62 %) appartiennent à 2010-2025, la période dont l'analyse exploratoire (phase 6) a suggéré l'hypothèse. La seule preuve nouvelle est la décennie 2000-2009, ci-dessous.
 - Chaque degré-jour au-dessus de 32 °C en juillet-août est associé à un écart de rendement plus large d'environ 1,6 % en faveur du maïs irrigué.
 - Sur les dix années 2000-2009, que l'analyse exploratoire de la phase 6 n'avait pas vues, l'estimation garde **le même signe avec le masque maïs, pour un effet environ deux fois plus faible** (+1,1 % contre +2,4 % sur 2010-2025 avec le même masque).
 - **Cette réplication dépend de la mesure de la chaleur.** Avec la pondération surfacique utilisée en phase 6, l'estimation sur 2000-2009 est nulle (−0,0009 ; § « Diagnostics exploratoires »). Elle n'est donc pas convergente avec la mesure de la phase 6.
@@ -165,14 +165,14 @@ Cette robustesse a été déclarée dans `docs/decisions.md` avant estimation, a
 - **Corrélation des expositions (toutes années) :** 0,997 entre les deux masques maïs, contre 0,955 entre le masque 2015-2017 et la pondération surfacique.
 - **Lecture fixée d'avance :** l'anachronisme du masque ne menace pas H1.
 - **Origine de la divergence avec R3** (table `phase4bis_q1_mesures_departement.csv`) : elle est concentrée dans les départements de relief. En 2003, la pondération surfacique donne beaucoup moins de chaleur que le masque maïs : −10,3 °C·jour pour le Puy-de-Dôme, −8,5 pour l'Isère, −8,0 pour la Drôme, −7,5 pour le Jura, −4,2 pour le Rhône et −4,0 pour l'Ain. Dans les départements de plaine (Centre-Val de Loire, Bourgogne), l'écart est inférieur à 1,2 °C·jour.
-- **Interprétation (a posteriori) :** dans ces départements, le maïs est cultivé dans les plaines et les vallées chaudes. La pondération surfacique y mesure surtout la chaleur des reliefs, sans maïs. Le masque maïs, désigné avant estimation comme mesure principale, mesure mieux l'exposition de la culture.
+- **Interprétation (a posteriori) :** dans ces départements, le maïs est cultivé dans les plaines et les vallées chaudes. La pondération surfacique y mesure surtout la chaleur des reliefs, sans maïs. Le masque maïs, désigné avant estimation comme mesure principale, mesure vraisemblablement mieux la chaleur subie par les surfaces en maïs ; aucune vérité terrain ne permet de le démontrer.
 - **Ce qui reste inexpliqué :** pourquoi la pondération surfacique donne un coefficient plus fort sur 2010-2025.
 
 ## Synthèse
 
 | Question | Conclusion pré-spécifiée | Statut |
 |---|---|---|
-| Q1-H1 : la chaleur creuse l'écart irrigué / non irrigué | p = 0,007, taille 3,7 % ; réplication 2000-2009 de même signe avec le masque maïs seulement ; inchangé avec un masque d'époque (R9 : p = 0,007) | **Établie** selon la règle (association ; non significative avec la pondération surfacique, qui sous-mesure la chaleur dans les départements de relief) |
+| Q1-H1 : la chaleur creuse l'écart irrigué / non irrigué | p = 0,007, taille 3,7 % ; réplication 2000-2009 de même signe avec le masque maïs seulement ; inchangé avec un masque d'époque (R9 : p = 0,007) | **Établie** selon la règle, sur un échantillon qui inclut à 62 % les années exploratoires (association ; non significative avec la pondération surfacique, qui semble sous-mesurer la chaleur dans les départements de relief, explication a posteriori) |
 | Q2-H1 : la chaleur en fin de cycle réduit le rendement du blé | p = 0,125, taille 4,3 % | **Non établie** |
 | Q2-H2 : la sensibilité du blé a changé depuis 1959 | p = 0,49 | Non détectée |
 

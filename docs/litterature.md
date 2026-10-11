@@ -310,7 +310,7 @@ Résumés officiels lus via OpenAlex, notices vérifiées dans Crossref. Les aff
 | Li & Troy (2018), *ERL* | [RÉSUMÉ] | Rendements de comté pluviaux et irrigués aux États-Unis ; le bénéfice de l'irrigation dépend du climat de la saison. **Ne dit pas** que la chaleur pénalise davantage le maïs pluvial |
 | Zaveri & Lobell (2019), *Nat. Commun.* | [RÉSUMÉ] | Inde : le blé irrigué a environ un quart de la sensibilité à la chaleur du blé pluvial |
 | Tack, Barkley & Hendricks (2017), *ERL* | [RÉSUMÉ] | Kansas, essais : l'irrigation « completely offsets » la perte due au réchauffement « in our sample » |
-| van der Velde, Wriedt & Bouraoui (2010), *AEE* | [TITRE] | Pas de résumé disponible : seul le titre est utilisé (estimation de l'irrigation et de son effet sur le maïs en 2003) |
+| van der Velde, Wriedt & Bouraoui (2010), *AEE* | [RÉSUMÉ] (notice du dépôt JRC53947 de la Commission européenne, consultée le 2026-10-11) | Modèle EPIC sur une grille de 10 km : scénarios irrigués et pluvial simulés, pondérés par la part irriguée régionale, comparés aux rendements régionaux publiés ; l'irrigation n'a compensé qu'en partie la perte de 2003. **Pas** de comparaison de rendements irrigués et non irrigués observés |
 | van der Velde, Tubiello, Vrieling & Bouraoui (2012), *Climatic Change* | [RÉSUMÉ] | Modèle EPIC à 10 km évalué contre les anomalies régionales de 2003 et 2007 |
 | Mérel & Gammans (2021), *AJAE* | [RÉSUMÉ] (était [SECONDAIRE]) | Conditions sous lesquelles le panel non linéaire approche la réponse de long terme ; indices d'adaptation de long terme aux États-Unis et en France |
 | Cameron, Gelbach & Miller (2008), *REStat* | [RÉSUMÉ] | Sur-rejet avec peu de grappes (5 à 30) ; bootstrap-t en grappes |

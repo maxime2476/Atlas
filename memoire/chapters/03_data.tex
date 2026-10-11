@@ -12,19 +12,22 @@ All data are public. \Cref{tab:sources} lists the sources; this section explains
 \toprule
 Source & Variables used & Coverage & Licence \\
 \midrule
-Agreste, \emph{Statistique agricole annuelle} (SAA), long series & Area, yield, quality status; wheat, irrigated and rainfed grain maize & Departments, 2010--2025 & Licence Ouverte (presumed) \\
-Agreste, SAA ``older series'' (\texttt{SAANR\_DEVELOPPE\_2}) & Irrigated and rainfed grain maize & Departments, 2000--2020 & Licence Ouverte (presumed) \\
-\textcite{schauberger2022}, version RAW & Soft wheat yields & Departments, 1959--2009 & CC-BY 4.0 \\
+Agreste, \emph{Statistique agricole annuelle} (SAA), long series & Area, yield, quality status; wheat, irrigated and rainfed grain maize & Departments, 2010--2025 & Free reuse with attribution; Licence Ouverte 2.0 \\
+Agreste, SAA ``older series'' (\texttt{SAANR\_DEVELOPPE\_2}) & Irrigated and rainfed grain maize & Departments, 2000--2020 & Free reuse with attribution \\
+\textcite{schauberger2021data}, version RAW; data paper \textcite{schauberger2022} & Soft wheat yields & Departments, 1959--2009 & CC BY 4.0 \\
 Météo-France, SIM2 (SAFRAN--ISBA) & Daily Tmin, Tmax, precipitation, evapotranspiration, soil wetness index & 8~km grid, Aug.~1958--2025 & Licence Ouverte 2.0 \\
 IGN / ASP, parcel register (RPG) v2.0 & Grain maize and soft wheat parcels & Parcels, 2015--2017 & Licence Ouverte 2.0 \\
 IGN / ASP, RPG v1.0 (anonymised blocks) & Blocks whose main crop is maize & 4 regions, 2008 & Licence Ouverte 2.0 \\
 IGN, ADMIN EXPRESS COG CARTO & Department boundaries & 2026 edition & Licence Ouverte 2.0 \\
+IGN, altimetry service (RGE ALTI) & Mean altitude of grid cells & 8~km cells & Licence Ouverte 2.0 \\
 Ministry of Ecological Transition, VigiEau & Water-restriction orders and severity levels & Departments, 2012--2025 & Licence Ouverte 2.0 \\
-INSEE, producer price index (IPPAP); Eurostat \texttt{apri\_ap\_crpouta} & Maize and wheat prices & 2000--2025 & To be confirmed \\
-NASA LP DAAC, MOD13Q1 v6.1 & NDVI, 250~m, 16-day composites & 2010--2025 & NASA data policy (to be confirmed) \\
+INSEE, producer price index (IPPAP); Eurostat \texttt{apri\_ap\_crpouta} & Maize and wheat prices & 2000--2025 & INSEE: Licence Ouverte 2.0; Eurostat: reuse with attribution \\
+NASA LP DAAC, MOD13Q1 v6.1 \parencite{didan2021} & NDVI, 250~m, 16-day composites & 2010--2025 & CC0 (NASA), citation requested \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\noindent Sources: Agreste, Statistique agricole annuelle; Météo-France, SIM2; IGN (ADMIN EXPRESS, RPG, RGE ALTI); Ministry of Ecological Transition, VigiEau; Insee; Eurostat; NASA LP DAAC. The licence terms of Agreste, INSEE, Eurostat and NASA were checked on the producers' websites on 11 October 2026; access dates and the attribution of each source are listed in the repository (\texttt{NOTICE.md}, \texttt{docs/manifest\_raw.csv}). The Schauberger et al.\ yields were converted from t/ha to q/ha and matched to INSEE department codes.
 
 \subsection{Crop yields}
 

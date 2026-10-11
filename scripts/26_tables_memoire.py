@@ -335,7 +335,11 @@ def maize_tables(n: dict) -> None:
     w = m.pivot_table(index=["dep_code", "annee"], columns="modalite", values="rendement_q_ha").dropna()
     n["YieldIrr"], n["YieldRain"] = f"{w.irrigue.mean():.0f}", f"{w.non_irrigue.mean():.0f}"
     n["GapMedianPct"] = f"{100 * ((w.irrigue / w.non_irrigue).median() - 1):.0f}"
-    n["GapShareNeg"] = f"{100 * (w.irrigue < w.non_irrigue).mean():.0f}"
+    n["GapNotAboveCount"] = str(int((w.irrigue <= w.non_irrigue).sum()))     # paires où l'irrigué ne dépasse pas
+    n["GapBelowCount"] = str(int((w.irrigue < w.non_irrigue).sum()))
+    # Part des paires de l'échantillon principal issues des années exploratoires (2010-2025, phase 6).
+    years = w.index.get_level_values(1)
+    n["ExploPairs"], n["ExploSharePct"] = str(int((years >= 2010).sum())), f"{100 * (years >= 2010).mean():.0f}"
 
 
 def wheat_tables(n: dict) -> None:
@@ -598,16 +602,18 @@ def main() -> None:
     abstract = (
         "Does the yield advantage of irrigated maize grow with extreme summer heat? Using French department-level yields "
         "reported separately for irrigated and rainfed grain maize (2000-2025), daily SAFRAN-ISBA reanalysis weather, and "
-        "heat measured on maize parcels, I compare the two modes within the same department and year. The specification was "
-        "fixed in advance, with its hash in a private decision log. In 17 departments, each degree-day above 32 C in "
-        f"July-August is associated with a {n['QonePct']}% wider yield gap in favour of irrigated maize (one-sided wild "
-        f"cluster bootstrap by year, p = {n['QoneP']}; empirical size {n['QoneSizeWCR']}%). Rainfed yields are about "
-        f"{n['QoneRatio']} times more sensitive to heat than irrigated yields. The estimate keeps its sign on years never "
-        "used before, at about half the size, but it is not significant with department-wide weather, which understates "
-        "heat in mountainous departments. It is an association, not the causal effect of irrigation. Methodologically, "
-        f"standard errors clustered by department or Conley reject a true null in {n['UsualSizeMin']}% to "
-        f"{n['UsualSizeMax']}% of placebo simulations on these panels. Wheat yields over 1959-2025 and out-of-sample "
-        "yield forecasts give null results.")
+        "heat measured on maize parcels, I compare the two modes within the same department and year. The specification "
+        "was fixed in advance, after exploratory results on 2010-2025 were known; its hash is recorded in the project's "
+        "decision log, published with the code. In 17 departments, each degree-day above 32 C in July-August is "
+        f"associated with a {n['QonePct']}% wider yield gap in favour of irrigated maize (one-sided wild cluster bootstrap "
+        f"by year, p = {n['QoneP']}; empirical size {n['QoneSizeWCR']}%). Rainfed yields are about {n['QoneRatio']} "
+        "times more sensitive to heat than irrigated yields. On 2000-2009, years never used before, the estimate keeps "
+        f"its sign with the maize mask ({n['QoneReplPct']}% against {n['QoneRecentPct']}% on 2010-2025). It is not "
+        "significant when heat is averaged over whole departments; I suggest, after the fact, that this measure "
+        "understates the heat experienced by maize in mountainous departments. It is an association, not the causal "
+        "effect of irrigation. Methodologically, standard errors clustered by department or Conley reject a true null in "
+        f"{n['UsualSizeMin']}% to {n['UsualSizeMax']}% of placebo simulations on these panels. Wheat yields over "
+        "1959-2025 and out-of-sample yield forecasts give null results.")
     assert len(abstract) <= 1920, len(abstract)
     (ROOT / "memoire" / "arxiv_abstract.txt").write_text(abstract + "\n")
 

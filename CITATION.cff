@@ -4,7 +4,9 @@ title: "ATLAS: summer heat, irrigation and crop yields in France"
 authors:
   - family-names: Gourguechon
     given-names: Maxime
-license: MIT
+license:
+  - MIT
+  - CC-BY-4.0
 version: "1.0.0"
 date-released: "2026-10-11"
 doi: 10.5281/zenodo.23305095
