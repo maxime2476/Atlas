@@ -244,4 +244,4 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
 - **Code** (`src/`, `scripts/`, `R/`, `tests/`) : licence MIT (`LICENSE`) ; détail par type de contenu dans `NOTICE.md`.
 - **Texte du mémoire et documentation** : CC BY 4.0.
 - **Tables et figures** : dérivées de sources publiques qui gardent leurs propres licences (`docs/sources.md`).
-- **Citation** : `CITATION.cff`.
+- **Citation** : `CITATION.cff`. Archive Zenodo (toutes versions) : [doi:10.5281/zenodo.23305095](https://doi.org/10.5281/zenodo.23305095) ; version 1.0.0 : [doi:10.5281/zenodo.23305096](https://doi.org/10.5281/zenodo.23305096).

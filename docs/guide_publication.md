@@ -11,6 +11,12 @@
 | Affiliation | Aucune (chercheur indépendant) |
 | Historique Git | Regroupé en un seul commit juste avant la première publication, avec une sauvegarde locale de l'ancien historique |
 
+## État (2026-10-11)
+
+- GitHub : https://github.com/maxime2476/Atlas (public, licence MIT détectée).
+- Zenodo : version 1.0.0 archivée, DOI 10.5281/zenodo.23305096 ; DOI de toutes les versions 10.5281/zenodo.23305095.
+- Reste : dépôt du PDF sur HAL.
+
 ## Étapes, dans l'ordre
 
 1. **GitHub (auteur).** Créer un dépôt **vide** (sans README ni licence), public, par exemple `atlas`, et transmettre son adresse.
@@ -35,7 +41,7 @@
 - **Mots-clés :** heat stress ; irrigation ; maize ; France ; panel data ; wild cluster bootstrap ; pre-specification.
 - **Codes JEL :** Q15, Q54, C23, C12.
 - **Licence :** CC BY 4.0.
-- **Lien vers les données et le code :** DOI Zenodo (étape 3).
+- **Lien vers le code :** https://doi.org/10.5281/zenodo.23305096 (version 1.0.0) et https://github.com/maxime2476/Atlas.
 - **Résumé anglais :** `memoire/arxiv_abstract.txt` (généré, moins de 1 920 caractères).
 - **Résumé français :** à relire par l'auteur.
 

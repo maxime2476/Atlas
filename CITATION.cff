@@ -7,6 +7,8 @@ authors:
 license: MIT
 version: "1.0.0"
 date-released: "2026-10-11"
+doi: 10.5281/zenodo.23305095
+repository-code: "https://github.com/maxime2476/Atlas"
 keywords:
   - heat stress
   - irrigation

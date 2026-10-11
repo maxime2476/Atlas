@@ -1,7 +1,7 @@
 \section{Reproduction}
 \label[appendix]{app:reproduction}
 
-Everything in this monograph can be rebuilt from public sources with the project's code. This appendix says how, and what is needed.
+Everything in this monograph can be rebuilt from public sources with the project's code. The code is available at \url{https://github.com/maxime2476/Atlas}; version 1.0.0 is archived on Zenodo (\href{https://doi.org/10.5281/zenodo.23305096}{doi:10.5281/zenodo.23305096}). This appendix says how, and what is needed.
 
 \paragraph{Environments.} Python~3.12 is managed with \texttt{uv}. Its lock file fixes every package, resolved with no release later than \VerUvDate{} (for instance pandas~\VerPandas, scikit-learn~\VerSklearn, DuckDB~\VerDuckdb, GeoPandas~\VerGeopandas). R~\VerR{} is managed with \texttt{renv}, from a dated snapshot of the Posit package repository (\VerRepoDate), with \texttt{fixest}~\VerFixest. The two languages exchange data through Parquet files with documented schemas.
 
