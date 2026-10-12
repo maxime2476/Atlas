@@ -3,15 +3,20 @@
 *Projet individuel de recherche appliquée : économétrie de panel, apprentissage automatique, données géospatiales et satellitaires. Python (ingestion, géospatial, prévision), R (économétrie), DuckDB (agrégation météo).*
 
 > **En bref.**
-> - **Maïs grain, 17 départements, 2000-2025 (résultat principal, pré-spécifié).** Chaque degré-jour au-delà de 32 °C en juillet-août est **associé** à un écart de rendement plus large d'environ **1,6 %** en faveur du maïs irrigué (p = 0,007 avec un bootstrap par année dont la taille empirique est de 3,7 %).
->   - Le maïs non irrigué y est associé à −2,5 % par °C·jour, l'irrigué à −1,0 %.
+> - **Maïs grain, 17 départements hors Sud-Ouest, 2000-2025 (résultat principal, pré-spécifié par l'auteur).** Chaque degré-jour au-delà de 32 °C en juillet-août est **associé** à un écart de rendement plus large d'environ **1,6 %** en faveur du maïs irrigué (p = 0,007 avec un bootstrap par année dont la taille empirique est de 3,7 %).
+>   - Le maïs non irrigué y est associé à −2,5 % par °C·jour, l'irrigué à −1,0 % (taille de ces deux tests non mesurée).
+>   - **Force de la preuve :** la règle fixée d'avance est remplie, mais 62 % de l'échantillon vient des années (2010-2025) qui ont suggéré l'hypothèse. La seule preuve nouvelle, 2000-2009, garde le signe à environ la moitié de l'estimation (p = 0,049, puissance de 11 %), un écart dû à 2003.
+>   - **Ampleur :** intervalle à 90 % de 0,55 % à 4,5 % par °C·jour (inversion du bootstrap) : le signe est soutenu, pas l'ampleur.
+>   - **Dépendance aux départements de relief :** retirer un département quelconque laisse le résultat significatif (1,2 à 1,9 %), mais **sans les six départements de relief, il tombe à 1,0 % et n'est plus significatif (p = 0,146)**. Le résultat tient sans contrôle d'humidité du sol (1,7 %) et avec le bilan hydrique P − ETP (1,2 %, p = 0,035). Analyses ajoutées après une relecture simulée, déclarées avant calcul.
+>   - **Datation :** la spécification, le journal des décisions et les premiers résultats sont entrés dans le dépôt par le même commit ; l'ordre « spécification puis estimation » repose sur le journal de l'auteur. Seuls les diagnostics D1-D2 ont été commités avant calcul.
 >   - Puissance du test (diagnostic ajouté après la v1.0.0, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
 >   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 (vérification ajoutée après la v1.0.0, déclarée avant calcul mais sans commit préalable).
 >   - **Réserve :** le résultat dépend de la mesure de la chaleur. Il n'est pas significatif si la météo est moyennée sur tout le département au lieu des parcelles de maïs, et la réplication sur 2000-2009 n'existe qu'avec la mesure sur les parcelles.
+>   - L'interaction pré-spécifiée avec les jours de restriction « crise » (VigiEau, H3) a le **signe opposé** à l'hypothèse.
 >   - C'est une association, pas un effet causal de l'irrigation.
 > - **Blé tendre, 83 départements, 1959-2025.** La chaleur en fin de cycle est associée à −1,1 % de rendement par °C·jour, mais ce n'est **pas distinguable de zéro** (p = 0,125). Malgré 67 récoltes, l'information se réduit à quelques étés très chauds. Aucune évolution de la sensibilité depuis 1959 n'est détectable (puissance faible).
 > - **Prévision :** ni la météo ni le NDVI satellitaire ne battent de façon démontrée la **moyenne historique du département**.
-> - **Leçon transversale :** sur ces panels, les erreurs-types usuelles (cluster par département, Conley) concluent à tort dans **16 à 56 %** des cas sans effet réel, au seuil nominal de 5 %. Seul le bootstrap par année reste proche de son niveau (3,5 à 7,0 % de rejets à tort selon le jeu de données).
+> - **Leçon transversale (connue, mais décisive ici) :** sur ces panels, les erreurs-types usuelles (cluster par département, Conley à noyau uniforme de 200 km) concluent à tort dans **16 à 56 %** des cas sans effet réel, au seuil nominal de 5 %. Seul le bootstrap par année reste proche de son niveau (3,5 à 7,0 % de rejets à tort selon le jeu de données).
 
 ![Maïs : écart irrigué − non irrigué selon la spécification](docs/figures/fig4_mais_robustesse.png)
 
@@ -51,7 +56,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 
 **Reproductibilité des données :**
 
-- les données brutes (≈ 24 Go, NDVI compris) ne sont **pas versionnées** ;
+- les données brutes (≈ 26 Go, NDVI et E-OBS compris) ne sont **pas versionnées** ;
 - leurs URL, dates d'accès et **SHA-256** sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie ;
 - les points d'attention de chaque source sont détaillés dans `docs/sources.md` et `docs/phase0bis_cadrage.md`. La SAA 2000-2009 a été localisée par exploration du site Agreste (navigation automatisée en lecture seule), puis contrôlée : sur 2010-2020, 95 % des rendements concordent à 0,5 q/ha près avec les séries actuelles (1 674 paires comparées).
 
@@ -135,7 +140,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
   - **un masque maïs d'époque (îlots RPG 2008) donne le même résultat** (+1,5 %, p = 0,007 ; robustesse déclarée avant estimation, après la relecture). L'âge du masque n'explique donc pas la divergence ;
   - **avec une autre source de température, E-OBS** (même méthode, même masque), le résultat tient : +1,5 % par °C·jour, p = 0,005 ; les deux mesures sont corrélées à 0,95. E-OBS compte plus de degrés-jours > 32 °C que SIM ; une partie de ses stations françaises alimente aussi SAFRAN, ce n'est donc pas une mesure entièrement indépendante ;
   - celle-ci se concentre dans les départements de relief (Puy-de-Dôme, Isère, Drôme, Jura), où le maïs pousse en plaine et en vallée. En 2003, la pondération surfacique y sous-estime la chaleur subie par la culture de 7 à 10 °C·jour. C'est une explication a posteriori, cohérente avec le choix du masque maïs comme mesure principale, fixé avant estimation.
-- **Valorisation descriptive,** en euros courants, pour les 17 départements : les quintaux **associés** à l'irrigation lors d'un été plus chaud que la normale valent environ **49 M€ en 2003** (fourchette indicative de 8 à 98 M€), 9 M€ en 2019 et 14 M€ en 2022. Ce n'est pas la valeur totale de l'irrigation, ni un gain causal.
+- **Valorisation descriptive,** en euros courants, pour les 17 départements : les quintaux **associés** à l'irrigation lors d'un été plus chaud que la normale valent environ **49 M€ en 2003** (fourchette de 16 à 170 M€, aux bornes de l'intervalle à 90 % de β obtenu par inversion du bootstrap), 9 M€ en 2019 et 14 M€ en 2022. C'est une valeur brute de production : ni la valeur totale de l'irrigation, ni une valeur nette du coût de l'eau, ni une valeur par m³ ou le coût d'une restriction, ni un gain causal. La formule linéaire surestime l'écart de 2003 d'environ 17 %.
 - **Ce que ce résultat n'est pas :** un effet causal de l'irrigation. Les parcelles irriguées diffèrent des autres, et lors des sécheresses une partie du maïs non irrigué semé pour le grain peut être récoltée en ensilage (les surfaces abandonnées restent comptées, avec un rendement nul). La part irriguée de l'année ne varie pas de façon détectable avec la chaleur, mais l'ensilage n'est pas observé.
 
 ![Taille des tests, phase 4 bis](docs/figures/fig5_taille_phase4bis.png)
@@ -233,7 +238,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
   - Au 2026-10-12, 570 tests passent : 461 vérifications d'empreintes des fichiers bruts (une par fichier) et 109 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
-- **Reproduction vérifiée (2026-10-12) :** sur un clone vierge, toute la chaîne relancée depuis les fichiers bruts redonne les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`).
+- **Reproduction vérifiée (2026-10-12), au commit `9f65cb4` :** sur un clone vierge, toute la chaîne relancée depuis les fichiers bruts redonne les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire de ce commit (`docs/decisions.md`). Les analyses ajoutées ensuite (puissance D1-D2, vérification E-OBS) n'ont pas été reconstruites sur un clone vierge.
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).
 - **Graines :** fixées (20261010 et suivantes).
 

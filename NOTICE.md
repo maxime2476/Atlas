@@ -4,7 +4,7 @@
 |---|---|
 | Code (`src/`, `scripts/`, `R/`, `tests/`) | MIT (`LICENSE`) |
 | Research monograph (`memoire/`) and documentation (`docs/`, `README.md`) | Creative Commons Attribution 4.0 International (CC BY 4.0), https://creativecommons.org/licenses/by/4.0/ |
-| Result tables (`reports/tables/`) and figures | Derived from the data sources below, which keep their own licences; reuse must credit them |
+| Result tables (`reports/tables/`) and figures | Derived from the data sources below, which keep their own licences; reuse must credit them. `reports/tables/phase4bis_q1_eobs_departement.csv` and `phase4bis_q1_eobs.csv` are derived from E-OBS, whose data policy restricts use to non-commercial research and education |
 
 Raw data are not redistributed in this repository. `scripts/01_download_raw.py` downloads them and `docs/manifest_raw.csv` lists their URLs, access dates and SHA-256 hashes.
 

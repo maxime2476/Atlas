@@ -1,7 +1,8 @@
 """Étape 24 : valorisation descriptive de Q1 (phase 4 bis) : quintaux et euros associés à l'irrigation lors des étés chauds.
 
-Usage : uv run python scripts/24_valorisation_mais.py   (après Rscript R/14_q1_maize.R)
-Entrées : data/processed/panel_mais_long.parquet ; reports/tables/phase4bis_q1_hypotheses.csv (beta de H1 et IC 90 % CR1) ;
+Usage : uv run python scripts/24_valorisation_mais.py   (après Rscript R/14_q1_maize.R et R/21_q1_revue.R)
+Entrées : data/processed/panel_mais_long.parquet ; reports/tables/phase4bis_q1_hypotheses.csv (beta de H1) ;
+          reports/tables/phase4bis_q1_revue_intervalles.csv (IC 90 % par inversion du WCR, R/21_q1_revue.R) ;
           data/raw/prix/insee_ippap_mais_010776430.xml ; data/raw/prix/eurostat_apri_ap_crpouta_FR_mais.json
 Sortie : reports/tables/phase4bis_q1_valorisation.csv
 
@@ -43,7 +44,13 @@ def maize_price() -> tuple[pd.Series, float, float]:
 def main() -> None:
     hyp = pd.read_csv(TABLES / "phase4bis_q1_hypotheses.csv")
     h1 = hyp[hyp["hypothese"] == "H1"].iloc[0]
-    betas = {"estimation": h1["estimation"], "ic90_bas": h1["ic90_cr1_annee_bas"], "ic90_haut": h1["ic90_cr1_annee_haut"]}
+    # Fourchette : bornes de l'intervalle à 90 % obtenu par inversion du WCR (analyse E1, déclarée le 2026-10-12),
+    # à la place de l'intervalle CR1 groupé par année, dont la taille n'était pas vérifiée.
+    ci = pd.read_csv(TABLES / "phase4bis_q1_revue_intervalles.csv")
+    ci = ci[(ci["modele"] == "A1 maïs 2000-2025") & (ci["niveau"] == 0.90)].iloc[0]
+    if abs(ci["estimation"] - h1["estimation"]) > 1e-12:
+        raise SystemExit("l'intervalle E1 ne porte pas sur le beta de H1")
+    betas = {"estimation": h1["estimation"], "ic90_bas": ci["borne_inf"], "ic90_haut": ci["borne_sup"]}
 
     m = pd.read_parquet(ROOT / "data" / "processed" / "panel_mais_long.parquet")
     m = m[m["echantillon_principal"]]

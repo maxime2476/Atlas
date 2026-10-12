@@ -27,7 +27,14 @@ estimated by weighted least squares, with weights equal to each department's gra
 
 \paragraph{The identifying assumption.} Conditional on the fixed effects and on soil moisture, the year-to-year deviations of a department's summer heat must be unrelated to other determinants of the gap. This would fail if, for instance, the composition of irrigated and rainfed land changed in hot years, an issue discussed in \cref{sec:discussion}.
 
-\paragraph{The soil wetness index.} The SWI comes from a land-surface model driven by observed weather. I treat it as a weather variable. Part of it is a consequence of the heat itself (a hot summer dries the soil), so $\beta$ is a partial association, with heat at a given level of soil moisture, and the coefficient on the SWI is read as an association too.
+\paragraph{The soil wetness index.} The SWI comes from a land-surface model driven by observed weather. I treat it as a weather variable. Part of it is a consequence of the heat itself (a hot summer dries the soil), so $\beta$ is a partial association, with heat at a given level of soil moisture, and the coefficient on the SWI is read as an association too. The SIM2 documentation does not mention irrigation: the SWI is best read as the moisture of rainfed soil in the grid cell, not of irrigated fields.
+
+\paragraph{Water restrictions (H3).} On 2016--2025, the years with usable severity levels, model~\eqref{eq:a1} is extended with $C_{dt}$, the number of July--August days with at least one zone of the department at crisis level, and its interaction with heat:
+\begin{equation}
+\label{eq:h3}
+\ln Y^{I}_{dt} - \ln Y^{R}_{dt} = \alpha_d + \gamma_t + \beta\, \mathrm{DD}_{>32,dt} + \theta\, C_{dt} + \lambda\, \mathrm{DD}_{>32,dt} \times C_{dt} + \delta\, \mathrm{SWI}_{dt} + \varepsilon_{dt}.
+\end{equation}
+H3 is $\lambda < 0$: restrictions reduce the protection that irrigation gives against heat. The specification fixed in advance that this test would be read descriptively, since restrictions are decided in response to drought.
 
 \subsection{Wheat}
 
@@ -44,7 +51,7 @@ To ask whether wheat has become more or less sensitive to heat, the heat slope i
 
 \subsection{Rules fixed in advance}
 
-Each estimation phase began with a written specification, whose SHA-256 hash was recorded in a decision log before any estimate was computed (\cref{tab:specs}). The specification fixes the sample, the variables, the direction of each test, the family of secondary hypotheses and the list of robustness checks. The four files still match their recorded hashes.
+Each estimation phase began with a written specification, whose SHA-256 hash was recorded in a decision log before any estimate was computed (\cref{tab:specs}). The specification fixes the sample, the variables, the direction of each test, the family of secondary hypotheses and the list of robustness checks. The four files still match their recorded hashes. These dates come from the log alone: the specifications, the log and the first results entered the public repository in the same commit, so the hashes attest that the files have not changed since then, not that they were written first. The only later additions whose declaration was committed before computation are the power and size diagnostics D1--D2 (\cref{app:deviations}).
 
 \begin{table}[H]
 \centering

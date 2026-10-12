@@ -43,6 +43,7 @@ uv run python scripts/18_ndvi_aggregate.py                        # NDVI par dé
 uv run python scripts/19_forecast_ndvi.py                         # apport du NDVI à la prévision (~30 min)
 # 6. Phase 4 bis (pré-spécifiée : docs/specification_phase4bis.md)
 Rscript R/14_q1_maize.R                                           # Q1 maïs 2000-2025 (~1 min)
+Rscript R/21_q1_revue.R                                           # analyses E1-E4 de la relecture (~15 min ; avant 24)
 uv run python scripts/24_valorisation_mais.py                     # valorisation descriptive de Q1
 Rscript R/15_q2_wheat.R                                           # Q2 blé 1959-2025 (~3 min)
 Rscript R/16_q1_exploratoire.R                                    # diagnostics exploratoires de Q1

@@ -221,3 +221,19 @@ Demandée par une relecture externe ; non pré-spécifiée. Déclarée dans `doc
 Corrélation des deux mesures : 0,952 (0,953 en intra-département). Moyennes départementales 2000-2025 : 1,0 à 3,9 °C·jour avec SIM, 2,6 à 7,3 avec E-OBS.
 
 **Lecture, selon la règle fixée avant calcul :** β > 0 et p < 0,05, donc H1 ne dépend pas de la source de température. Réserves : E-OBS et SAFRAN partagent une partie des stations françaises ; seul A1 est réestimé ; `swi_ja` reste celui de SIM ; la déclaration supposait à tort qu'E-OBS donnerait moins de degrés-jours que SIM.
+
+## Analyses ajoutées après une relecture simulée (E1-E4, 2026-10-12)
+
+Déclarées dans `docs/decisions.md` avec leurs règles de lecture avant calcul, **sans commit préalable** (empreinte locale du journal : `598cfc5f…`). Script `R/21_q1_revue.R` ; tables `reports/tables/phase4bis_q1_revue_*.csv`. WCR par année, 9 999 tirages.
+
+| Analyse | Résultat | Lecture |
+|---|---|---|
+| E1, intervalle de β (A1, inversion du WCR) | 90 % : [0,0055 ; 0,0438] ; 95 % : [0,0045 ; 0,0490] (β = 0,0158) | Descriptive : signe soutenu, ampleur imprécise (facteur 8) |
+| E1, blé phase 4 (M1, H1) | β = −0,0151 ; 95 % : [−0,0801 ; +0,0239] | Intervalle prévu par la spécification de la phase 4, enfin calculé |
+| E2 (a), sans chaque département | β de 0,0117 à 0,0185 ; p < 0,05 dans 17 cas sur 17 | Descriptive |
+| E2 (b), sans les six départements de relief (01, 26, 38, 39, 63, 69) | β = 0,0098, p unilatérale = 0,146, 11 départements | **Règle fixée : H1 est déclarée dépendante de ces départements** |
+| E3 (a), sans SWI | β = 0,0173, p = 0,001 | — |
+| E3 (b), P − ETP à la place du SWI | β = 0,0124, p = 0,035 ; corrélation intra DD>32 / bilan : −0,47 | **Règle fixée : l'association ne dépend pas du contrôle d'humidité retenu** ; chaleur et sécheresse restent mêlées |
+| E4, interaction × 2000-2009 | −0,0113, p bilatérale = 0,50 ; sans 2003 : +0,0106, p = 0,77 | Descriptive : aucune différence détectée entre décennies |
+
+La fourchette de valorisation de 2003 est recalculée aux bornes de l'intervalle à 90 % de E1 : 16 à 170 M€ (au lieu de 8 à 98 M€ avec l'intervalle groupé par année).

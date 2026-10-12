@@ -337,6 +337,9 @@ def maize_tables(n: dict) -> None:
     w3 = ww.xs(2003, level=1)
     n["GapObsTwoThousandThree"] = f"{np.average(w3.gap_dev, weights=w3.surface_ref_ha):.3f}"
     n["GapPredTwoThousandThree"] = f"{beta * np.average(w3.heat_dev, weights=w3.surface_ref_ha):.3f}"
+    # Surestimation de la formule linéaire en 2003 (écart prédit / écart observé - 1), citée au §7.7.
+    obs3, pred3 = np.average(w3.gap_dev, weights=w3.surface_ref_ha), beta * np.average(w3.heat_dev, weights=w3.surface_ref_ha)
+    n["ValOverPct"] = f"{100 * (pred3 / obs3 - 1):.0f}"
 
     # Validité externe : part de la surface de la population couverte par l'échantillon principal.
     dd = pd.read_parquet(proc / "panel_mais_long.parquet").drop_duplicates("dep_code")
@@ -548,6 +551,26 @@ def main() -> None:
     n["PowerCheckSize"] = f"{100 * rate('D1', 0):.1f}"
     n["PowerHalf"], n["PowerFull"] = f"{100 * rate('D1', 0.008):.0f}", f"{100 * rate('D1', 0.016):.0f}"
     n["ReplSize"], n["ReplPower"] = f"{100 * rate('D2', 0):.1f}", f"{100 * rate('D2', 0.011):.0f}"
+    # Analyses E1-E4 issues de la relecture simulée (R/21_q1_revue.R), déclarées avant calcul (v1.1).
+    ci = pd.read_csv(TAB / "phase4bis_q1_revue_intervalles.csv")
+    def bound(model, level, side):
+        b = ci[ci.modele.str.startswith(model) & (ci.niveau == level)][side].iloc[0]
+        return 100 * (math.exp(b) - 1)
+    n["CiNinetyLow"], n["CiNinetyHigh"] = pct(bound("A1", 0.90, "borne_inf"), 2), pct(bound("A1", 0.90, "borne_sup"), 1)
+    n["CiNinetyFiveLow"], n["CiNinetyFiveHigh"] = pct(bound("A1", 0.95, "borne_inf"), 2), pct(bound("A1", 0.95, "borne_sup"), 1)
+    n["WheatCiLow"], n["WheatCiHigh"] = pct(bound("M1", 0.95, "borne_inf")), pct(bound("M1", 0.95, "borne_sup"))
+    dep = pd.read_csv(TAB / "phase4bis_q1_revue_departements.csv")
+    loo, relief = dep[dep.n_departements == 16], dep[dep.n_departements == 11].iloc[0]
+    n["LooMinPct"], n["LooMaxPct"] = pct(100 * (math.exp(loo.estimation.min()) - 1)), pct(100 * (math.exp(loo.estimation.max()) - 1))
+    n["LooSig"] = str(int((loo.p_wcb_annee_unilateral_droite < 0.05).sum()))
+    n["NoReliefPct"], n["NoReliefP"] = pct(relief.effet_pct_par_unite), pv(relief.p_wcb_annee_unilateral_droite)
+    hum = pd.read_csv(TAB / "phase4bis_q1_revue_humidite.csv")
+    n["NoSwiPct"], n["NoSwiP"] = pct(hum.effet_pct_par_unite.iloc[0]), pv(hum.p_wcb_annee_unilateral_droite.iloc[0])
+    n["PetPct"], n["PetP"] = pct(hum.effet_pct_par_unite.iloc[1]), pv(hum.p_wcb_annee_unilateral_droite.iloc[1])
+    n["CorrPet"] = f"{hum.correlation_intra_dd32_bilan.iloc[0]:.2f}"
+    dec = pd.read_csv(TAB / "phase4bis_q1_revue_decennies.csv")
+    n["DecDiff"], n["DecDiffP"] = f"{dec.estimation.iloc[0]:.4f}", f"{dec.p_wcb_annee.iloc[0]:.2f}"
+    n["DecDiffNoThree"], n["DecDiffNoThreeP"] = f"{dec.estimation.iloc[1]:.4f}", f"{dec.p_wcb_annee.iloc[1]:.2f}"
     # Vérification Q1-E : chaleur recalculée avec E-OBS, déclarée avant calcul (v1.1), hors du tableau des robustesses.
     qe = pd.read_csv(TAB / "phase4bis_q1_eobs.csv").iloc[0]
     n["EobsPct"], n["EobsP"] = pct(qe["effet_pct_par_unite"]), pv(qe["p_wcb_annee_unilateral_droite"])
@@ -633,19 +656,22 @@ def main() -> None:
     # Résumé court pour les métadonnées arXiv (limite de 1 920 caractères), généré à partir des mêmes chiffres.
     abstract = (
         "Does the yield advantage of irrigated maize grow with extreme summer heat? Using French department-level yields "
-        "reported separately for irrigated and rainfed grain maize (2000-2025), daily SAFRAN-ISBA reanalysis weather, and "
-        "heat measured on maize parcels, I compare the two modes within the same department and year. The specification "
-        "was fixed in advance, after exploratory results on 2010-2025 were known; its hash is recorded in the project's "
-        "decision log, published with the code. In 17 departments, each degree-day above 32 C in July-August is "
-        f"associated with a {n['QonePct']}% wider yield gap in favour of irrigated maize (one-sided wild cluster bootstrap "
-        f"by year, p = {n['QoneP']}; empirical size {n['QoneSizeWCR']}%). Rainfed yields are about {n['QoneRatio']} "
-        "times more sensitive to heat than irrigated yields. On 2000-2009, years not used in the exploratory analysis, the estimate keeps "
-        f"its sign with the maize mask ({n['QoneReplPct']}% against {n['QoneRecentPct']}% on 2010-2025). It is not "
-        "significant when heat is averaged over whole departments; I suggest, after the fact, that this measure "
-        "understates the heat experienced by maize in departments with uplands. It is an association, not the causal "
-        "effect of irrigation. Methodologically, standard errors clustered by department or Conley reject a true null in "
-        f"{n['UsualSizeMin']}% to {n['UsualSizeMax']}% of placebo simulations on these panels. Wheat yields over "
-        "1959-2025 and out-of-sample yield forecasts give null results.")
+        "reported separately for irrigated and rainfed grain maize (2000-2025), daily SAFRAN-ISBA weather, and heat "
+        "measured on maize parcels, I compare the two modes within the same department and year. The specification was "
+        "written after an exploratory analysis of 2010-2025 and before any estimate on 2000-2009; it entered the public "
+        "repository together with the results, so this order rests on the author's log. In 17 departments, which exclude "
+        "the South-West, each degree-day above 32 C in July-August is associated with a "
+        f"{n['QonePct']}% wider gap in favour of irrigated maize (one-sided wild cluster bootstrap by year, "
+        f"p = {n['QoneP']}). This meets the pre-specified rule, but {n['ExploSharePct']}% of the sample comes from the "
+        "exploratory years. The only new evidence, 2000-2009, keeps the sign at about half the magnitude, a "
+        f"difference driven by 2003 (p = {n['QoneReplP']}, power about {n['ReplPower']}%), and not with heat averaged "
+        f"over whole departments. Without the six departments with uplands it is not significant (p = {n['NoReliefP']}). "
+        "The result holds with E-OBS "
+        "temperatures. A pre-specified interaction with crisis-level water restrictions has the opposite sign to the "
+        "hypothesis. The result is an association, not the causal effect of irrigation. In these panels, standard "
+        "errors clustered by department, or Conley with a uniform 200 km kernel, reject a true null in "
+        f"{n['UsualSizeMin']}% to {n['UsualSizeMax']}% of placebo simulations. Wheat yields over 1959-2025 and "
+        "out-of-sample yield forecasts give null results.")
     if len(abstract) > 1920:
         raise RuntimeError(f"résumé trop long : {len(abstract)} caractères")
     (ROOT / "memoire" / "arxiv_abstract.txt").write_text(abstract + "\n")

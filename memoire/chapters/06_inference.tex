@@ -8,7 +8,7 @@ This is the section that decided what the rest of the monograph could claim. It 
 The first estimation phase (phase 4) studied wheat over 2010--2025. Heat during grain filling was associated with \WheatPct\,\% lower yields per degree-day above 32\,$^{\circ}$C. The specification had planned three ways to compute its uncertainty:
 \begin{itemize}
   \item standard errors clustered by department, which allow any correlation over time within a department;
-  \item \textcite{conley1999} standard errors, which also allow correlation between departments less than 200~km apart;
+  \item \textcite{conley1999} standard errors, which also allow correlation between departments less than 200~km apart (as implemented here by \texttt{fixest}: uniform kernel, no serial component; when the matrix is not positive definite, \texttt{fixest} corrects it, and the main tables then leave the $p$-value blank, while the placebo runs keep the corrected value);
   \item a wild cluster bootstrap with clusters by year, which allows any correlation between departments within a year.
 \end{itemize}
 The first gave $p = \WheatPdep$. The bootstrap gave $p = \WheatPwcr$. The rule fixed in advance was to conclude only on what all three supported, so the result was not established. But the disagreement itself needed an explanation. If the first test was right, the project had a clear finding; if the bootstrap was right, it had none.

@@ -38,3 +38,11 @@ data/raw/nasa_appeears/*/README.md
 
 # Note de recherche : brouillon local, non versionné (choix de l'auteur)
 docs/note_recherche.md
+
+# Skills tiers academic-research-skills (CC BY-NC 4.0), installés localement, non redistribués
+.claude/vendor/
+.claude/skills/academic-paper
+.claude/skills/academic-paper-reviewer
+.claude/skills/academic-pipeline
+.claude/skills/deep-research
+.claude/skills/sr-screener
