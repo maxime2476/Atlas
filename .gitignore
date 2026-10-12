@@ -35,6 +35,7 @@ desktop.ini
 
 # README téléchargés avec les commandes AppEEARS (fichiers bruts NASA, non rédigés par le projet)
 data/raw/nasa_appeears/*/README.md
+data/raw/nasa_appeears_lst/*/README.md
 
 # Note de recherche : brouillon local, non versionné (choix de l'auteur)
 docs/note_recherche.md

@@ -10,7 +10,7 @@
 >   - **Dépendance aux départements de relief :** retirer un département quelconque laisse le résultat significatif (1,2 à 1,9 %), mais **sans les six départements de relief, il tombe à 1,0 % et n'est plus significatif (p = 0,146)**. Le résultat tient sans contrôle d'humidité du sol (1,7 %) et avec le bilan hydrique P − ETP (1,2 %, p = 0,035). Analyses ajoutées après une relecture simulée, déclarées avant calcul.
 >   - **Datation :** la spécification, le journal des décisions et les résultats sont publiés ensemble ; l'ordre « spécification puis estimation », comme la déclaration avant calcul des vérifications ajoutées ensuite, repose sur le journal de l'auteur.
 >   - Puissance du test (diagnostic ajouté dans un second temps, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
->   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 (vérification ajoutée dans un second temps, déclarée avant calcul).
+>   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 ; avec la température de surface satellitaire MODIS, +4,2 % par °C, p = 0,002 (vérifications ajoutées dans un second temps, déclarées avant calcul).
 >   - **Analyses complémentaires (ajoutées après un audit, déclarées avant calcul, exploratoires) :** la pente ne diffère pas de façon détectable entre départements de relief et autres (p = 0,78), ni selon la part irriguée ; aucun passage du grain à l'ensilage n'est détecté les étés chauds (2010-2025) ; un placebo intra-année confirme la taille du test (3,7 %). Mais **un jackknife par grappes (CV3), plus conservateur, donne p = 0,074** : la significativité dépend de la méthode d'inférence. Sur 2000-2009, 2003 porte 80 % de l'information sur la chaleur.
   - **Réserve :** le résultat dépend de la mesure de la chaleur. Il n'est pas significatif si la météo est moyennée sur tout le département au lieu des parcelles de maïs, et la réplication sur 2000-2009 n'existe qu'avec la mesure sur les parcelles.
 >   - L'interaction pré-spécifiée avec les jours de restriction « crise » (VigiEau, H3) a le **signe opposé** à l'hypothèse.
@@ -60,6 +60,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 | **MTE**, VigiEau « Donnée Sécheresse » (data.gouv.fr) | Arrêtés de restriction d'eau 2012-2025 | Licence Ouverte 2.0 |
 | **INSEE**, IPPAP blé tendre et maïs + **Eurostat** `apri_ap_crpouta` | Prix (valorisation descriptive) | Licence Ouverte 2.0 (INSEE) ; réutilisation avec mention de la source (Eurostat) |
 | **NASA LP DAAC**, MOD13Q1 v6.1 via AppEEARS | NDVI 250 m (prévision) | CC0, citation demandée (Didan 2021, DOI 10.5067/MODIS/MOD13Q1.061) |
+| **NASA LP DAAC**, MOD11A2 v6.1 via AppEEARS | Température de surface de jour, 1 km, juillet-août 2000-2025 (vérification) | CC0, citation demandée (Wan, Hook et Hulley 2021, DOI 10.5067/MODIS/MOD11A2.061) |
 | **ECA&D / Copernicus**, E-OBS v33.0e (0,1°), 2000-2025 | Tmin et Tmax : vérification de la mesure de chaleur du maïs | Recherche et enseignement non commerciaux ; citation de Cornes et al. 2018 (DOI 10.1029/2017JD028200) obligatoire |
 
 **Reproductibilité des données :**
@@ -159,7 +160,7 @@ Déclarées avant calcul dans `docs/decisions.md`, non pré-spécifiées, explor
 | Éolien (registre RTE) | Pas d'effet du type Kaffine (2019) ; une p < 0,05 négative non robuste à Holm | Non |
 | Prévision : modèles d'arbres corrigeant B0 | +11 à +18 % sur B0, intervalle excluant 0 dans 3 cas sur 4 | **Prometteur**, mais années test déjà vues : à confirmer sur 2026+ |
 | Prévision : intervalles conformes | Couverture 95-100 % pour 90 % visés | Non (trop larges sur 10 ans) |
-| Température de surface MODIS | Non calculée (jeton AppEEARS expiré) | À faire |
+| Température de surface MODIS (masque maïs) | À la place des degrés-jours : +4,2 % d'écart par °C (p = 0,002) ; la surface se réchauffe un peu moins par degré-jour là où la part irriguée est forte (0,23 contre 0,19 °C, p = 0,051) | **Oui** : le résultat tient avec une mesure satellitaire ; signe du refroidissement attendu, non établi |
 
 ![Taille des tests, phase 4 bis](docs/figures/fig5_taille_phase4bis.png)
 
@@ -223,7 +224,7 @@ Le signe est négatif dans 11 des 12 spécifications alternatives R1 à R13 qui 
 **Pistes :**
 
 - un masque irrigué / non irrigué (le RPG utilisé ici n'enregistre pas l'irrigation ; une carte satellitaire de l'irrigation serait une piste, non évaluée ici) ;
-- la température de surface MODIS (refroidissement des parcelles irriguées, Zhu et Burney 2022), dès qu'un jeton AppEEARS valide est disponible ;
+- la température de surface séparément sur parcelles irriguées et non irriguées (refroidissement, Zhu et Burney 2022), avec une carte de l'irrigation ;
 - confirmer sur les récoltes 2026 et suivantes les modèles de prévision corrigeant B0 ;
 - documenter auprès du SSP la définition d'« irrigué » dans la SAA ;
 - utiliser des fenêtres phénologiques modélisées ;
@@ -256,7 +257,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
   - prévision : 10 min ;
   - NDVI : de 1 à plusieurs heures côté NASA, puis environ 15 min d'agrégation et 30 min de prévision (`data/README.md`).
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
-  - Au 2026-10-12, 575 tests passent : 462 vérifications d'empreintes des fichiers bruts (une par fichier) et 113 tests de logique et de données.
+  - Au 2026-10-13, 1 049 tests passent : 936 vérifications d'empreintes des fichiers bruts (une par fichier) et 113 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
 - **Reproduction vérifiée (2026-10-12) :** sur un clone vierge du dépôt, avant l'ajout des vérifications complémentaires, toute la chaîne relancée depuis les fichiers bruts a redonné les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`). Les vérifications ajoutées ensuite (puissance D1-D2, E-OBS, analyses E1-E4 de la relecture simulée, analyses complémentaires) n'ont pas été reconstruites sur un clone vierge.
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).

@@ -167,23 +167,32 @@
 - **TER :** SAU du département (ligne 33), moyenne 2010-2012 ; dénominateur de la densité éolienne (G10).
 - **Méthode du partage irrigué / non irrigué (recherche du 2026-10-12) :** les publications publiques consultées (SAA 2016-2024, « Chiffres et données » ; « Infos rapides » grandes cultures) décrivent la SAA comme une synthèse établie par les services régionaux (SRISE), combinant des enquêtes (Structure, Terres, vergers) et des données administratives (ASP, aides PAC). Les rendements en cours de campagne sont estimés par ces services. **Aucune ne définit « irrigué »** (surface irriguée l'année, ou équipée pour l'irrigation). Les PDF méthodologiques renvoient désormais une page de connexion. Question à poser au SSP ; l'enquête Pratiques culturales grandes cultures (2017, 2021, 2025), qui relève l'irrigation et le rendement à la parcelle, pourrait valider le partage au niveau régional.
 
+## 8 quinquies. Température de surface MODIS MOD11A2 v6.1 (NASA LP DAAC, via AppEEARS) : analyse G11
+
+| Champ | Valeur |
+|---|---|
+| Producteur | NASA LP DAAC ; produit MOD11A2 v6.1 (Terra MODIS, LST de jour et de nuit, 1 km, composites de 8 jours) ; Wan, Hook et Hulley (2021), DOI 10.5067/MODIS/MOD11A2.061 |
+| Accès | API AppEEARS, comme le NDVI (§ 8) ; commande `0b1bbe88-8fbf-47c5-b36c-a27fb91934f9` du 2026-10-12, couches `LST_Day_1km` et `QC_Day`, composites de juillet-août 2000-2025 (et quelques composites voisins, non utilisés) ; 474 fichiers dans `data/raw/nasa_appeears_lst/` (≈ 0,35 Go), inscrits au manifeste |
+| Licence | Données de mission NASA sous CC0, citation demandée (comme le § 8) |
+| Format | GeoTIFF EPSG:4326 ; LST en kelvins × 0,02, valeur manquante 0 ; bits de qualité dans `QC_Day` |
+| Limites | Passage de Terra vers 10 h 30 (pas le maximum journalier) ; pixel de 1 km mêlant parcelles irriguées et non irriguées ; ciel clair seulement (composites de 8 jours) ; un composite de 2001 (jour 177) n'a pas de fichier LST, hors fenêtre |
+
 ## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |
 |---|---|---|
 | BNPE, volumes prélevés pour l'irrigation (OFB / agences de l'eau) | Auditée en phase 0 ter, échantillons non conservés | Volumes annuels toutes cultures confondues, ruptures de déclaration ; voir `docs/phase0ter_audit.md` |
 | MIRCA-OS (surfaces irriguées et pluviales par culture, 5′, 2000-2020) | Repérée le 2026-10-12, non téléchargée | Licence CC BY-NC-ND ; la part irriguée de la SAA, complète pour l'échantillon, suffit (G5) |
-| MODIS MOD11A2 (température de surface, 1 km) | Déclarée (G11), non commandée | Jeton AppEEARS expiré le 2026-10-12 ; à reprendre avec un jeton renouvelé |
 | Assurance récolte, aides PAC couplées, dates de semis | Recherchées le 2026-10-12 | Pas de série départementale publique trouvée |
 | Open-Meteo, API d'archives (ERA5, ERA5-Land) | Auditée le 2026-10-12 (documentation et conditions) | Limite gratuite de 10 000 appels par jour, chaque appel couvrant deux semaines pour un point : environ 200 000 appels pour les 1 784 mailles du masque, juillet-août 2000-2025 |
 | NASA POWER | Repérée le 2026-10-12, non auditée | Grille d'environ 0,5°, trop grossière pour un masque de mailles de 8 km |
 | NDVI VIIRS (successeur de MODIS) | Non téléchargé | Envisagé pour la continuité après Terra ; non nécessaire pour 2010-2025 |
 
-*Erratum du 2026-10-12 : la version précédente de ce tableau listait Eurostat et le NDVI MODIS comme non téléchargés ; ils l'ont été en phase 6 (§ 7 et § 8).*
+*Erratum du 2026-10-12 : un état précédent de ce tableau listait Eurostat et le NDVI MODIS comme non téléchargés ; ils l'ont été en phase 6 (§ 7 et § 8).*
 
 ## 10. Empreintes SHA-256 (générées depuis le manifeste le 2026-10-12)
 
-Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 108 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS et le registre RTE ajoutés le 2026-10-12).
+Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 474 fichiers MOD11A2 (température de surface) ne sont pas listés non plus. Les 108 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS et le registre RTE ajoutés le 2026-10-12).
 
 | Fichier (`data/raw/…`) | Taille | Accès | SHA-256 |
 |---|---|---|---|

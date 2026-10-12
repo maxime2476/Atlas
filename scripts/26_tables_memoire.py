@@ -614,6 +614,15 @@ def main() -> None:
     trees = vb[vb.modele.isin(["RF_B0", "GBM_B0"])]
     n["BzeroTreeMin"], n["BzeroTreeMax"] = pct(100 * trees.skill_vs_B0.min(), 0), pct(100 * trees.skill_vs_B0.max(), 0)
     n["BzeroTreeSig"] = str(int((trees.ic95_haut < 0).sum()))
+    # G11 : température de surface MODIS (R/23), protocole fixé avant réception des données.
+    ls = pd.read_csv(TAB / "phase7_lst.csv")
+    gb, g0, g1 = ls.iloc[0], ls.iloc[1], ls.iloc[2]
+    n["LstCorr"] = f"{gb.correlation_intra_departement:.2f}"
+    n["LstPct"], n["LstP"] = pct(gb.effet_pct_par_unite), pv(gb.p_wcb_annee_unilateral_droite)
+    n["LstSlope"], n["LstInterP"] = f"{g0.estimation:.2f}", pv(g1.p_wcb_annee)
+    covd = pd.read_parquet(ROOT / "data" / "processed" / "phase7_covariables_dep.parquet").part_irriguee
+    for name, q in [("LstSlopeQone", 0.25), ("LstSlopeQthree", 0.75)]:
+        n[name] = f"{g0.estimation + g1.estimation * (covd.quantile(q) - covd.mean()):.2f}"
     n["EobsSdEffect"] = pct(100 * (math.exp(qe["estimation"] * qe["sd_intra_eobs"]) - 1), 1)
     n["SimSdEffect"] = pct(100 * (math.exp(h.loc["H1", "estimation"] * qe["sd_intra_sim"]) - 1), 1)
     n["QoneReplPtwo"] = f"{h.loc['réplication', 'p_wcb_annee']:.2f}"

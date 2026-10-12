@@ -84,7 +84,19 @@ Aucune association positive du type de Kaffine (2019) n'apparaît. La seule p < 
 
 **Lecture :** c'est le résultat le plus intéressant de ce lot pour la prévision. Construits sur B0, les modèles d'arbres font mieux que B0, avec un intervalle qui exclut zéro (forêt aux deux dates, boosting au 1er juillet). Mais cette variante a été choisie après avoir vu que B1 était faible, sur les mêmes années test. Elle doit être **confirmée sur les récoltes 2026 et suivantes**, avec ce protocole figé.
 
+## Température de surface MODIS (G11)
+
+Protocole fixé avant réception des données (`docs/decisions.md`). MOD11A2 v6.1, LST de jour, composites de 8 jours commençant entre le 1er juillet et le 31 août, masque maïs ; 2 413 département-années sur 2 418 (5 manquantes) ; 434 paires sur 435 dans l'échantillon principal. Table `reports/tables/phase7_lst.csv`.
+
+| Analyse | Résultat |
+|---|---|
+| (a) Corrélation de la LST avec `dd_32_ja` | 0,63 (0,63 en intra-département) |
+| (b) A1 avec la LST à la place des degrés-jours | +4,2 % d'écart par °C de LST (β = 0,0413), p unilatérale = 0,002 |
+| (c) Pente de la LST sur `dd_32_ja` (38 départements), à part irriguée moyenne | 0,21 °C par degré-jour, p bilatérale = 0,001 |
+| (c) Interaction avec la part irriguée (centrée) | −0,149, p bilatérale = 0,051 ; pente de 0,23 °C au premier quartile de la part irriguée, 0,19 au troisième |
+
+**Lecture (descriptive) :** l'association tient avec une mesure satellitaire de la chaleur, indépendante de SAFRAN et d'E-OBS (mais prise vers 10 h 30 et sur ciel clair). La surface se réchauffe un peu moins par degré-jour d'air là où la part irriguée est forte, dans le sens d'un refroidissement par l'irrigation (Zhu et Burney 2022), sans que la différence soit significative au seuil de 5 % ; la part irriguée varie aussi avec d'autres caractéristiques des départements. **Intéressant :** oui pour la robustesse de la mesure ; le canal du refroidissement reste non établi.
+
 ## Non fait
 
-- **G11, température de surface MODIS :** le jeton AppEEARS a expiré (HTTP 403 le 2026-10-12). Il faut un jeton renouvelé par l'auteur (compte Earthdata). L'analyse est déclarée et reportée.
 - **Méthode SAA (partage irrigué / non irrigué) :** les sources publiques consultées décrivent la SAA comme une synthèse des services régionaux, combinant enquêtes (structure, Terres, vergers) et données administratives (ASP, PAC). Elles ne définissent pas « irrigué » : surface irriguée l'année, ou équipée pour l'irrigation. Les PDF méthodologiques d'Agreste demandent désormais une session. La question reste à poser directement au SSP ou à un SRISE. L'enquête Pratiques culturales grandes cultures (2017, 2021, 2025) relève l'irrigation et le rendement à la parcelle : ce serait une source de validation possible, au niveau régional.
