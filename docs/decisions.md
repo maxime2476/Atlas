@@ -271,3 +271,14 @@ Audit complet en lecture seule par quatre relecteurs (code, économétrie, donn�
   - un test ajouté (fenêtre « mai » de la prévision) ; `monkeypatch` dans `test_phase6.py` ;
   - errata datés dans les documents de cadrage (phases 0 et 0 bis) et notes « document historique » en tête des notes des phases 1 et 2 ;
   - reste à calculer : l'intervalle à 95 % de H1 en phase 4 ; l'erreur de Monte-Carlo des lignes de puissance de `phase4_simulation_inference.csv` reste celle d'une taille de 5 % (commentée, non recalculée).
+
+## Diagnostics de puissance et de taille de Q1, déclarés avant calcul (2026-10-12)
+
+Demandés par une relecture externe après la publication de la v1.0.0 ; **non pré-spécifiés** dans `specification_phase4bis.md`. Ils sont déclarés ici avant d'être calculés, avec leur règle de lecture. Script : `R/19_q1_power_size.R` ; sortie : `reports/tables/phase4bis_q1_puissance.csv`.
+
+- **Méthode commune** (celle de la taille de H1, `R/14`) : placebo = champ réel `dd_32_ja` à années permutées (dérangement, même permutation pour tous les départements), modèle A1 (`swi_ja` en contrôle, poids `surface_ref_ha`), WCR par année unilatéral à droite au seuil de 5 %, R = 300, B = 399, graines 20261013 puis r.
+- **D1, puissance de H1 (2000-2025, 17 départements) :** on ajoute un vrai effet β × placebo à `ecart_log`, pour β = 0 (contrôle : doit redonner une taille proche de 3,7 %), 0,008 (la moitié de l'estimation) et 0,016 (environ l'estimation).
+- **D2, taille et puissance de la réplication 2000-2009 (10 grappes) :** même placebo, permutations des seules années 2000-2009 ; β = 0 (taille) et β = 0,011 (environ l'estimation de la réplication).
+- **Règle de lecture, fixée avant calcul :**
+  - D1 est descriptif : il dit quelle chance le test avait de détecter un effet de cet ordre ; il ne change pas le statut de H1 ;
+  - D2 : si la taille dépasse 10 % (le seuil de la règle de décision de la phase 4 bis), la p-valeur de la réplication (0,049) est déclarée non interprétable comme test ; si elle est au plus de 10 %, elle est rapportée avec sa taille. La réplication n'a jamais été une hypothèse principale ; son statut de « même signe » ne change pas.
