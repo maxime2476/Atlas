@@ -51,6 +51,9 @@ uv run python scripts/25_build_maize_mask_2008.py                 # masque maïs
 Rscript R/17_q1_mask2008.R                                        # robustesse Q1-R9
 Rscript R/18_residual_autocorr.R                                  # diagnostic : autocorrélation des résidus
 Rscript R/19_q1_power_size.R                                      # diagnostics D1-D2 : puissance de H1, taille de la réplication
+uv run python scripts/01_download_raw.py --eobs                    # v1.1 : E-OBS Tmin/Tmax 0,1°, 1995-2025 (~4 Go)
+uv run python scripts/27_eobs_heat.py                             # degrés-jours > 32 °C de juillet-août avec E-OBS
+Rscript R/20_q1_eobs.R                                            # vérification Q1-E (source de température)
 Rscript R/wcr/exemple.R                                           # exemple simulé du module wcr (Monte-Carlo)
 # 7. Figures, mémoire et tests
 uv run python scripts/20_figures_rapport.py                       # figures du README (PNG) et du mémoire (PDF)

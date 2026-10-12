@@ -7,6 +7,7 @@ requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb",    # lecture et agrégation des csv.gz SIM sans décompression préalable
     "geopandas", # jointure spatiale grille SIM ↔ départements
+    "h5py",      # lecture des fichiers netCDF-4 E-OBS (vérification de la mesure de chaleur, v1.1)
     "matplotlib", # figures descriptives statiques (rapport)
     "numpy",     # importé directement dans les scripts
     "openpyxl",  # lecture des fichiers xlsx de la SAA (Agreste)

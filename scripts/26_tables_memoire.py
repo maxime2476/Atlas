@@ -548,6 +548,12 @@ def main() -> None:
     n["PowerCheckSize"] = f"{100 * rate('D1', 0):.1f}"
     n["PowerHalf"], n["PowerFull"] = f"{100 * rate('D1', 0.008):.0f}", f"{100 * rate('D1', 0.016):.0f}"
     n["ReplSize"], n["ReplPower"] = f"{100 * rate('D2', 0):.1f}", f"{100 * rate('D2', 0.011):.0f}"
+    # Vérification Q1-E : chaleur recalculée avec E-OBS, déclarée avant calcul (v1.1), hors du tableau des robustesses.
+    qe = pd.read_csv(TAB / "phase4bis_q1_eobs.csv").iloc[0]
+    n["EobsPct"], n["EobsP"] = pct(qe["effet_pct_par_unite"]), pv(qe["p_wcb_annee_unilateral_droite"])
+    n["EobsCorr"] = f"{qe['correlation_eobs_sim']:.2f}"
+    n["EobsSdEffect"] = pct(100 * (math.exp(qe["estimation"] * qe["sd_intra_eobs"]) - 1), 1)
+    n["SimSdEffect"] = pct(100 * (math.exp(h.loc["H1", "estimation"] * qe["sd_intra_sim"]) - 1), 1)
     n["QoneReplPtwo"] = f"{h.loc['réplication', 'p_wcb_annee']:.2f}"
     n["QoneRainfedPct"] = pct(-h.loc["H2b", "effet_pct_par_unite"])
     n["QoneIrrigatedPct"] = pct(-h.loc["H2c", "effet_pct_par_unite"])

@@ -6,6 +6,7 @@
 > - **Maïs grain, 17 départements, 2000-2025 (résultat principal, pré-spécifié).** Chaque degré-jour au-delà de 32 °C en juillet-août est **associé** à un écart de rendement plus large d'environ **1,6 %** en faveur du maïs irrigué (p = 0,007 avec un bootstrap par année dont la taille empirique est de 3,7 %).
 >   - Le maïs non irrigué y est associé à −2,5 % par °C·jour, l'irrigué à −1,0 %.
 >   - Puissance du test (diagnostic ajouté après la v1.0.0, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
+>   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 (vérification ajoutée après la v1.0.0, déclarée avant calcul mais sans commit préalable).
 >   - **Réserve :** le résultat dépend de la mesure de la chaleur. Il n'est pas significatif si la météo est moyennée sur tout le département au lieu des parcelles de maïs, et la réplication sur 2000-2009 n'existe qu'avec la mesure sur les parcelles.
 >   - C'est une association, pas un effet causal de l'irrigation.
 > - **Blé tendre, 83 départements, 1959-2025.** La chaleur en fin de cycle est associée à −1,1 % de rendement par °C·jour, mais ce n'est **pas distinguable de zéro** (p = 0,125). Malgré 67 récoltes, l'information se réduit à quelques étés très chauds. Aucune évolution de la sensibilité depuis 1959 n'est détectable (puissance faible).
@@ -46,6 +47,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 | **MTE**, VigiEau « Donnée Sécheresse » (data.gouv.fr) | Arrêtés de restriction d'eau 2012-2025 | Licence Ouverte 2.0 |
 | **INSEE**, IPPAP blé tendre et maïs + **Eurostat** `apri_ap_crpouta` | Prix (valorisation descriptive) | Licence Ouverte 2.0 (INSEE) ; réutilisation avec mention de la source (Eurostat) |
 | **NASA LP DAAC**, MOD13Q1 v6.1 via AppEEARS | NDVI 250 m (prévision) | CC0, citation demandée (Didan 2021, DOI 10.5067/MODIS/MOD13Q1.061) |
+| **ECA&D / Copernicus**, E-OBS v33.0e (0,1°), 2000-2025 | Tmin et Tmax : vérification de la mesure de chaleur du maïs (v1.1) | Recherche et enseignement non commerciaux ; citation de Cornes et al. 2018 (DOI 10.1029/2017JD028200) obligatoire |
 
 **Reproductibilité des données :**
 
@@ -56,17 +58,18 @@ Résultat : l'association est négative mais non établie, faute d'information (
 ## 3. Architecture et flux de données
 
 ```text
-data/raw/      (non versionné, jamais modifié)  SAA (2 versions), SIM, RPG, ADMIN EXPRESS, VigiEau, prix, NDVI…
+data/raw/      (non versionné, jamais modifié)  SAA (2 versions), SIM, E-OBS, RPG, ADMIN EXPRESS, VigiEau, prix, NDVI…
    │  scripts/01-03 : téléchargement, contrôles, SAA en format long
    ▼
 data/interim/  SAA longue ; météo maille × mois (8 984 mailles, 1958-2025)
    │  scripts/04-09, 11-13 : poids spatiaux, degrés-jours (double sinus), masques blé et maïs RPG,
    │                         fenêtres phénologiques, altitude, compatibilité Schauberger, panels blé
    │  scripts/22-23 : panel maïs irrigué / non irrigué 2000-2025, restrictions VigiEau
+   │  scripts/25, 27 : masque maïs 2008 ; degrés-jours de juillet-août avec E-OBS (vérification)
    ▼
 data/processed/ panel_mais_long (38 départements × 2000-2025 × 2 modalités), panel_ble (2010-2025),
                 panel_ble_long (1990-2025), panel_ble_1959 (1959-2025), forecast_features, NDVI, prix
-   │  R/10-13 : modèles blé et maïs des phases 4-6 ; R/14-18 : phase 4 bis (Q1, Q2, analyses exploratoires, masque 2008, diagnostics)
+   │  R/10-13 : modèles blé et maïs des phases 4-6 ; R/14-20 : phase 4 bis (Q1, Q2, analyses exploratoires, masque 2008, diagnostics, E-OBS)
    │  scripts/14-15, 19 (scikit-learn) : prévision chronologique, NDVI ; scripts/16, 24 : valorisation
    ▼
 reports/tables/ (versionné)   docs/resultats_phase*.md   docs/figures/
@@ -130,6 +133,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
   - ce n'est pas une simple atténuation par erreur de mesure : sur 2010-2025, cette mesure donne même un coefficient plus fort (0,038 contre 0,024). La divergence se concentre sur 2000-2009 (−0,0009 contre +0,011) et persiste sur 2000-2009 sans 2003 (0,009 contre 0,038) ;
   - la réplication 2000-2009 n'existe qu'avec le masque maïs, choisi après l'analyse exploratoire de la phase 6 ;
   - **un masque maïs d'époque (îlots RPG 2008) donne le même résultat** (+1,5 %, p = 0,007 ; robustesse déclarée avant estimation, après la relecture). L'âge du masque n'explique donc pas la divergence ;
+  - **avec une autre source de température, E-OBS** (même méthode, même masque), le résultat tient : +1,5 % par °C·jour, p = 0,005 ; les deux mesures sont corrélées à 0,95. E-OBS compte plus de degrés-jours > 32 °C que SIM ; une partie de ses stations françaises alimente aussi SAFRAN, ce n'est donc pas une mesure entièrement indépendante ;
   - celle-ci se concentre dans les départements de relief (Puy-de-Dôme, Isère, Drôme, Jura), où le maïs pousse en plaine et en vallée. En 2003, la pondération surfacique y sous-estime la chaleur subie par la culture de 7 à 10 °C·jour. C'est une explication a posteriori, cohérente avec le choix du masque maïs comme mesure principale, fixé avant estimation.
 - **Valorisation descriptive,** en euros courants, pour les 17 départements : les quintaux **associés** à l'irrigation lors d'un été plus chaud que la normale valent environ **49 M€ en 2003** (fourchette indicative de 8 à 98 M€), 9 M€ en 2019 et 14 M€ en 2022. Ce n'est pas la valeur totale de l'irrigation, ni un gain causal.
 - **Ce que ce résultat n'est pas :** un effet causal de l'irrigation. Les parcelles irriguées diffèrent des autres, et lors des sécheresses une partie du maïs non irrigué semé pour le grain peut être récoltée en ensilage (les surfaces abandonnées restent comptées, avec un rendement nul). La part irriguée de l'année ne varie pas de façon détectable avec la chaleur, mais l'ensilage n'est pas observé.
@@ -227,7 +231,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
   - prévision : 10 min ;
   - NDVI : de 1 à plusieurs heures côté NASA, puis environ 15 min d'agrégation et 30 min de prévision (`data/README.md`).
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
-  - Au 2026-10-12, 564 tests passent : 457 vérifications d'empreintes des fichiers bruts (une par fichier) et 107 tests de logique et de données.
+  - Au 2026-10-12, 570 tests passent : 461 vérifications d'empreintes des fichiers bruts (une par fichier) et 109 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
 - **Reproduction vérifiée (2026-10-12) :** sur un clone vierge, toute la chaîne relancée depuis les fichiers bruts redonne les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`).
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).

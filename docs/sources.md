@@ -138,23 +138,41 @@
 | Licence | Données de mission NASA sous Creative Commons Zero (CC0), citation demandée (consignes d'usage de NASA Earthdata, vérifiées le 2026-10-11). Citation : Didan, K. (2021), MOD13Q1 MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061, DOI 10.5067/MODIS/MOD13Q1.061 |
 | Limites | Terra/MODIS en fin de mission (continuité après 2025 incertaine) ; NDVI de maille, et non de parcelle |
 
+## 8 bis. E-OBS v33.0e (ECA&D, Copernicus) : vérification de la mesure de chaleur de Q1 (v1.1)
+
+| Champ | Valeur |
+|---|---|
+| Producteur | KNMI, projet ECA&D, pour le Copernicus Climate Change Service ; grille construite à partir des stations des services météorologiques nationaux |
+| Page officielle | https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php ; fichiers : `https://knmi-ecad-assets-prd.s3.amazonaws.com/ensembles/data/Grid_0.1deg_reg_ensemble/` (accès direct, sans compte) |
+| Licence | Politique de données ECA&D/E-OBS (PDF `ECAD_datapolicy.pdf`, lu le 2026-10-12) : usage **réservé à la recherche et à l'enseignement non commerciaux** ; résultats à soumettre sans délai à une publication ouverte ; citation obligatoire de Cornes et al. (2018), DOI 10.1029/2017JD028200, et remerciement « We acknowledge the E-OBS dataset and the data providers in the ECA&D project (https://www.ecad.eu) ». Les fichiers bruts ne sont pas redistribués |
+| Fichiers | `tn` et `tx` (Tmin et Tmax journalières), moyenne d'ensemble, grille régulière de 0,1°, blocs 1995-2010 et 2011-2025 (≈ 4 Go) ; version publiée en mai 2026 |
+| Format | netCDF-4 (lu avec `h5py`) ; entiers int16 en centièmes de °C (`scale_factor` 0,01), valeur manquante −9 999 ; temps en jours depuis le 1950-01-01 |
+| Correspondance avec SIM | Point E-OBS le plus proche du centre de chaque maille SIM (au plus 0,07°). 106 mailles littorales du masque maïs tombent sur un point en mer (manquant toutes les années) ; aucune dans les 17 départements de l'échantillon principal |
+| Limites | Interpolation de stations, de niveau différent de SAFRAN : sur le masque maïs, E-OBS donne plus de degrés-jours > 32 °C en juillet-août que SIM (corrélation 0,95, `docs/decisions.md`) ; les fenêtres horaires de Tmin et Tmax suivent les conventions des fournisseurs nationaux et n'ont pas été vérifiées pour la France (SIM : `TINF_H` sur ]18-18 UTC], `TSUP_H` sur ]06-06 UTC]) ; une partie des stations françaises est commune à SAFRAN : ce n'est pas une mesure entièrement indépendante |
+
 ## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |
 |---|---|---|
 | BNPE, volumes prélevés pour l'irrigation (OFB / agences de l'eau) | Auditée en phase 0 ter, échantillons non conservés | Volumes annuels toutes cultures confondues, ruptures de déclaration ; voir `docs/phase0ter_audit.md` |
+| Open-Meteo, API d'archives (ERA5, ERA5-Land) | Auditée le 2026-10-12 (documentation et conditions) | Limite gratuite de 10 000 appels par jour, chaque appel couvrant deux semaines pour un point : environ 200 000 appels pour les 1 784 mailles du masque, juillet-août 2000-2025 |
+| NASA POWER | Repérée le 2026-10-12, non auditée | Grille d'environ 0,5°, trop grossière pour un masque de mailles de 8 km |
 | NDVI VIIRS (successeur de MODIS) | Non téléchargé | Envisagé pour la continuité après Terra ; non nécessaire pour 2010-2025 |
 
 *Erratum du 2026-10-12 : la version précédente de ce tableau listait Eurostat et le NDVI MODIS comme non téléchargés ; ils l'ont été en phase 6 (§ 7 et § 8).*
 
 ## 10. Empreintes SHA-256 (générées depuis le manifeste le 2026-10-12)
 
-Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 103 autres fichiers sont listés ci-dessous.
+Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 107 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS ajoutés le 2026-10-12).
 
 | Fichier (`data/raw/…`) | Taille | Accès | SHA-256 |
 |---|---|---|---|
 | `agreste_saa/SAA-SeriesLongues-2010-2025_DonneesProvisoires-DepartementalesRegionales.zip` | 7.08 Mo | 2026-10-10 | `46e2ea9493ae34fac5d343e6cef51ac08a455d970ce78611c5d3b2365650d76f` |
 | `agreste_saa_ancienne/FDS_DEVELOPPE_2.zip` | 8.81 Mo | 2026-10-11 | `b7bbb133fd96335312bfe6613d39bd3f5faacc927d90c6fc9182b66e03911efa` |
+| `eobs/tn_ens_mean_0.1deg_reg_1995-2010_v33.0e.nc` | 1061.73 Mo | 2026-10-12 | `66735f11fe61b98a76acc24d66ceda078579801dba13f8eabaeec2cfc0b95d31` |
+| `eobs/tn_ens_mean_0.1deg_reg_2011-2025_v33.0e.nc` | 922.88 Mo | 2026-10-12 | `10c44bf93e2b090a0c7cbaad07eedfa54aca0b92ece8a909067ef6d160ede2d4` |
+| `eobs/tx_ens_mean_0.1deg_reg_1995-2010_v33.0e.nc` | 1067.57 Mo | 2026-10-12 | `8a770f8a8c9d7d967d7241ec36e90d027b043d39b658a813d938c2c92834dfc7` |
+| `eobs/tx_ens_mean_0.1deg_reg_2011-2025_v33.0e.nc` | 928.09 Mo | 2026-10-12 | `489c26736c57ce73ea4d112a9cc2706bd59c694d5212a15a8d7252db920be22e` |
 | `ign_admin_express/ADMIN-EXPRESS-COG-CARTO_4-0_2026-01-01_departement.parquet` | 12.92 Mo | 2026-10-10 | `ba44a327aaeb9df43b1f9fd52f13ca0ec67fe748c845131fedd6b3e6c1061bce` |
 | `ign_altimetrie/sim_cells_subgrid_altitude.parquet` | 3.50 Mo | 2026-10-10 | `602ea33845e95950ed3332f9e6eeb599f67c36c3b3525e2e62b6b47e942dcfbf` |
 | `ign_rpg/RPG_1-0__SHP_LAMB93_R24_2008-01-01.7z` | 81.32 Mo | 2026-10-11 | `4997835caeba8a86b63c044f81770652529dce241f820b20df1de9914940de4a` |

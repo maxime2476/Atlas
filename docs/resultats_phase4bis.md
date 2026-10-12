@@ -206,3 +206,18 @@ Demandés par une relecture externe ; non pré-spécifiés, mais déclarés dans
 - D1 est descriptif. Le test de H1 avait environ deux chances sur trois de détecter un effet de la taille estimée, et une sur quatre pour un effet moitié moindre. Le contrôle sous H0 (5,3 %) diffère des 3,7 % de `R/14` parce que les permutations sont tirées autrement ; l'écart reste dans l'erreur de Monte-Carlo.
 - D2 : la taille (5,7 %) est au plus de 10 %, donc la p de la réplication (0,049) est rapportée avec cette taille. Sa puissance est très faible (11 %) : un résultat « significatif » avec une telle puissance est peu informatif et peut surestimer l'effet. La réplication reste lue comme « de même signe », sans confirmation de l'ampleur.
 
+
+## Vérification ajoutée après la v1.0.0 : chaleur E-OBS au lieu de SIM (Q1-E, 2026-10-12)
+
+Demandée par une relecture externe ; non pré-spécifiée. Déclarée dans `docs/decisions.md` avec sa règle de lecture avant calcul, mais **sans commit préalable** (empreinte locale consignée dans le journal). Scripts `scripts/27_eobs_heat.py` et `R/20_q1_eobs.R` ; tables `reports/tables/phase4bis_q1_eobs.csv` et `phase4bis_q1_eobs_departement.csv`.
+
+| | SIM (A1) | E-OBS (Q1-E) |
+|---|---|---|
+| β (par °C·jour > 32 °C, juillet-août) | 0,0158 | 0,0148 |
+| p WCR unilatérale à droite | 0,007 | 0,0054 |
+| Écart-type intra-département de la chaleur | 3,63 | 4,87 |
+| Effet d'un écart-type intra-département | ≈ 5,9 % | ≈ 7,5 % |
+
+Corrélation des deux mesures : 0,952 (0,953 en intra-département). Moyennes départementales 2000-2025 : 1,0 à 3,9 °C·jour avec SIM, 2,6 à 7,3 avec E-OBS.
+
+**Lecture, selon la règle fixée avant calcul :** β > 0 et p < 0,05, donc H1 ne dépend pas de la source de température. Réserves : E-OBS et SAFRAN partagent une partie des stations françaises ; seul A1 est réestimé ; `swi_ja` reste celui de SIM ; la déclaration supposait à tort qu'E-OBS donnerait moins de degrés-jours que SIM.

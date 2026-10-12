@@ -292,3 +292,23 @@ Demandés par une relecture externe après la publication de la v1.0.0 ; **non p
   - `memoire/tables/numbers.tex` et les autres tables du mémoire sont identiques ; les trois figures régénérées donnent un rendu identique (seule la date de création du PDF change) ;
   - 564 tests passent dans le clone, dont les 457 contrôles d'empreinte : les fichiers bruts n'ont pas changé.
 - **Limite :** la reproduction utilise les fichiers bruts téléchargés les 10 et 11 octobre 2026 ; un nouveau téléchargement peut donner des fichiers révisés par les producteurs (`data/README.md`).
+
+## Vérification de la mesure de chaleur de Q1 avec E-OBS, déclarée avant calcul (2026-10-12)
+
+Demandée par une relecture externe (sensibilité de H1 à la mesure de chaleur) ; **non pré-spécifiée** dans `specification_phase4bis.md`, exploratoire, prévue pour une v1.1. Elle sera rapportée quel que soit son résultat. Scripts : `scripts/27_eobs_heat.py`, puis `R/20_q1_eobs.R` ; sorties : `data/processed/weather_dep_eobs_ja.parquet`, `reports/tables/phase4bis_q1_eobs.csv` et `phase4bis_q1_eobs_departement.csv`.
+
+- **Source :** E-OBS v33.0e, Tmin et Tmax journalières, moyenne d'ensemble, grille 0,1° (`docs/sources.md`, § 8 bis). Choisie plutôt qu'Open-Meteo (quotas incompatibles avec 1 784 mailles) et qu'ERA5-Land (compte Copernicus nécessaire ; réanalyse de modèle plutôt qu'interpolation de stations).
+- **Seule la température change :** `dd_32_ja_eobs` reprend exactement la définition de `dd_32_ja` (double sinus avec Tmin du jour, Tmax du jour et Tmin du lendemain ; 1er juillet - 31 août de l'année de récolte ; poids du masque maïs RPG 2015-2017). Chaque maille SIM reçoit le point E-OBS le plus proche ; pas de point de remplacement : une maille manquante rend le département-année manquant.
+- **Modèle :** A1 identique (écart log ~ `dd_32_ja_eobs` + `swi_ja` | département + année, poids `surface_ref_ha`, 17 départements, 2000-2025, 435 paires) ; `swi_ja` reste celui de SIM, E-OBS n'ayant pas d'indice d'humidité du sol. Seul A1 est réestimé : ni les robustesses, ni la réplication 2000-2009.
+- **Test :** WCR par année, unilatéral à droite, 9 999 tirages (`summarise_term`, comme Q1-R9).
+- **Lecture fixée d'avance :**
+  - si β > 0 et p < 0,05, H1 ne dépend pas de la source de température (SAFRAN) ;
+  - sinon, H1 est déclarée sensible à la source de température, et la v1.1 le dit dans le résumé, le README et le chapitre 7. Le statut de H1 dans la v1.0 n'est pas réécrit.
+- **Lecture descriptive associée (sans règle de décision) :** le niveau des degrés-jours n'est pas comparable entre sources (E-OBS lisse davantage les extrêmes), donc β non plus. Sont rapportés : l'écart-type intra-département de chaque mesure, l'effet d'un écart-type intra-département, la corrélation des deux mesures (brute et intra-département), et une table par département (moyenne 2000-2025 et 2003).
+- **Contrôles faits avant cette déclaration, sans calculer de degré-jour :** structure des fichiers (grille, unités, valeur manquante) ; distance maille SIM - point E-OBS d'au plus 0,07° ; 106 mailles littorales du masque sans valeur (point en mer), aucune dans les 17 départements de l'échantillon principal.
+
+**Résultat de Q1-E (2026-10-12) :** β = 0,0148 (1,49 % par °C·jour), p WCR unilatérale = 0,0054, 435 paires (A1 : 0,0158, p = 0,007). Selon la lecture fixée d'avance, H1 ne dépend pas de la source de température (SAFRAN). Lecture descriptive :
+- les deux mesures sont corrélées à 0,952 (0,953 en intra-département) ;
+- contrairement à ce que la déclaration supposait, E-OBS donne **plus** de degrés-jours > 32 °C que SIM (moyennes départementales 2,6 à 7,3 contre 1,0 à 3,9 ; écart-type intra-département 4,87 contre 3,63) ; la supposition « E-OBS lisse davantage les extrêmes » était fausse pour cette variable, ce qui ne change ni le modèle ni la règle ;
+- effet d'un écart-type intra-département : environ 7,5 % avec E-OBS, environ 5,9 % avec SIM.
+- **Réserve de procédure :** à la demande de l'utilisateur, la déclaration n'a pas été commitée avant le calcul. Son empreinte SHA-256 (`docs/decisions.md` avant l'ajout de ce résultat) était `2251e0ffca6ffae8bef58b40e1c018700b1cc70e7aecd5b93ce1d4629a288759`, calculée juste avant de lancer `scripts/27_eobs_heat.py` ; c'est une trace locale, pas un horodatage indépendant.

@@ -90,6 +90,10 @@ VIGIEAU_FILES = {  # nom publié -> chemin daté sur data.gouv (relevé le 2026-
     "arretes.csv": "20260915-040006/arretes.csv",
     "arretes-cadre.csv": "20260915-040104/arretes-cadre.csv",
 }
+# E-OBS v33.0e (ECA&D / Copernicus), Tmin et Tmax journalières, grille 0,1°, moyenne d'ensemble.
+# Usage non commercial (recherche, enseignement) ; vérification de la mesure de chaleur de Q1 (v1.1).
+EOBS_BASE = "https://knmi-ecad-assets-prd.s3.amazonaws.com/ensembles/data/Grid_0.1deg_reg_ensemble/"
+EOBS_FILES = [f"{v}_ens_mean_0.1deg_reg_{p}_v33.0e.nc" for v in ["tn", "tx"] for p in ["1995-2010", "2011-2025"]]
 
 
 def parse_years(text: str) -> list[int]:
@@ -137,6 +141,7 @@ def main() -> None:
     parser.add_argument("--vigieau", action="store_true", help="arrêtés de restriction d'eau : fichiers annuels 2012-2024 et fichier global (utilisé, depuis 2010)")
     parser.add_argument("--schauberger", action="store_true",
                         help="rendements départementaux longs (robustesse 1990-2009)")
+    parser.add_argument("--eobs", action="store_true", help="E-OBS Tmin/Tmax 0,1° 1995-2025 (environ 4 Go)")
     args = parser.parse_args()
 
     rows, source_of = [], {}
@@ -174,6 +179,9 @@ def main() -> None:
     if args.schauberger:
         for name in SCHAUBERGER_FILES:
             get("pik_schauberger", SCHAUBERGER_BASE + name, RAW / "pik_schauberger" / name)
+    if args.eobs:
+        for name in EOBS_FILES:
+            get("eobs", EOBS_BASE + name, RAW / "eobs" / name)
 
     update_manifest(rows, source_of)
     print(f"manifeste mis à jour : {MANIFEST.relative_to(ROOT)}")

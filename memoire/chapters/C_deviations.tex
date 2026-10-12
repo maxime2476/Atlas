@@ -6,6 +6,7 @@ The project's decision log records every change to the plans, with its date and 
 \begin{table}[H]
 \centering
 \footnotesize
+\renewcommand{\arraystretch}{0.97}
 \caption{Deviations and additions, by phase (from the project's decision log)}
 \label{tab:deviations}
 \begin{tabular}{>{\raggedright}p{1.3cm}>{\raggedright}p{7.3cm}>{\raggedright\arraybackslash}p{4.6cm}}
@@ -29,7 +30,7 @@ Long series & \textcite{schauberger2022}: RAW version used instead of FILTERED, 
 4 bis & Execution fixes: outcome variable of the maize size simulation, columns of a wheat table; Conley $p$-values set to missing for several maize terms & No effect on the models \\
 4 bis & Seed of the bootstrap 20261010 instead of 20261011 & Not declared; found by the internal review; Monte Carlo error $\approx 0.002$ on $p$ near 0.05 \\
 4 bis & Robustness check with a 2008 mask of maize parcel blocks (Q1-R9) & Declared before estimation, after the review; reading rule fixed in advance \\
-4 bis & Power of the H1 test; size and power of the 2000--2009 replication & After version 1.0.0; declared in the log before being computed \\
+4 bis & Power of H1; replication size and power; E-OBS heat (Q1-E) & After v1.0.0; logged before computing (Q1-E: not committed first) \\
 4 bis & Exploratory estimates by heat measure and period; composition check; altitude comparison; residual autocorrelation; 2003 linearity check & Added after the results and the reviews; reported as exploratory \\
 \bottomrule
 \end{tabular}
