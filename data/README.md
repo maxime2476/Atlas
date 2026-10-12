@@ -63,6 +63,11 @@ uv run python scripts/28_complements_python.py prevision          # prévision :
 Rscript R/wcr/exemple.R                                           # exemple simulé du module wcr (Monte-Carlo)
 # 7. Figures, mémoire et tests
 uv run python scripts/20_figures_rapport.py                       # figures du README (PNG) et du mémoire (PDF)
+uv run python scripts/07_build_wheat_mask.py --culture MIE         # masque maïs ensilage (test T1 ; RPG extrait)
+uv run python scripts/33_mais_fourrage.py                         # panel maïs fourrage irrigué / non irrigué 2010-2025
+Rscript R/24_q1_tests_t1_t3.R                                     # tests T1-T3 (fourrage, calendrier, IV ; ~5 min)
+uv run python scripts/34_vpd.py                                   # déficit de pression de vapeur de juillet-août (~3 min)
+Rscript R/25_q1_tests_n1_n3.R                                     # tests N1-N3 (forme, sol sec, VPD)
 uv run python scripts/32_diagrammes_readme.py                   # diagrammes du README (chaîne de données, règle de décision, frise ; SVG)
 uv run python scripts/26_tables_memoire.py                        # chiffres et tableaux du mémoire (memoire/tables/)
 (cd memoire && latexmk -pdf main.tex)                             # compilation du mémoire

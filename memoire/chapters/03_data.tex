@@ -52,7 +52,7 @@ Two features of SIM2 matter for the analysis. First, it is a reanalysis: it inte
 
 \subsection{Where crops grow: the parcel register}
 
-The parcel register (\emph{Registre parcellaire graphique}, RPG) maps the fields declared for the Common Agricultural Policy. Version 2.0 (from 2015) gives each parcel its crop. I use the 2015--2017 vintages to build fixed masks: soft winter wheat (code \texttt{BTH}) and maize (code \texttt{MIS}).
+The parcel register (\emph{Registre parcellaire graphique}, RPG) maps the fields declared for the Common Agricultural Policy. Version 2.0 (from 2015) gives each parcel its crop. I use the 2015--2017 vintages to build fixed masks: soft winter wheat (code \texttt{BTH}) and maize (code \texttt{MIS}); one later check uses silage maize (code \texttt{MIE}) in the same way.
 
 Does the code \texttt{MIS} cover grain maize, silage maize, or both? I checked against the SAA. Across departments with more than 2,000~ha, the area of \texttt{MIS} parcels has a correlation of \MaskCorrGrain{} with the SAA area of grain maize and of \MaskCorrFodder{} with the area of silage maize, across department-vintages of 2015--2017. \texttt{MIS} therefore tracks grain maize. It does not, however, say whether a parcel is irrigated.
 

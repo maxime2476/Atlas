@@ -614,6 +614,41 @@ def main() -> None:
     trees = vb[vb.modele.isin(["RF_B0", "GBM_B0"])]
     n["BzeroTreeMin"], n["BzeroTreeMax"] = pct(100 * trees.skill_vs_B0.min(), 0), pct(100 * trees.skill_vs_B0.max(), 0)
     n["BzeroTreeSig"] = str(int((trees.ic95_haut < 0).sum()))
+    # T1-T3 (R/24), déclarés avant calcul.
+    t1 = pd.read_csv(TAB / "phase7_t1_fourrage.csv")
+    n["FodderBeta"], n["FodderPct"] = f"{t1.estimation.iloc[0]:.4f}", pct(t1.effet_pct_par_unite.iloc[0])
+    n["FodderP"], n["FodderSize"] = pv(t1.p_wcb_annee_unilateral_droite.iloc[0]), pct(100 * t1.taille_placebo.iloc[0])
+    n["FodderDeps"], n["FodderN"] = str(int(t1.n_departements.iloc[0])), str(int(t1.n.iloc[0]))
+    n["FodderGap"] = pct(t1.ecart_median_pct.iloc[0], 0)
+    n["FodderSOnePct"], n["FodderSOneP"] = pct(t1.effet_pct_par_unite.iloc[1]), pv(t1.p_wcb_annee_unilateral_droite.iloc[1])
+    t2 = pd.read_csv(TAB / "phase7_t2_calendrier.csv")
+    n["JunePct"], n["JuneP"] = pct(t2.effet_pct_par_unite.iloc[0]), pv(t2.p_wcb_annee.iloc[0])
+    n["JaCalPct"], n["JaCalP"] = pct(t2.effet_pct_par_unite.iloc[1]), pv(t2.p_wcb_annee.iloc[1])
+    n["SeptP"], n["SeptMean"] = pv(t2.p_wcb_annee.iloc[2]), f"{t2.moyenne_exposition.iloc[2]:.2f}"
+    n["JuneMean"], n["JaMean"] = f"{t2.moyenne_exposition.iloc[0]:.2f}", f"{t2.moyenne_exposition.iloc[1]:.1f}"
+    n["LeadP"], n["LagP"] = pv(t2.p_wcb_annee.iloc[3]), pv(t2.p_wcb_annee.iloc[4])
+    n["LeadMainPct"] = pct(t2.effet_pct_par_unite.iloc[5])
+    t3 = pd.read_csv(TAB / "phase7_t3_iv.csv")
+    n["IvEobsBeta"], n["IvEobsRatio"] = f"{t3.beta_iv.iloc[0]:.4f}", f"{t3.rapport_iv_mco.iloc[0]:.1f}"
+    n["IvEobsF"], n["IvEobsRfP"] = f"{t3.f_premiere_etape_cluster_annee.iloc[0]:.0f}", pv(t3.p_forme_reduite_wcr_unilaterale.iloc[0])
+    n["IvLstBeta"], n["IvLstRatio"] = f"{t3.beta_iv.iloc[1]:.4f}", f"{t3.rapport_iv_mco.iloc[1]:.1f}"
+    n["IvLstF"], n["IvLstRfP"] = f"{t3.f_premiere_etape_cluster_annee.iloc[1]:.0f}", pv(t3.p_forme_reduite_wcr_unilaterale.iloc[1])
+    # N1-N3 (R/25), déclarés avant calcul.
+    n1 = pd.read_csv(TAB / "phase7_n1_forme.csv")
+    n["QuadSqP"] = pv(n1.p_wcb_annee.iloc[1])
+    n["BinLowP"], n["BinMidPct"], n["BinMidP"], n["BinHighP"] = (pv(n1.p_wcb_annee.iloc[2]), pct(n1.effet_pct_par_unite.iloc[3]),
+                                                             pv(n1.p_wcb_annee.iloc[3]), pv(n1.p_wcb_annee.iloc[4]))
+    c03 = pd.read_csv(TAB / "phase7_n1_2003.csv").iloc[0]
+    n["QuadPredThree"], n["LinPredThree"], n["ObsThree"] = (f"{c03.predit_quadratique:.3f}", f"{c03.predit_lineaire:.3f}",
+                                                           f"{c03.ecart_observe_2003:.3f}")
+    n2 = pd.read_csv(TAB / "phase7_n2_combines.csv")
+    n["CompoundInter"], n["CompoundP"] = f"{n2.estimation.iloc[0]:.3f}", pv(n2.p_wcb_annee.iloc[0])
+    n3 = pd.read_csv(TAB / "phase7_n3_vpd.csv")
+    n["VpdPct"], n["VpdP"] = pct(n3.effet_pct_par_unite.iloc[0], 0), pv(n3.p_wcb_annee_unilateral_droite.iloc[0])
+    n["VpdJointHeatPct"], n["VpdJointHeatP"] = pct(n3.effet_pct_par_unite.iloc[1]), pv(n3.p_wcb_annee.iloc[1])
+    n["VpdJointPct"], n["VpdJointP"] = pct(n3.effet_pct_par_unite.iloc[2], 0), pv(n3.p_wcb_annee.iloc[2])
+    n["VpdCorr"], n["VpdSd"] = f"{n3.correlation_intra_dd32_vpd.iloc[0]:.2f}", f"{n3.ecart_type_vpd_intra.iloc[0]:.2f}"
+    n["VpdSdEffect"] = pct(100 * (math.exp(n3.estimation.iloc[0] * n3.ecart_type_vpd_intra.iloc[0]) - 1))
     # G11 : température de surface MODIS (R/23), protocole fixé avant réception des données.
     ls = pd.read_csv(TAB / "phase7_lst.csv")
     gb, g0, g1 = ls.iloc[0], ls.iloc[1], ls.iloc[2]
@@ -716,7 +751,9 @@ def main() -> None:
         f"over whole departments. Without the six departments with uplands it is not significant (p = {n['NoReliefP']}), "
         f"nor with a cluster jackknife (p = {n['CvThreeP']}). "
         "The result holds with E-OBS "
-        "temperatures. A pre-specified interaction with crisis-level water restrictions has the opposite sign to the "
+        f"temperatures and satellite surface temperature, and replicates on silage maize ({n['FodderPct']}% per degree-day, "
+        f"p = {n['FodderP']}). With the vapour pressure deficit in the model, the association moves to the drying power "
+        "of the air: it concerns hot, dry summers. A pre-specified interaction with crisis-level water restrictions has the opposite sign to the "
         "hypothesis. The result is an association, not the causal effect of irrigation. In these panels, standard "
         "errors clustered by department, or Conley with a uniform 200 km kernel, reject a true null in "
         f"{n['UsualSizeMin']}% to {n['UsualSizeMax']}% of placebo simulations. Wheat yields over 1959-2025 and "

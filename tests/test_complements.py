@@ -58,3 +58,28 @@ def test_covariates_and_fodder():
     assert not fod.duplicated(["dep_code", "annee"]).any()
     assert fod.annee.between(2010, 2025).all()
     assert fod.part_fourrage_non_irr.dropna().between(0, 1).all()
+
+
+@pytest.mark.skipif(not (PROC / "panel_fourrage.parquet").exists(), reason="panel fourrage absent")
+def test_fodder_panel():
+    fo = pd.read_parquet(PROC / "panel_fourrage.parquet")
+    assert not fo.duplicated(["dep_code", "annee"]).any()
+    assert fo.annee.between(2010, 2025).all() and fo.dep_code.nunique() == 28
+    assert (fo.irrigue > 0).all() and (fo.non_irrigue > 0).all()
+    assert np.allclose(fo.ecart_log, np.log(fo.irrigue) - np.log(fo.non_irrigue))
+    assert fo[["dd_32_ja", "swi_ja", "surface_ref_ha"]].notna().all().all() and (fo.dd_32_ja >= 0).all()
+
+
+def test_tetens_saturation_pressure():
+    # Valeurs de référence de la formule de Tetens : 0,6108 kPa à 0 °C, environ 3,17 kPa à 25 °C.
+    spec = importlib.util.spec_from_file_location("vpd", ROOT / "scripts" / "34_vpd.py")
+    vpd = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(vpd)
+    assert np.isclose(vpd.es(0.0), 0.6108) and np.isclose(vpd.es(25.0), 3.168, atol=0.002)
+
+
+@pytest.mark.skipif(not (PROC / "vpd_dep_ja.parquet").exists(), reason="VPD absent")
+def test_vpd_panel():
+    v = pd.read_parquet(PROC / "vpd_dep_ja.parquet")
+    assert not v.duplicated(["dep_code", "annee"]).any() and v.annee.between(2000, 2025).all()
+    assert v.vpd_ja.between(0.1, 5).all()      # kPa, ordre de grandeur estival

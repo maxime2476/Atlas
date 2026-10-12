@@ -28,7 +28,7 @@ TIERS = [
      "writer": ["scripts 03, 05, 08"], "example": ["météo maille × mois", "SAA au format long"]},
     {"name": "Panels", "bucket": "data/processed/", "style": "default",
      "tool": ["GeoPandas", "masques RPG maïs, blé"], "format": ["Parquet", "+ dictionnaire"],
-     "writer": ["scripts 04-31"], "example": ["maïs : 435 paires", "blé : 1959-2025"]},
+     "writer": ["scripts 04-34"], "example": ["maïs : 435 paires", "blé : 1959-2025"]},
     {"name": "Résultats", "bucket": "reports/tables/", "style": "focal",
      "tool": ["R : fixest, module wcr", "Python : scikit-learn"], "format": ["CSV, dans le dépôt"],
      "writer": ["R/10-23 ; Python :", "10, 15, 16, 19, 24, 28"], "example": ["+1,6 % par °C·jour", "taille des tests"]},

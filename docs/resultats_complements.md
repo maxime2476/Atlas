@@ -97,6 +97,30 @@ Protocole fixé avant réception des données (`docs/decisions.md`). MOD11A2 v6.
 
 **Lecture (descriptive) :** l'association tient avec une mesure satellitaire de la chaleur, indépendante de SAFRAN et d'E-OBS (mais prise vers 10 h 30 et sur ciel clair). La surface se réchauffe un peu moins par degré-jour d'air là où la part irriguée est forte, dans le sens d'un refroidissement par l'irrigation (Zhu et Burney 2022), sans que la différence soit significative au seuil de 5 % ; la part irriguée varie aussi avec d'autres caractéristiques des départements. **Intéressant :** oui pour la robustesse de la mesure ; le canal du refroidissement reste non établi.
 
+## Tests T1-T3 : réplication, calendrier, variables instrumentales
+
+Déclarés avant calcul (`docs/decisions.md`). Tables `reports/tables/phase7_t1_fourrage.csv`, `phase7_t2_calendrier.csv`, `phase7_t3_iv.csv`.
+
+| Test | Résultat | Intéressant ? |
+|---|---|---|
+| T1 : même modèle sur le maïs fourrage irrigué / non irrigué (28 départements, 2010-2025, masque `MIE`) | +1,6 % par °C·jour, p = 0,006, taille 3,0 % : **se réplique** selon la règle déclarée | **Oui, fortement** : autre culture, autre récolte, autres statistiques, autre masque ; estimation presque identique au maïs grain |
+| T2 : chaleur de l'été suivant (placebo pur) | p = 0,35 : pas d'alerte | Oui : écarte un facteur persistant |
+| T2 : juin + juillet-août + septembre | juillet-août +1,3 % (p = 0,026) ; juin +4,7 % (p = 0,13), exposition faible ; septembre sans chaleur (0,04 degré-jour) | Partiellement : septembre n'est pas un test |
+| T3 : IV par E-OBS | β = 0,0208, 1,3 fois les MCO, F = 65 | Oui : l'atténuation par l'erreur de mesure est d'environ un tiers ; correction plutôt trop faible (stations communes) |
+| T3 : IV par la LST | β = 0,0386, 2,5 fois les MCO, F = 13 | Peu : exclusion douteuse (refroidissement par l'irrigation) |
+
+## Tests N1-N3 : forme, extrêmes combinés, déficit de pression de vapeur ; test P
+
+Déclarés avant calcul. Tables `reports/tables/phase7_n1_forme.csv`, `phase7_n1_2003.csv`, `phase7_n2_combines.csv`, `phase7_n3_vpd.csv` ; VPD construit par `scripts/34_vpd.py`.
+
+| Test | Résultat | Intéressant ? |
+|---|---|---|
+| N1 : terme quadratique ; tranches 30-32, 32-34, > 34 °C | Courbure non détectée (p = 0,13) ; elle ne corrige pas 2003 ; tranches trop imprécises | Peu : les données ne disent pas où la réponse s'accentue |
+| N2 : chaleur × humidité du sol | −0,109, p = 0,20 : signe attendu, non détecté | Peu : étés chauds et secs confondus |
+| N3 : VPD à la place des degrés-jours | +60 % par kPa, p = 0,001 ; un écart-type : +17,5 % (contre +5,9 % pour les degrés-jours) | **Oui, fortement** |
+| N3 : VPD et degrés-jours ensemble | VPD +64 % par kPa (p = 0,002) ; degrés-jours −0,2 % (p = 0,76) ; corrélation 0,76 | **Oui** : l'association porte sur la sécheresse de l'air plutôt que sur la chaleur seule (Lobell et al. 2013) ; non séparables selon la règle |
+| P : spécification figée pour les récoltes 2026 et suivantes | `docs/specification_recoltes_futures.md` | À déposer sur OSF ou Zenodo pour un horodatage externe |
+
 ## Non fait
 
 - **Méthode SAA (partage irrigué / non irrigué) :** les sources publiques consultées décrivent la SAA comme une synthèse des services régionaux, combinant enquêtes (structure, Terres, vergers) et données administratives (ASP, PAC). Elles ne définissent pas « irrigué » : surface irriguée l'année, ou équipée pour l'irrigation. Les PDF méthodologiques d'Agreste demandent désormais une session. La question reste à poser directement au SSP ou à un SRISE. L'enquête Pratiques culturales grandes cultures (2017, 2021, 2025) relève l'irrigation et le rendement à la parcelle : ce serait une source de validation possible, au niveau régional.

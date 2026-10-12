@@ -23,7 +23,7 @@ RAW = ROOT / "data" / "raw"
 INTERIM = ROOT / "data" / "interim"
 PROC = ROOT / "data" / "processed"
 YEARS = [2015, 2016, 2017]
-CROPS = {"BTH": "wheat", "MIS": "maize"}  # code RPG -> suffixe des fichiers
+CROPS = {"BTH": "wheat", "MIS": "maize", "MIE": "fodder"}  # code RPG -> suffixe des fichiers (MIE : maïs ensilage, test T1)
 
 
 def main() -> None:

@@ -163,7 +163,7 @@
 
 ## 8 quater. SAA, feuilles FOU et TER (même fichier que le § 1) : variables des analyses complémentaires
 
-- **FOU :** maïs fourrage et ensilage (plante entière) irrigué (ligne 04) et non irrigué (ligne 05), surfaces 2010-2025 par département ; utilisé pour la part du maïs non irrigué récolté en fourrage (analyse G2).
+- **FOU :** maïs fourrage et ensilage (plante entière) irrigué (ligne 04) et non irrigué (ligne 05), surfaces et rendements 2010-2025 par département ; utilisé pour la part du maïs non irrigué récolté en fourrage (analyse G2) et pour la réplication sur le maïs fourrage (test T1, avec le masque RPG `MIE`).
 - **TER :** SAU du département (ligne 33), moyenne 2010-2012 ; dénominateur de la densité éolienne (G10).
 - **Méthode du partage irrigué / non irrigué (recherche du 2026-10-12) :** les publications publiques consultées (SAA 2016-2024, « Chiffres et données » ; « Infos rapides » grandes cultures) décrivent la SAA comme une synthèse établie par les services régionaux (SRISE), combinant des enquêtes (Structure, Terres, vergers) et des données administratives (ASP, aides PAC). Les rendements en cours de campagne sont estimés par ces services. **Aucune ne définit « irrigué »** (surface irriguée l'année, ou équipée pour l'irrigation). Les PDF méthodologiques renvoient désormais une page de connexion. Question à poser au SSP ; l'enquête Pratiques culturales grandes cultures (2017, 2021, 2025), qui relève l'irrigation et le rendement à la parcelle, pourrait valider le partage au niveau régional.
 
