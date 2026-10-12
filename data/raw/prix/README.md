@@ -11,4 +11,4 @@
 - Utilisation : l'indice IPPAP est converti en €/q par son rapport à Eurostat sur 2012-2016. Ce rapport doit être stable (écart < 0,002 €/q par point), sinon la valorisation est abandonnée :
   - blé : 0,2504 €/q par point, `scripts/16_phase6_build.py` ;
   - maïs : 0,2192 €/q par point, `scripts/24_valorisation_mais.py`.
-- Licences : à vérifier pour la BDM INSEE ; réutilisation Eurostat (voir `docs/sources.md`).
+- Licences (vérifiées le 2026-10-11) : INSEE, Licence Ouverte 2.0 avec la mention « Source : Insee » ; Eurostat, réutilisation autorisée avec mention de la source (voir `NOTICE.md`).

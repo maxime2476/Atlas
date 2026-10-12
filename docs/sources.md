@@ -1,9 +1,9 @@
 # ATLAS — Sources de données : provenance, licences, empreintes
 
-*Mis à jour le 2026-10-10 (phase 1).*
+*Rédigé le 2026-10-10 (phase 1) ; mis à jour le 2026-10-12 (audit avant publication). Les licences des producteurs ont été vérifiées en ligne le 2026-10-11 et le 2026-10-12 ; les mentions d'attribution utilisées sont dans `NOTICE.md`.*
 
 - **Manifeste machine :** `docs/manifest_raw.csv`, mis à jour automatiquement par `scripts/01_download_raw.py`.
-- **Données brutes :** dans `data/raw/<source>/`. Elles ne sont jamais modifiées ni versionnées ; on les retrouve avec `uv run python scripts/01_download_raw.py --sim-years 2009-2025`.
+- **Données brutes :** dans `data/raw/<source>/`. Elles ne sont jamais modifiées ni versionnées ; les commandes de téléchargement complètes sont dans `data/README.md` (SIM 1958-2025, SAA, RPG, VigiEau, prix, NDVI).
 - **Comparaison :** `tests/test_manifest.py` compare la taille et le SHA-256 de **chaque** fichier brut présent au manifeste. Par ailleurs, `01_download_raw.py` refuse de réécrire le manifeste si un fichier local a changé sans nouveau téléchargement.
 
 ---
@@ -16,7 +16,7 @@
 | Page officielle | https://agreste.agriculture.gouv.fr/agreste-web/disaron/SAA-SeriesLongues/detail/ |
 | Fichier | `SAA-SeriesLongues-2010-2025_DonneesProvisoires-DepartementalesRegionales.zip` (2 xlsx : départemental et régional) |
 | Méthodologie | https://agreste.agriculture.gouv.fr/agreste-web/methodon/S-SAA/methodon/ (PDF « Méthodologie » de 37 pages et note « Statut qualité », lus) |
-| Licence | **Présumée Licence Ouverte (Etalab).** La fiche data.gouv de la SAA publiée par le ministère indique `fr-lo` (https://www.data.gouv.fr/datasets/5369a047a3a729239d20631f/). La page des séries longues n'affiche pas de licence. **À confirmer.** Attribution : « Agreste — Statistique agricole annuelle, SSP / ministère chargé de l'agriculture » |
+| Licence | Réutilisation libre, y compris commerciale, sous réserve de citer la source (mentions légales d'agreste.agriculture.gouv.fr, vérifiées le 2026-10-11) ; les jeux Agreste publiés sur data.gouv.fr sont sous Licence Ouverte 2.0. Attribution : « Source : Agreste, Statistique agricole annuelle » |
 | Accès | Téléchargement direct HTTPS. **Le serveur n'envoie pas son certificat intermédiaire** : voir `certs/README.md`. On ajoute l'intermédiaire au magasin système, en retirant le drapeau Python `VERIFY_X509_PARTIAL_CHAIN` : la chaîne doit remonter à la racine HARICA, et le nom d'hôte est vérifié. |
 | Couverture | Récoltes 2010-2025 ; 95 départements métropolitains (Paris absent) + 5 DROM ; annuelle |
 | Unités | Surface en ha ; production en quintaux (q) ; rendement en q/ha (1 q = 100 kg) |
@@ -47,8 +47,8 @@
 | Documentation | `sim-quotidienne-parametres-20260331.pdf` (paramètres, unités, fenêtres horaires) ; `climatologie-presentation-modele-sim-20260602.pdf` (modèle). Toutes deux téléchargées. |
 | Licence | **Licence Ouverte / Open Licence 2.0** (`lov2` sur data.gouv). Mention : « Source : Météo-France » |
 | Accès | HTTPS direct, un fichier csv.gz par an : `https://meteofrance.s3.sbg.io.cloud.ovh.net/data/REF_CC/SIM/QUOT_SIM2_<année>.csv.gz` |
-| Fichiers | 1989 à 2025 (37 fichiers, ≈ 5,1 Go compressés ; 1989-2008 pour la robustesse sur période longue, 2009 pour les semis de la récolte 2010) + grille `coordonnees_grille_safran_lambert-2-etendu.csv` |
-| Couverture | France métropolitaine, 9 892 mailles de 8 km (0,072°), quotidien. Contrôlée pour **chacune des 37 années** : 365 ou 366 jours × 9 892 mailles, sans doublon ni valeur manquante sur `T`, `TINF_H`, `TSUP_H`, `SWI` |
+| Fichiers | 1958 à 2025 (68 fichiers annuels, ≈ 9,3 Go compressés) + grille `coordonnees_grille_safran_lambert-2-etendu.csv` et deux notices PDF. Phase 1 : 1989-2025 ; 1958-1988 ajoutés en phase 0 bis pour la série longue du blé. Le fichier 1958 commence le 1er août 1958 (153 jours), début de la réanalyse |
+| Couverture | France métropolitaine, 9 892 mailles de 8 km (0,072°), quotidien. Contrôlée en phase 1 pour **chacune des années 1989-2025** : 365 ou 366 jours × 9 892 mailles, sans doublon ni valeur manquante sur `T`, `TINF_H`, `TSUP_H`, `SWI` |
 | Coordonnées | `LAMBX`, `LAMBY` en **hectomètres**, Lambert II étendu (centre de maille) ; la grille fournit aussi la latitude et la longitude en degrés décimaux (virgule décimale) |
 | Séparateur, format | `;`, en-tête en première ligne, `DATE` au format AAAAMMJJ |
 
@@ -59,7 +59,7 @@
 - **Fenêtres horaires différentes selon les variables** (notice) : `T` sur ]00-00 UTC] ; `TINF_H` sur ]18-18 UTC] ; `TSUP_H`, précipitations, `SWI` et `EVAP` sur ]06-06 UTC] ; `WG_RACINE` à 06 UTC.
   - La notice ne dit pas à quel jour civil se rattache une fenêtre à cheval sur deux dates.
   - Cette convention a été **déterminée empiriquement** : voir `docs/notes_methodologiques.md`, § 1.
-- **Unité de `SWI`** : la notice indique « % », mais les valeurs observées vont de −0,035 à 2,075, avec un ordre de grandeur de 1. C'est un indice sans dimension. Écart à signaler et à garder à l'esprit pour tout seuil.
+- **Unité de `SWI`** : la notice indique « % », mais les valeurs observées en 2009 vont de −0,035 à 2,075 (maximum 1,686 en 1958), avec un ordre de grandeur de 1. C'est un indice sans dimension. Écart à signaler et à garder à l'esprit pour tout seuil.
 
 ## 3. ADMIN EXPRESS COG CARTO (IGN) : contours départementaux
 
@@ -71,10 +71,10 @@
 | Licence | **Licence Ouverte 2.0** (`lov2`). Attribution : « IGN — ADMIN EXPRESS » |
 | Format | GeoParquet 1.1, géométrie WKB `MultiPolygon` en WGS84 (CRS par défaut OGC:CRS84) ; 101 départements, DROM compris |
 | Clé | `code_insee` (« 01 », « 2A », « 971 »), compatible avec les codes SAA normalisés. Test : `tests/test_saa.py::test_codes_match_admin_express` |
-| Pourquoi ce format | Le GeoPackage n'existe qu'en archive `.7z`, et aucun outil 7z n'est installé. Le GeoParquet se lit avec `pyarrow`, déjà présent. |
-| Limite | Version cartographique **généralisée** (CARTO) : précision suffisante pour des mailles de 8 km, à vérifier en phase 2 pour les mailles côtières et frontalières. Les contours 2026 sont appliqués à toute la période : aucun changement de département métropolitain n'est connu sur 2010-2025, à confirmer avec le COG. |
+| Pourquoi ce format | Le GeoPackage n'existe qu'en archive `.7z`, et l'outil 7z n'était pas installé lors de ce choix (phase 1 ; il l'a été ensuite pour le RPG). Le GeoParquet se lit avec `pyarrow`, déjà présent. |
+| Limite | Version cartographique **généralisée** (CARTO) : précision suffisante pour des mailles de 8 km, à vérifier en phase 2 pour les mailles côtières et frontalières. Les contours 2026 sont appliqués à toute la période : aucun code départemental métropolitain n'a changé sur 2010-2025 (la Collectivité européenne d'Alsace, créée en 2021, conserve les codes 67 et 68). Pour la série 1959-2025, le traitement des départements est décrit dans `docs/phase2bis_donnees.md`. |
 
-## 4. RPG version 2.0 (IGN/ASP) : masque blé, millésimes 2015-2017
+## 4. RPG version 2.0 (IGN/ASP) : masques blé et maïs, millésimes 2015-2017
 
 | Champ | Valeur |
 |---|---|
@@ -82,9 +82,20 @@
 | Page officielle | https://www.data.gouv.fr/datasets/rpg ; flux : https://data.geopf.fr/telechargement/resource/RPG |
 | Licence | **Licence Ouverte 2.0** (`lov2`) |
 | Fichiers | `RPG_2-0__SHP_LAMB93_FR-<année>_<année>-01-01.7z`, 2015, 2016 et 2017 (≈ 2,8 Go chacun) ; seule la couche `PARCELLES_GRAPHIQUES` est extraite, vers `data/interim/rpg/` |
-| Contenu utilisé | Parcelles `CODE_CULTU = 'BTH'` (blé tendre d'hiver), `SURF_PARC` (ha), Lambert 93 (EPSG:2154) ; environ 1 million de parcelles et 4,9 à 5,1 Mha par millésime |
-| Contrôle | Surface BTH du RPG / surface SAA (code 01) : 0,996, 0,996, 0,994 (2015-2017) ; corrélation départementale 0,9999 ; ratio médian 0,992 ; écarts les plus forts dans de petits départements du Sud (Vaucluse 0,74) |
+| Contenu utilisé | Parcelles `CODE_CULTU = 'BTH'` (blé tendre d'hiver ; environ 1 million de parcelles et 4,9 à 5,1 Mha par millésime) et `CODE_CULTU = 'MIS'` (maïs grain, hors ensilage ; 1,53 à 1,79 Mha par millésime, phase 0 bis), `SURF_PARC` (ha), Lambert 93 (EPSG:2154) |
+| Contrôle | Maïs : corrélation départementale de 0,993 entre la surface `MIS` et la surface SAA de maïs grain (phase 0 bis). Blé : surface BTH du RPG / surface SAA (code 01) : 0,996, 0,996, 0,994 (2015-2017) ; corrélation départementale 0,9999 ; ratio médian 0,992 ; écarts les plus forts dans de petits départements du Sud (Vaucluse 0,74) |
 | Limites | Déclarants PAC seulement ; localisation à la parcelle, alors que la SAA rattache les terres au siège de l'exploitation ; masque fixe (2015-2017) appliqué à toute la période |
+
+## 4 bis. RPG version 1.0 (IGN/ASP), 2008 : masque maïs d'époque (robustesse Q1-R9)
+
+| Champ | Valeur |
+|---|---|
+| Producteur | IGN, à partir des déclarations PAC gérées par l'ASP |
+| Page officielle | https://www.data.gouv.fr/datasets/rpg (la fiche liste les ressources RPG 1.0 2008 par région) |
+| Licence | **Licence Ouverte 2.0** (`lov2`, fiche data.gouv consultée le 2026-10-12) |
+| Fichiers | `RPG_1-0__SHP_LAMB93_R{24,27,44,84}_2008-01-01.7z`, quatre régions du découpage 2016 (Centre-Val de Loire, Bourgogne-Franche-Comté, Grand Est, Auvergne-Rhône-Alpes), 81 à 284 Mo chacune (≈ 0,63 Go) ; extraction par `scripts/25_build_maize_mask_2008.py` (outil système `7z`) |
+| Contenu utilisé | Îlots dont le groupe de cultures majoritaire (`CODE_CULTU`) est 02, « maïs grain et ensilage » ; l'îlot entier est attribué à ce groupe. Le RPG 1.0 ne localise pas la parcelle, seulement l'îlot |
+| Limites | Mélange maïs grain et ensilage (surfaces supérieures de 20 à 50 % à la SAA maïs grain 2008) ; îlot et non parcelle ; quatre régions seulement, celles de l'échantillon principal. Comparaison au masque 2015-2017 : `docs/phase0ter_audit.md` |
 
 ## 5. Schauberger et al. (2022) : rendements départementaux 1900-2018 (robustesse sur période longue)
 
@@ -92,7 +103,7 @@
 |---|---|
 | Producteurs | Schauberger, Kato, Kato, Watanabe & Ciais ; GFZ Data Services |
 | Page officielle | https://doi.org/10.5880/PIK.2021.001 ; fichiers : https://datapub.gfz.de/download/10.5880.PIK.2021.001najvndf/ ; article : DOI 10.1038/s41597-022-01145-4 |
-| Licence | **CC-BY 4.0** (citation obligatoire de l'article) |
+| Licence | **CC BY 4.0** : citer le jeu de données (Schauberger et al. 2021, GFZ, DOI 10.5880/PIK.2021.001) et l'article ; modifications à signaler (voir `NOTICE.md`) |
 | Version utilisée | **RAW** (pas FILTERED : voir `docs/decisions.md`) ; blé tendre d'hiver ; t/ha converties en q/ha |
 | Provenance | 1989-2018 : ancienne base numérique Agreste, **non recalée** sur le RA 2020 |
 | Compatibilité avec la SAA (2010-2018) | 761 paires sur 765 ; écart relatif médian 0,0 % ; 97,5 % des paires identiques à ±0,5 q/ha ; corrélation des résidus (effets fixes) 0,994 (`scripts/08_check_schauberger.py`) |
@@ -106,15 +117,15 @@
 | Licence | Licence Etalab 2.0 (contenus de la Géoplateforme, d'après la page de documentation) |
 | Limites d'usage | 5 000 points par requête ; 5 requêtes par seconde et par adresse IP |
 | Requête | 143 744 points (16 par maille SIM française, sous-grille 4 × 4 de pas 2 km), le 2026-10-10 ; réponse brute conservée dans `data/raw/ign_altimetrie/` et inscrite au manifeste |
-| Contrôles | Paris 34,8 m, mont Blanc 4 757 m. Hors couverture, le service renvoie −99 999, et des valeurs interpolées aberrantes sur les côtes (jusqu'à −6 080 361) : seules les altitudes de −50 à 4 810 m sont gardées (3 099 points exclus). 2 mailles côtières de blé (16 ha) sans point valide sont fixées à 0 m |
+| Contrôles | Paris 34,8 m, mont Blanc 4 757 m (requête ponctuelle de contrôle, non conservée ; le fichier brut, à 2 km de pas, culmine à 4 141,85 m). Hors couverture, le service renvoie −99 999, et des valeurs interpolées aberrantes sur les côtes (jusqu'à −6 080 361) : seules les altitudes de −50 à 4 810 m sont gardées (3 099 points exclus). 2 mailles côtières de blé (16 ha) sans point valide sont fixées à 0 m |
 | Pourquoi ce choix | La BD ALTI (téléchargement) n'existe qu'au pas de 25 m et par département (≈ 15 Go). La grille SIM ne contient pas d'altitude |
 
-## 7. Prix du blé tendre (phase 6, valorisation descriptive)
+## 7. Prix du blé tendre et du maïs (valorisation descriptive, phases 6 et 4 bis)
 
 | Source | Détail | Licence | Contrôle |
 |---|---|---|---|
-| INSEE, IPPAP annuel « Blé tendre » | idbank 010776425, base 2020, 1949-2025 ; https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010776425 | Licence Ouverte (Etalab) **[À VÉRIFIER pour la BDM]** | — |
-| Eurostat `apri_ap_crpouta` | Prix absolu (€/100 kg), France, blé tendre ; **valeurs disponibles seulement jusqu'en 2016** | Réutilisation Eurostat (CC BY 4.0) **[À VÉRIFIER]** | Rapport à l'IPPAP de 0,2504 ± 0,0004 sur 2012-2016 ; 0,19 en 2010-2011 (rupture probable) |
+| INSEE, IPPAP annuel « Blé tendre » | idbank 010776425, base 2020, 1949-2025 ; https://bdm.insee.fr/series/sdmx/data/SERIES_BDM/010776425 | Licence Ouverte 2.0, mention « Source : Insee » (mentions légales de l'INSEE, vérifiées le 2026-10-11) | — |
+| Eurostat `apri_ap_crpouta` | Prix absolu (€/100 kg), France, blé tendre ; **valeurs disponibles seulement jusqu'en 2016** | Réutilisation autorisée sous réserve de citer la source ; contenus de l'UE sous CC BY 4.0 (avis de droit d'auteur d'Eurostat, vérifié le 2026-10-11) | Rapport à l'IPPAP de 0,2504 ± 0,0004 sur 2012-2016 ; 0,19 en 2010-2011 (rupture probable) |
 
 ## 8. NDVI MODIS MOD13Q1 v6.1 (NASA LP DAAC, via AppEEARS)
 
@@ -124,28 +135,66 @@
 | Accès | API AppEEARS, https://appeears.earthdatacloud.nasa.gov/api/ (commande par zone ; GeoTIFF, EPSG:4326). Compte NASA Earthdata requis ; jeton AppEEARS (48 h) obtenu par l'utilisateur, rangé dans `.env` |
 | Commandes | `ebe86b6f-8e1f-497a-a811-f92e5f4e2a22` (2022) ; `5a8a9750-f9e6-4b03-9fd3-619d84331cbd` (2010-2021, 2023-2025) ; contour simplifié de la France métropolitaine ; composites d'avril à juin (le premier commence fin mars) |
 | Couches | `_250m_16_days_NDVI` (int16, facteur d'échelle 0,0001, -3000 = pas de donnée) ; `_250m_16_days_pixel_reliability` (0 bon, 1 marginal, 2 neige, 3 nuage) ; `VI_Quality` ajoutée d'office par AppEEARS, non utilisée |
-| Licence | Données NASA, sans restriction d'usage (politique de données ouvertes de l'EOSDIS) **[À VÉRIFIER, citation du produit à faire]** |
+| Licence | Données de mission NASA sous Creative Commons Zero (CC0), citation demandée (consignes d'usage de NASA Earthdata, vérifiées le 2026-10-11). Citation : Didan, K. (2021), MOD13Q1 MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061, DOI 10.5067/MODIS/MOD13Q1.061 |
 | Limites | Terra/MODIS en fin de mission (continuité après 2025 incertaine) ; NDVI de maille, et non de parcelle |
 
-## 9. Sources documentées mais non téléchargées
+## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |
 |---|---|---|
-| Prix Eurostat `apri_ap_crpouta` | Phase 6 (optionnel) | Valorisation descriptive |
-| NDVI MODIS / VIIRS | Phase 6 (optionnel) | Continuité de la série incertaine |
+| BNPE, volumes prélevés pour l'irrigation (OFB / agences de l'eau) | Auditée en phase 0 ter, échantillons non conservés | Volumes annuels toutes cultures confondues, ruptures de déclaration ; voir `docs/phase0ter_audit.md` |
+| NDVI VIIRS (successeur de MODIS) | Non téléchargé | Envisagé pour la continuité après Terra ; non nécessaire pour 2010-2025 |
 
-## 10. Empreintes SHA-256 (générées depuis le manifeste)
+*Erratum du 2026-10-12 : la version précédente de ce tableau listait Eurostat et le NDVI MODIS comme non téléchargés ; ils l'ont été en phase 6 (§ 7 et § 8).*
 
-Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie.
+## 10. Empreintes SHA-256 (générées depuis le manifeste le 2026-10-12)
+
+Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 103 autres fichiers sont listés ci-dessous.
 
 | Fichier (`data/raw/…`) | Taille | Accès | SHA-256 |
 |---|---|---|---|
 | `agreste_saa/SAA-SeriesLongues-2010-2025_DonneesProvisoires-DepartementalesRegionales.zip` | 7.08 Mo | 2026-10-10 | `46e2ea9493ae34fac5d343e6cef51ac08a455d970ce78611c5d3b2365650d76f` |
+| `agreste_saa_ancienne/FDS_DEVELOPPE_2.zip` | 8.81 Mo | 2026-10-11 | `b7bbb133fd96335312bfe6613d39bd3f5faacc927d90c6fc9182b66e03911efa` |
 | `ign_admin_express/ADMIN-EXPRESS-COG-CARTO_4-0_2026-01-01_departement.parquet` | 12.92 Mo | 2026-10-10 | `ba44a327aaeb9df43b1f9fd52f13ca0ec67fe748c845131fedd6b3e6c1061bce` |
 | `ign_altimetrie/sim_cells_subgrid_altitude.parquet` | 3.50 Mo | 2026-10-10 | `602ea33845e95950ed3332f9e6eeb599f67c36c3b3525e2e62b6b47e942dcfbf` |
+| `ign_rpg/RPG_1-0__SHP_LAMB93_R24_2008-01-01.7z` | 81.32 Mo | 2026-10-11 | `4997835caeba8a86b63c044f81770652529dce241f820b20df1de9914940de4a` |
+| `ign_rpg/RPG_1-0__SHP_LAMB93_R27_2008-01-01.7z` | 143.81 Mo | 2026-10-11 | `783e09ca6ccf8c6d63af1dff24b4bbaa1ec32d410635f01c098bc7ce995690f4` |
+| `ign_rpg/RPG_1-0__SHP_LAMB93_R44_2008-01-01.7z` | 117.86 Mo | 2026-10-11 | `0b2d5731f81b41617df1ae07f04876f14d93256e55aeed334a4e222c26bd871c` |
+| `ign_rpg/RPG_1-0__SHP_LAMB93_R84_2008-01-01.7z` | 283.62 Mo | 2026-10-11 | `9e66655d2e220b01abe9ee8ff2fc000cd89416f2bd5817148358628501befce0` |
 | `ign_rpg/RPG_2-0__SHP_LAMB93_FR-2015_2015-01-01.7z` | 2821.30 Mo | 2026-10-10 | `c3e5960d7a7157dfab902ae7022e8ced6a080127cc6c9763ecc87e48c863fda8` |
 | `ign_rpg/RPG_2-0__SHP_LAMB93_FR-2016_2016-01-01.7z` | 2840.98 Mo | 2026-10-10 | `54a410bae071b566ccb4b8e6aa5d53ed77b6cc2d0836b68f8da27238e95166ae` |
 | `ign_rpg/RPG_2-0__SHP_LAMB93_FR-2017_2017-01-01.7z` | 2873.22 Mo | 2026-10-10 | `589420ae130314091f4ee9c9330cb22f5d232b0fde48e28aa6bae41f8edaba90` |
+| `meteofrance_sim/QUOT_SIM2_1958.csv.gz` | 52.80 Mo | 2026-10-11 | `c1f1d9271e153e6cead5837855f32a033bcbb1d543cd796ad09347cad666840b` |
+| `meteofrance_sim/QUOT_SIM2_1959.csv.gz` | 137.20 Mo | 2026-10-11 | `10ce9a70b1d58a61fd40814af3da7302cf2077386f1d7260e1ce3a5e3696dc5a` |
+| `meteofrance_sim/QUOT_SIM2_1960.csv.gz` | 140.42 Mo | 2026-10-11 | `d28bb32cc0bb8da56d11f93777c3abfcacb3629517f12a8805d8626f97b7eb11` |
+| `meteofrance_sim/QUOT_SIM2_1961.csv.gz` | 136.89 Mo | 2026-10-11 | `6df4cf00fa76746150b1562cc60930e43c6280fdbe25c548a2e242a51ff030e5` |
+| `meteofrance_sim/QUOT_SIM2_1962.csv.gz` | 139.05 Mo | 2026-10-11 | `7fd248c4cf2831fcdee8736a22c68293bb32dd83eb46491740533ba9a5426a87` |
+| `meteofrance_sim/QUOT_SIM2_1963.csv.gz` | 140.67 Mo | 2026-10-11 | `f9bfc455f5249a68b4e7e8799d33d538ebcebfd91eacadd8120103a5687fc541` |
+| `meteofrance_sim/QUOT_SIM2_1964.csv.gz` | 137.67 Mo | 2026-10-11 | `fac1a1ac995124899199f76b236490fa460dceb0a4336536f80616756a153018` |
+| `meteofrance_sim/QUOT_SIM2_1965.csv.gz` | 140.36 Mo | 2026-10-11 | `f1f8765d5fdbc3c3c6476ed40f4b906e11bdbacb7090d1ea1fe730ab6b97f129` |
+| `meteofrance_sim/QUOT_SIM2_1966.csv.gz` | 139.32 Mo | 2026-10-11 | `c3330ffea53a030de22fbbf40a8a8b7f4d87ef697f897538e15c188be0a641bc` |
+| `meteofrance_sim/QUOT_SIM2_1967.csv.gz` | 137.97 Mo | 2026-10-11 | `e5af5a7a1a17f70a623970f69f7b1c124180171031a1eed98a8eabe3fe04885e` |
+| `meteofrance_sim/QUOT_SIM2_1968.csv.gz` | 139.40 Mo | 2026-10-11 | `489d3cb39b79b9ab0a62aa3d80ce4ad28029131a5c9cec2e08199167ccef54ee` |
+| `meteofrance_sim/QUOT_SIM2_1969.csv.gz` | 140.16 Mo | 2026-10-11 | `c5c94061764fb8f2b5a5875ae66a8c7ccf5098785706007ed05d315bbc3b641f` |
+| `meteofrance_sim/QUOT_SIM2_1970.csv.gz` | 140.13 Mo | 2026-10-11 | `e4ffe7598598503d684481195bca796d863f929e84499bdb28e20094268c52ba` |
+| `meteofrance_sim/QUOT_SIM2_1971.csv.gz` | 138.52 Mo | 2026-10-11 | `941da4bf0547b44286cf2ffad99a90d85a0d1a9ce29e737b2ab5f8620c79df4a` |
+| `meteofrance_sim/QUOT_SIM2_1972.csv.gz` | 136.68 Mo | 2026-10-11 | `53f07250b819a765de7f73c56c193a02697fed9856064bbfd350b9774d4d0660` |
+| `meteofrance_sim/QUOT_SIM2_1973.csv.gz` | 137.61 Mo | 2026-10-11 | `a3dc85bfe8bc7b28baae043918793c7828aaeb2b7e6e20a7de74eb041367e11d` |
+| `meteofrance_sim/QUOT_SIM2_1974.csv.gz` | 137.27 Mo | 2026-10-11 | `4839870b4a7d05df79296001449c5d9356461eeb03cc863c7dc33a7ac7e20ea5` |
+| `meteofrance_sim/QUOT_SIM2_1975.csv.gz` | 137.40 Mo | 2026-10-11 | `5777c81375696bd5ef28ed2fbc66de76ece1ceeccc1223e520ce7ed2dfdc690e` |
+| `meteofrance_sim/QUOT_SIM2_1976.csv.gz` | 138.01 Mo | 2026-10-11 | `892752e98444c06bc65272603f7dcfca6a0d47efd0b6000ae77c5b9581da5965` |
+| `meteofrance_sim/QUOT_SIM2_1977.csv.gz` | 138.60 Mo | 2026-10-11 | `024f87abd9a8f761532527ff4ca79c0a47efb8c68d2745c51fc6ea1f4dd9c916` |
+| `meteofrance_sim/QUOT_SIM2_1978.csv.gz` | 139.51 Mo | 2026-10-11 | `3afa4bbf09ade8bc0889235c857439f6318bcc0ca331b3beab4615b5f884c12f` |
+| `meteofrance_sim/QUOT_SIM2_1979.csv.gz` | 140.88 Mo | 2026-10-11 | `a65a3d8459445cdbb597390a690104878055c51f928674e95a50ce51c6e33473` |
+| `meteofrance_sim/QUOT_SIM2_1980.csv.gz` | 139.79 Mo | 2026-10-11 | `4188fccf95d6203331d29642c086d0b5754b4159f05d78f5bbc09c6606a73f6f` |
+| `meteofrance_sim/QUOT_SIM2_1981.csv.gz` | 140.35 Mo | 2026-10-11 | `e1086a0de9238d592ec0749873fa3ae63c77f5f3fc0bbb0d2f2c70f0de8945a4` |
+| `meteofrance_sim/QUOT_SIM2_1982.csv.gz` | 138.73 Mo | 2026-10-11 | `4187fe5ba3d190202a3e9698a5c7954dc49049de8b530a9b5c4469df624ce78e` |
+| `meteofrance_sim/QUOT_SIM2_1983.csv.gz` | 138.56 Mo | 2026-10-11 | `784afcad22b0dc74b6891b949e4cd0764b676e3cf28c30796e4a5d47d287a411` |
+| `meteofrance_sim/QUOT_SIM2_1984.csv.gz` | 139.31 Mo | 2026-10-11 | `8947df46359b15ea3c698ab08da9712c6a2ca286033c23ba2da1478a45b318ec` |
+| `meteofrance_sim/QUOT_SIM2_1985.csv.gz` | 140.11 Mo | 2026-10-11 | `576223256a320479a79429ef50c3d4682b794657db6133bc266b18c26fac50f5` |
+| `meteofrance_sim/QUOT_SIM2_1986.csv.gz` | 140.69 Mo | 2026-10-11 | `4916f03d5a4653f8564fcf515359f48302dc8da0bfced95e83eecf33f7edb041` |
+| `meteofrance_sim/QUOT_SIM2_1987.csv.gz` | 140.19 Mo | 2026-10-11 | `b2bf7d35c6c20138035e6559a165d5e366b810a0c76a15d199191ce57dbc58b7` |
+| `meteofrance_sim/QUOT_SIM2_1988.csv.gz` | 138.15 Mo | 2026-10-11 | `98bc946277065cbc7a915e589354580a1fd6aee010285300981a96ba08aa0f3a` |
 | `meteofrance_sim/QUOT_SIM2_1989.csv.gz` | 134.49 Mo | 2026-10-10 | `6620c7c0bcb7a343aa6a5aea21f664fcf6793a74fd4d736eb696a99b76493538` |
 | `meteofrance_sim/QUOT_SIM2_1990.csv.gz` | 137.08 Mo | 2026-10-10 | `cc91bd7afbd18160a0035a70004a357274f1006baea285d0f02806121a19a84a` |
 | `meteofrance_sim/QUOT_SIM2_1991.csv.gz` | 137.76 Mo | 2026-10-10 | `dc325dc6b064986a2314c0bf02cf0081866c03120735fdd9458fccca8da18d60` |
@@ -189,7 +238,24 @@ Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs emprei
 | `pik_schauberger/2021-001_Schauberger-et-al_Data.zip` | 3.16 Mo | 2026-10-10 | `184fb3ddb62f01b646070629d8fc3667bcd95729ad40ecb1a8247f7730dab119` |
 | `pik_schauberger/2021-001_Schauberger_et-al_Data-Description.pdf` | 0.60 Mo | 2026-10-10 | `b8e48e2a64b50f13cd1f031784938fe0bc5814001362670c3c40de01ebeca39f` |
 | `prix/eurostat_apri_ap_crpouta_FR_ble_tendre.json` | 0.00 Mo | 2026-10-10 | `9856846063315894a32f81cfb93b131e272b27dae7efceb97439e2b723f82974` |
+| `prix/eurostat_apri_ap_crpouta_FR_mais.json` | 0.00 Mo | 2026-10-11 | `355f4c0cab2e17ca4110e99ab7449f5f1934b106fa742426a1f22c6fffec729a` |
 | `prix/insee_ippap_ble_tendre_010776425.xml` | 0.01 Mo | 2026-10-10 | `3df1b652790c178cd4e027cf1520abbb499593614d2368d408c5ad79255709e5` |
+| `prix/insee_ippap_mais_010776430.xml` | 0.01 Mo | 2026-10-11 | `02ecbbca1e24ec50ab5fa1d73f062864c6e4a8779dab55e2ac2cd9b1e53ba2c6` |
+| `vigieau/arretes-2012.csv` | 0.33 Mo | 2026-10-11 | `4c0ece3c115926c701c3a97d631c8c6656b732cae099c525dbb50075b0e72697` |
+| `vigieau/arretes-2013.csv` | 0.09 Mo | 2026-10-11 | `e926e21288e2457ab686ceaa0b9025bf7466062415f6f100da076b5f349120d7` |
+| `vigieau/arretes-2014.csv` | 0.07 Mo | 2026-10-11 | `8d95d621eb54f37d6dcfe45b889f7f3d4aa523fdb8bf45cb4eeddf7a9e3e053f` |
+| `vigieau/arretes-2015.csv` | 0.31 Mo | 2026-10-11 | `05c80b3c2ff3df625997af76cc4d184e5260aa04b58a6f7caa58e92bc875c44b` |
+| `vigieau/arretes-2016.csv` | 0.23 Mo | 2026-10-11 | `a641b1a5b5daf48e82abeff4a00b9f5d77e0a41efce5cb3e32d97170e578a058` |
+| `vigieau/arretes-2017.csv` | 0.52 Mo | 2026-10-11 | `394bb3fe36d8cc3a09061f3f6d60108640bcba8144c0cdf87c66cd620825cbf3` |
+| `vigieau/arretes-2018.csv` | 0.35 Mo | 2026-10-11 | `2db269d983cfc5351df6eef347e67b43192f201b0a203071343ce835796a83b6` |
+| `vigieau/arretes-2019.csv` | 0.65 Mo | 2026-10-11 | `fad2e3d2bc924e2b0fd36f91d41e4b26ffe94a1c651af063d2afa9b0606cb6b8` |
+| `vigieau/arretes-2020.csv` | 0.53 Mo | 2026-10-11 | `85c8baf6959d1f841083be4ec7569c9ab1b6120faccf0599dfe5c45813cec0a1` |
+| `vigieau/arretes-2021.csv` | 0.29 Mo | 2026-10-11 | `6861945b6cc8ca1331618b05f4f60e7b73df06ed26e246bf48a2d81dd53afec8` |
+| `vigieau/arretes-2022.csv` | 1.66 Mo | 2026-10-11 | `db19eaf2a55e1839f6c8c5e5287ea5d7db8a2b8525c191eb09f66757bf0f0392` |
+| `vigieau/arretes-2023.csv` | 2.06 Mo | 2026-10-11 | `aa1aafb6cc7269e1073d8b726b4f0736f0fca4b7c55b2e02de5e29ea0971fade` |
+| `vigieau/arretes-2024.csv` | 0.53 Mo | 2026-10-11 | `a35e2481989e5acdeb2a1de207b1cf979befa18e9755b177324685382bd02c92` |
+| `vigieau/arretes-cadre.csv` | 0.89 Mo | 2026-10-11 | `d95e28aca9c90d61923cbcf3eaafff349243b6d866ca6081fa9aa41c4e02eaec` |
+| `vigieau/arretes.csv` | 12.49 Mo | 2026-10-11 | `e3b4b5590e81c135a384857928811c32210d5cdee6db62713fb2ba771e08b27a` |
 
 ## Sources ajoutées en phase 0 bis (2026-10-11)
 
@@ -197,11 +263,12 @@ Détails, tests et décisions : `docs/phase0bis_cadrage.md` et `docs/phase2bis_d
 
 | Source | Accès | Couverture | Licence | Points d'attention |
 |---|---|---|---|---|
-| Agreste, SAA « anciennes séries », tableau « Cultures développées » (`SAANR_DEVELOPPE_2/FDS_DEVELOPPE_2.zip`) | ZIP direct (8,8 Mo), un CSV par année | 2000-2020, départements ; maïs grain irrigué / non irrigué | Licence Ouverte (présumée, comme la SAA) | Non recalée sur le RA 2020 ; identique aux séries actuelles pour 94-95 % des paires sur 2010-2020 ; pas de statut qualité |
+| Agreste, SAA « anciennes séries », tableau « Cultures développées » (`SAANR_DEVELOPPE_2/FDS_DEVELOPPE_2.zip`) | ZIP direct (8,8 Mo), un CSV par année | 2000-2020, départements ; maïs grain irrigué / non irrigué | Comme la SAA (§ 1) : réutilisation libre avec mention de la source | Non recalée sur le RA 2020 ; identique aux séries actuelles pour 94-95 % des paires sur 2010-2020 ; pas de statut qualité |
 | Météo-France SIM2, 1958-1988 | Mêmes fichiers csv.gz que 1989-2025 | 1er août 1958 → 1988 | Licence Ouverte 2.0 | 1958 partiel (début de la réanalyse) |
-| VigiEau « Donnée Sécheresse » (MTE), data.gouv.fr | CSV des arrêtés (2012-2024 annuels, `arretes.csv` global, arrêtés-cadres) | 2010-2026, départements, zones d'alerte | Licence Ouverte 2.0 | Niveau de gravité manquant à 99,6-100 % en 2010-2011 et à 13-21 % en 2012-2015 |
-| INSEE, IPPAP maïs (idbank 010776430) | SDMX BDM | 1970-2025, base 2020 | À vérifier pour la BDM (comme l'IPPAP blé) | Indice : raccordé à Eurostat pour obtenir des €/q |
-| Eurostat `apri_ap_crpouta`, maïs (`prod_veg=01500000`), France | API JSON | 2000-2016 | Réutilisation Eurostat (à vérifier) | Série arrêtée en 2016 ; rapport à l'IPPAP stable sur 2012-2016 (0,2192 €/q par point) |
-| RPG 2015-2017, code `MIS` | Archives déjà téléchargées (phase 2) | Parcelles de maïs grain | Licence Ouverte 2.0 | Ne distingue pas irrigué et non irrigué ; vérifié comme maïs grain (corrélation de 0,993 avec la SAA) |
+| VigiEau « Donnée Sécheresse » (MTE), data.gouv.fr | CSV des arrêtés (2012-2024 annuels, `arretes.csv` global, arrêtés-cadres) | Arrêtés 2010-2026 ; indicateurs construits pour 2012-2025 (période principale 2016-2025) ; 96 départements métropolitains + 4 DROM | Licence Ouverte 2.0 | Niveau de gravité manquant à 99,6-100 % en 2010-2011 et à 13-21 % en 2012-2015 |
+| INSEE, IPPAP maïs (idbank 010776430) | SDMX BDM | 1970-2025, base 2020 | Licence Ouverte 2.0 (§ 7) | Indice : raccordé à Eurostat pour obtenir des €/q |
+| Eurostat `apri_ap_crpouta`, maïs (`prod_veg=01500000`), France | API JSON | 2000-2016 | Réutilisation avec mention de la source (§ 7) | Série arrêtée en 2016 ; rapport à l'IPPAP stable sur 2012-2016 (0,2192 €/q par point) |
+| RPG 2015-2017, code `MIS` | Archives déjà téléchargées (phase 2) | Parcelles de maïs grain | Licence Ouverte 2.0 | Ne distingue pas irrigué et non irrigué ; vérifié comme maïs grain (corrélation de 0,993 avec la SAA) ; voir § 4 |
+| RPG 1.0 2008, quatre régions (phase 0 ter) | ZIP 7z direct (Géoplateforme) | Îlots 2008 | Licence Ouverte 2.0 | Voir § 4 bis |
 
-Note : les sections 1 à 10 ci-dessus datent des phases 1 à 6. La liste exhaustive des fichiers téléchargés est le manifeste `docs/manifest_raw.csv`.
+Note : ce tableau résume les sources ajoutées en phase 0 bis ; les sections 1 à 9 en donnent le détail quand il existe. La liste exhaustive des fichiers téléchargés est le manifeste `docs/manifest_raw.csv`.

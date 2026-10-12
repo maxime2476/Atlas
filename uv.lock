@@ -30,11 +30,15 @@ dependencies = [
     { name = "duckdb" },
     { name = "geopandas" },
     { name = "matplotlib" },
+    { name = "numpy" },
     { name = "openpyxl" },
     { name = "pandas" },
     { name = "pyarrow" },
+    { name = "pyogrio" },
+    { name = "pyproj" },
     { name = "rasterio" },
     { name = "scikit-learn" },
+    { name = "shapely" },
 ]
 
 [package.dev-dependencies]
@@ -47,11 +51,15 @@ requires-dist = [
     { name = "duckdb" },
     { name = "geopandas" },
     { name = "matplotlib" },
+    { name = "numpy" },
     { name = "openpyxl" },
     { name = "pandas" },
     { name = "pyarrow" },
+    { name = "pyogrio" },
+    { name = "pyproj" },
     { name = "rasterio" },
     { name = "scikit-learn" },
+    { name = "shapely" },
 ]
 
 [package.metadata.requires-dev]

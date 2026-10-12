@@ -178,9 +178,9 @@ Cette robustesse a été déclarée dans `docs/decisions.md` avant estimation, a
 
 **Limites principales :**
 
-- **Composition et sélection :** lors des sécheresses, une partie du maïs non irrigué peut être ensilée ou abandonnée, ce qui modifie le rendement observé du maïs grain non irrigué. Le biais peut aller dans les deux sens.
+- **Composition et sélection :** lors des sécheresses, une partie du maïs non irrigué semé pour le grain peut être récoltée en ensilage, ce qui modifie le rendement observé du maïs grain non irrigué. L'abandon, lui, reste dans les statistiques : la SAA compte les surfaces non récoltées avec un rendement nul. Si ce sont les pires parcelles non irriguées qui partent en ensilage, le rendement non irrigué observé est surestimé les années chaudes et l'écart est biaisé vers le bas, contre le résultat ; sans cette hypothèse, le sens du biais n'est pas connu.
   - Contrôle descriptif : la part irriguée de l'année n'est pas liée de façon détectable à `dd_32_ja` (−0,0025 par °C·jour, p = 0,58 en cluster année, information seulement).
-  - Ce contrôle ne couvre ni l'ensilage ni l'abandon de parcelles.
+  - Ce contrôle ne couvre pas le passage du grain à l'ensilage, décidé après le semis.
 
 - **Interprétation :** associative pour l'irrigation.
 - **Statut qualité :** celui de 2025 est appliqué à 2000-2009.

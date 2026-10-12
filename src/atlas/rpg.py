@@ -45,6 +45,7 @@ def wheat_area_by_cell_dep(parcels: gpd.GeoDataFrame, dep_27572: gpd.GeoDataFram
         raise RuntimeError("Un centroïde tombe dans plusieurs départements")
     known = grid_cells.assign(on_grid=True)
     joined = joined.merge(known, on=["LAMBX", "LAMBY"], how="left")
+    # Les deux surfaces « hors » peuvent se recouvrir (point hors département et hors grille).
     control = {
         "parcelles": len(pts),
         "surface_ha": float(pts["surf_ha"].sum()),

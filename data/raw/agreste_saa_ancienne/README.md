@@ -1,6 +1,6 @@
 # Agreste — SAA « anciennes séries », tableau « Cultures développées » (SAANR_DEVELOPPE_2)
 
-- Source : site Agreste, publication `SAANR_DEVELOPPE_2`, fichier `FDS_DEVELOPPE_2.zip` (8,8 Mo, un CSV par année 2000-2020). Licence Ouverte (présumée, comme la SAA).
+- Source : site Agreste, publication `SAANR_DEVELOPPE_2`, fichier `FDS_DEVELOPPE_2.zip` (8,8 Mo, un CSV par année 2000-2020). Comme la SAA : réutilisation libre, y compris commerciale, avec la mention « Source : Agreste » (mentions légales du site, vérifiées le 2026-10-11).
 - Téléchargement : `uv run python scripts/01_download_raw.py --saa-ancienne`. Le serveur Agreste ne fournit pas sa chaîne de certificats complète : le certificat intermédiaire est dans `certs/`.
 - Colonnes : NOM;ANNREF;FRANCE;FRDOM;REGION;DEP;N306;N306_MOD;N306_LIB;N027;N027_MOD;N027_LIB;VALEUR;QUALITE.
 - Utilisation :

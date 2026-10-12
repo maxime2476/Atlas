@@ -26,7 +26,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 **Second temps (phases 0 bis à 5 bis, `docs/phase0bis_cadrage.md`) : recentrage sur deux questions mieux identifiées.**
 
 - **Q1 (principale) :** la chaleur creuse-t-elle l'écart de rendement entre maïs grain irrigué et non irrigué, dans un même département et une même année ?
-  - La comparaison intra-département et intra-année neutralise le sol, les pratiques stables du département et les chocs nationaux.
+  - La comparaison intra-département et intra-année absorbe les différences stables entre départements (sol, pratiques) et les chocs communs aux deux modes une même année ; elle ne neutralise pas une interaction entre ces différences et la chaleur.
   - L'interprétation reste associative : les parcelles irriguées diffèrent des autres.
   - Littérature (tableau dans `docs/phase0bis_cadrage.md`) : Schauberger et al. 2017 ; Li & Troy 2018 ; Zaveri & Lobell 2019 ; Tack et al. 2017.
 - **Q2 (secondaire) :** sur 67 récoltes de blé (1959-2025), la chaleur en fin de cycle réduit-elle le rendement, et la sensibilité a-t-elle changé (adaptation) ?
@@ -35,16 +35,16 @@ Résultat : l'association est négative mais non établie, faute d'information (
 
 | Source | Usage | Licence |
 |---|---|---|
-| **Agreste**, Statistique agricole annuelle, séries départementales 2010-2025 | Rendements, surfaces (blé ; maïs irrigué et non irrigué) | Licence Ouverte (présumée, voir `docs/sources.md`) |
-| **Agreste**, SAA « anciennes séries » 2000-2020 (`SAANR_DEVELOPPE_2`) | Maïs grain irrigué et non irrigué 2000-2009 | Licence Ouverte (présumée) |
+| **Agreste**, Statistique agricole annuelle, séries départementales 2010-2025 | Rendements, surfaces (blé ; maïs irrigué et non irrigué) | Réutilisation libre avec mention « Source : Agreste » (vérifié le 2026-10-11) |
+| **Agreste**, SAA « anciennes séries » 2000-2020 (`SAANR_DEVELOPPE_2`) | Maïs grain irrigué et non irrigué 2000-2009 | Idem |
 | **Météo-France**, SIM2 quotidienne (SAFRAN-ISBA, 8 km), août 1958-2025 | Température, précipitations, ETP, humidité du sol (SWI) | Licence Ouverte 2.0 |
 | **IGN**, ADMIN EXPRESS COG CARTO 2026 | Contours départementaux | Licence Ouverte 2.0 |
 | **IGN / ASP**, RPG 2015-2017 (parcelles) et RPG 1.0 2008 (îlots, 4 régions) | Masques blé (`BTH`) et maïs grain (`MIS`) ; masque maïs d'époque (robustesse) | Licence Ouverte 2.0 |
 | **IGN**, service de calcul altimétrique (RGE ALTI) | Altitude des mailles (robustesse « montagne ») | Etalab 2.0 |
 | **Schauberger et al. 2022**, GFZ (version RAW) | Rendements de blé 1959-2009 | CC-BY 4.0 |
 | **MTE**, VigiEau « Donnée Sécheresse » (data.gouv.fr) | Arrêtés de restriction d'eau 2012-2025 | Licence Ouverte 2.0 |
-| **INSEE**, IPPAP blé tendre et maïs + **Eurostat** `apri_ap_crpouta` | Prix (valorisation descriptive) | Etalab / Eurostat (à vérifier) |
-| **NASA LP DAAC**, MOD13Q1 v6.1 via AppEEARS | NDVI 250 m (prévision) | Données NASA (à citer ; à vérifier) |
+| **INSEE**, IPPAP blé tendre et maïs + **Eurostat** `apri_ap_crpouta` | Prix (valorisation descriptive) | Licence Ouverte 2.0 (INSEE) ; réutilisation avec mention de la source (Eurostat) |
+| **NASA LP DAAC**, MOD13Q1 v6.1 via AppEEARS | NDVI 250 m (prévision) | CC0, citation demandée (Didan 2021, DOI 10.5067/MODIS/MOD13Q1.061) |
 
 **Reproductibilité des données :**
 
@@ -74,13 +74,13 @@ reports/tables/ (versionné)   docs/resultats_phase*.md   docs/figures/
 | Technologie | Rôle |
 |---|---|
 | **Python** | `src/atlas/` (download, saa, spatial, degree_days, weather, rpg, forecast…) et `scripts/` numérotés |
-| **R** | Économétrie (`fixest`) et un wild cluster bootstrap implémenté dans le projet, sous forme de **module réutilisable** `R/wcr/` (test, test joint, taille par placebo, exemple simulé autonome), `fwildclusterboot` n'étant plus sur CRAN. Validation : statistique t comparée à `fixest` et simulations de taille sur chaque jeu de données ; pas de test automatisé du code R |
+| **R** | Économétrie (`fixest`) et un wild cluster bootstrap implémenté dans le projet, sous forme de **module réutilisable** `R/wcr/` (test, test joint, taille par placebo, exemple simulé autonome), `fwildclusterboot` ayant été retiré de CRAN (archivé le 2024-05-29, page CRAN consultée le 2026-10-12). Validation : statistique t comparée à `fixest` et simulations de taille sur chaque jeu de données ; pas de test automatisé du code R |
 | **DuckDB** | Lecture directe des 68 fichiers csv.gz de SIM |
 | **Interface entre langages** | Parquet, décrit dans `docs/dictionnaire_panel.md` et `docs/phase2bis_donnees.md` |
 
 ## 4. Choix méthodologiques
 
-Tous les choix sont **fixés avant estimation** (`docs/specification_phase4.md` à `phase6.md`, puis `specification_phase4bis.md`). Les empreintes SHA-256 de ces documents et chaque écart ultérieur sont consignés, avec leur motif, dans `docs/decisions.md`.
+Les choix principaux sont **fixés avant estimation** (`docs/specification_phase4.md` à `phase6.md`, puis `specification_phase4bis.md`). Les empreintes SHA-256 de ces documents et chaque écart ultérieur sont consignés, avec leur motif, dans `docs/decisions.md`. Certains ajouts (tests de taille, robustesses blé R11-R14, comparaison des prévisions à B0) ont été définis après les premiers résultats ; ils sont listés comme tels.
 
 - **Exposition :**
   - degrés-jours par double sinus entre Tmin et Tmax, calculés **au niveau maille-jour puis agrégés** ;
@@ -95,7 +95,7 @@ Tous les choix sont **fixés avant estimation** (`docs/specification_phase4.md` 
 - **Q2, blé 1959-2025 :**
   - spécification M1 de la phase 4, avec des effets fixes **département × période de source** (1959-1988, 1989-2009, 2010-2025) pour absorber les ruptures de série ;
   - pentes de chaleur par période de 22-23 ans pour la question de l'adaptation.
-- **Blé 2010-2025 (phase 4) :** log(rendement) ~ effets fixes département et année + degrés-jours de croissance et extrêmes (mai-juin) + pluie de printemps + chaleur et pluie d'automne. Estimand : effet de court terme d'un choc météo, pas du changement climatique.
+- **Blé 2010-2025 (phase 4) :** log(rendement) ~ effets fixes département et année + degrés-jours de croissance et extrêmes (mai-juin) + pluie de printemps + chaleur et pluie d'automne. Estimand : association de court terme avec un choc météo, pas effet du changement climatique.
 - **Inférence :**
   - **wild cluster bootstrap restreint par année** (poids de Webb) ;
   - sa taille est vérifiée par simulation sur les données de chaque question (placebo = champ d'exposition réel à années permutées) ;
@@ -126,12 +126,12 @@ Tous les choix sont **fixés avant estimation** (`docs/specification_phase4.md` 
 - **Robustesse :** le signe est positif dans les 10 spécifications (figure ci-dessus) et significatif dans 9. Avec le masque maïs, exclure 2003 ou l'année provisoire 2025 ne change pas la conclusion, et l'élargissement à 38 départements non plus (+2,2 %).
 - **Dépendance à la mesure de la chaleur :**
   - avec une météo pondérée par la surface du département plutôt que par les parcelles de maïs, le coefficient n'est **pas significatif** (p = 0,22) ;
-  - ce n'est pas une simple atténuation par erreur de mesure : sur 2010-2025, cette mesure donne même un coefficient plus fort (0,038 contre 0,024). La divergence se concentre sur 2000-2009 (−0,0009 contre +0,011) et persiste sans 2003 (0,009 contre 0,038) ;
+  - ce n'est pas une simple atténuation par erreur de mesure : sur 2010-2025, cette mesure donne même un coefficient plus fort (0,038 contre 0,024). La divergence se concentre sur 2000-2009 (−0,0009 contre +0,011) et persiste sur 2000-2009 sans 2003 (0,009 contre 0,038) ;
   - la réplication 2000-2009 n'existe qu'avec le masque maïs, choisi après l'analyse exploratoire de la phase 6.
   - **un masque maïs d'époque (îlots RPG 2008) donne le même résultat** (+1,5 %, p = 0,007 ; robustesse déclarée avant estimation, après la relecture). L'âge du masque n'explique donc pas la divergence ;
   - celle-ci se concentre dans les départements de relief (Puy-de-Dôme, Isère, Drôme, Jura), où le maïs pousse en plaine et en vallée. En 2003, la pondération surfacique y sous-estime la chaleur subie par la culture de 7 à 10 °C·jour. C'est une explication a posteriori, cohérente avec le choix du masque maïs comme mesure principale, fixé avant estimation.
 - **Valorisation descriptive,** en euros courants, pour les 17 départements : les quintaux **associés** à l'irrigation lors d'un été plus chaud que la normale valent environ **49 M€ en 2003** (fourchette indicative de 8 à 98 M€), 9 M€ en 2019 et 14 M€ en 2022. Ce n'est pas la valeur totale de l'irrigation, ni un gain causal.
-- **Ce que ce résultat n'est pas :** un effet causal de l'irrigation. Les parcelles irriguées diffèrent des autres, et lors des sécheresses une partie du maïs non irrigué peut être ensilée ou abandonnée. La part irriguée de l'année ne varie pas de façon détectable avec la chaleur, mais l'ensilage n'est pas observé.
+- **Ce que ce résultat n'est pas :** un effet causal de l'irrigation. Les parcelles irriguées diffèrent des autres, et lors des sécheresses une partie du maïs non irrigué semé pour le grain peut être récoltée en ensilage (les surfaces abandonnées restent comptées, avec un rendement nul). La part irriguée de l'année ne varie pas de façon détectable avec la chaleur, mais l'ensilage n'est pas observé.
 
 ![Taille des tests, phase 4 bis](docs/figures/fig5_taille_phase4bis.png)
 
@@ -180,21 +180,21 @@ Le signe est négatif dans 12 des spécifications alternatives R1 à R13 et dans
   - statut qualité de 2025 appliqué à 2000-2009 ;
   - deux versions de la SAA raccordées en 2010 ;
   - masque de parcelles fixe (2015-2017 ; vérifié avec un masque 2008), qui ne distingue pas irrigué et non irrigué ;
-  - composition des surfaces (ensilage, abandon) non observée ;
+  - passage du grain à l'ensilage non observé (l'abandon est compté avec un rendement nul) ;
   - VigiEau : indicateur grossier (« au moins une zone du département »), niveau de gravité incomplet avant 2016.
 - **Blé :**
   - ruptures de source en 1989 et 2010, absorbées en niveau mais pas en pente ;
   - masque 2015-2017 appliqué à 1959 (anachronique) ;
   - 18 rendements manquants avant 1968 ;
   - fenêtres phénologiques fixes sur 67 ans, alors que les dates de semis et les variétés ont changé.
-- **Rendements SAA :** synthèse multi-sources ; 86,6 % des rendements de blé 2010-2025 sont arrondis au quintal près (95,6 % avant 2010) ; 2025 provisoire.
+- **Rendements SAA :** synthèse multi-sources ; 86,6 % des rendements de blé 2010-2025 sont arrondis au quintal près (95,6 % sur 1990-2009) ; 2025 provisoire.
 - **Météo :** SIM est une réanalyse (8 km) qui lisse probablement les extrêmes locaux.
 - **Prévision :** test non réalisé en temps réel (séries rétropolées) ; seulement 10 années test.
 - **Absences :** pas de modèle de maladies (fusariose en 2016).
 
 **Pistes :**
 
-- un masque irrigué / non irrigué (RPG à partir de 2023, ou cartes satellitaires de l'irrigation) ;
+- un masque irrigué / non irrigué (le RPG utilisé ici n'enregistre pas l'irrigation ; une carte satellitaire de l'irrigation serait une piste, non évaluée ici) ;
 - observer l'ensilage de maïs les années sèches ;
 - utiliser des fenêtres phénologiques modélisées ;
 - refaire les estimations après la SAA définitive 2025.
@@ -226,7 +226,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
   - prévision : 10 min ;
   - NDVI : de 1 à plusieurs heures côté NASA, plus 35 min.
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
-  - Au 2026-10-11, 554 tests passent, dont environ 450 vérifications d'empreintes.
+  - Au 2026-10-12, 563 tests passent : 457 vérifications d'empreintes des fichiers bruts (une par fichier) et 106 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).
 - **Graines :** fixées (20261010 et suivantes).

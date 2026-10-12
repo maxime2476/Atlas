@@ -38,7 +38,7 @@ The wheat model of phase 4 (M1, 2010--2025) is
 \end{equation}
 where GDD are growing degree-days between 0 and 32\,$^{\circ}$C in May--June, $P$ is precipitation and $\mathrm{DD}^{\mathrm{autumn}}_{0}$ the warmth of the sowing period. Growing degree-days are measured over the same months as extreme heat; the rainfall and autumn controls precede May--June, so they are not consequences of the heat being studied. A variant (M2) adds the May--June SWI and its square.
 
-The long-series model (M3, 1959--2025; called B1 in the specification) keeps the same variables but replaces $\alpha_d$ with department-by-period effects $\alpha_{d,p}$, where $p$ is the source period of the yield data: 1959--1988 (hand-digitised), 1989--2009 (former Agreste database) and 2010--2025 (current SAA). These effects absorb level breaks between sources. They do not absorb a change in how a source measures year-to-year variation.
+The long-series model (M3, 1959--2025) keeps the same variables but replaces $\alpha_d$ with department-by-period effects $\alpha_{d,p}$, where $p$ is the source period of the yield data: 1959--1988 (hand-digitised), 1989--2009 (former Agreste database) and 2010--2025 (current SAA). These effects absorb level breaks between sources. They do not absorb a change in how a source measures year-to-year variation.
 
 To ask whether wheat has become more or less sensitive to heat, the heat slope is allowed to differ across three sub-periods of 22 to 23 years (1959--1981, 1982--2003, 2004--2025). This question is descriptive: varieties, sowing dates and practices changed at the same time.
 
@@ -59,6 +59,27 @@ Phase & Content & SHA-256 (first 12 characters) \\
 5 & Forecasting protocol and benchmarks & \texttt{\SpecFiveHash} \\
 6 & Exploratory maize analysis 2010--2025, valuation, NDVI & \texttt{\SpecSixHash} \\
 4 bis & Maize 2000--2025 (A1) and wheat 1959--2025 (M3) & \texttt{\SpecFourBisHash} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Phases and labels.} Phases are numbered in the order in which the project ran them, not in the order of this text: phase 4 (wheat 2010--2025), phase 5 (forecasting), phase 6 (exploratory maize analysis), then phase 4 bis (maize 2000--2025 and wheat 1959--2025). \Cref{tab:labels} lists the labels used in the text and in the project files.
+
+\begin{table}[H]
+\centering
+\small
+\caption{Labels used in the text}
+\label{tab:labels}
+\begin{tabular}{>{\raggedright}p{2.4cm}>{\raggedright\arraybackslash}p{10.6cm}}
+\toprule
+Label & Meaning \\
+\midrule
+A1 & Maize model of \cref{eq:a1}: log yield gap irrigated minus rainfed, 2000--2025 \\
+M1, M2 & Wheat models of phase 4, 2010--2025; M2 adds the soil wetness index \\
+M3 & Long wheat model, 1959--2025, with department-by-period effects (called B1 in the phase 4 bis specification) \\
+B0, B1 & Forecasting benchmarks (\cref{sec:forecasting}): department mean (B0); department effect plus a common linear trend (B1) \\
+Q1, Q2 & Questions of phase 4 bis: maize (Q1) and long-series wheat (Q2); H1, H2\ldots{} are their hypotheses \\
+R1, R2\ldots & Robustness checks, numbered within each phase or question; Q1-R9 is the ninth check of Q1 \\
 \bottomrule
 \end{tabular}
 \end{table}

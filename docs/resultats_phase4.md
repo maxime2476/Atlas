@@ -48,6 +48,8 @@ Forme de la relation SWI (description) : le sommet est à SWI ≈ 0,41. Seuls 16
 
 **p-valeur unilatérale pour H1** (WCR, P(t* ≤ t)) : 0,19 dans M1, 0,16 dans M2.
 
+*Écart non déclaré à l'origine (consigné le 2026-10-12) : la spécification prévoyait de rapporter H1 « avec l'intervalle à 95 % bilatéral ». Cet intervalle n'a pas été calculé. La seule forme cohérente avec l'inférence retenue serait un intervalle obtenu en inversant le WCR par année ; il reste à calculer.*
+
 **Placebo** (chaleur extrême de *t*+1, récoltes 2010-2024, 1 245 observations, 15 grappes année) : −0,0018, p = 0,72 / 0,78 / 0,91. L'échantillon diffère de M1, et un placebo nul ne valide pas l'identification.
 
 ### Robustesses pour le coefficient de chaleur extrême (spécification M1)
@@ -115,7 +117,7 @@ Le régresseur placebo est le champ réel `dd_32_remplissage` dont on **permute 
 
 **Validation de l'implémentation du WCR :**
 
-- la statistique t coïncide avec celle de `fixest` (cluster par année), au facteur de petit échantillon près (−0,967 contre −0,973) ;
+- la statistique t du WCR (variance CR0, sans facteur de petit échantillon) est identique au t CR0 de `fixest` en cluster par année : −1,040 (recalcul indépendant de l'audit du 2026-10-11 ; le t CR1 de `fixest` vaut −0,973). *Erratum du 2026-10-12 : la version précédente comparait −0,967 à −0,973, un chiffre hérité d'une version antérieure du code et faux en l'état.* ;
 - un premier test de taille, avec un placebo iid, donnait 8,7 % de rejets à cause d'un **bug** : y* n'était pas re-projeté sur les effets fixes et les contrôles. Après correction, il donne 6,6 % (R = 500). Ce test était peu informatif, car son placebo, absorbé par l'effet fixe année, était un bruit iid ;
 - la simulation ci-dessus le remplace. Un **second bug**, dans le script de simulation lui-même (priorité de l'opérateur `<`, qui donnait 0 % de rejets partout), a été corrigé avant toute lecture des résultats.
 

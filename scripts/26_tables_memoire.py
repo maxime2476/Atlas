@@ -360,7 +360,9 @@ def wheat_tables(n: dict) -> None:
     n["WheatHtwoPdep"] = pv(h2[h2.test.str.contains("cluster d|cluster dép", regex=True)].p.iloc[0])
     rob = pd.read_csv(TAB / "phase4_robustesse.csv")
     pre = rob[rob.specification.str.match(r"R([1-8]|10) ")]       # R9 (Conley 300 km) ne change pas le coefficient
-    added = rob[rob.specification.str.match(r"R1[1-3] ")]           # ajoutées après les premières estimations
+    # Ajoutées après les premières estimations : R11 à R14. R14 (classes de température) n'a pas de coefficient
+    # dd_32 comparable ; elle est exclue du décompte, et le texte le dit (08_wheat.tex).
+    added = rob[rob.specification.str.match(r"R1[1-3] ")]
     n["WheatRobPreTot"], n["WheatRobPreNeg"] = str(len(pre)), str(int((pre.estimation < 0).sum()))
     n["WheatRobAddTot"], n["WheatRobAddNeg"] = str(len(added)), str(int((added.estimation < 0).sum()))
     n["WheatNoTwentyFivePct"] = pct(-100 * (pd.Series([rob[rob.specification.str.startswith("R3 ")].estimation.iloc[0]]).apply(
@@ -460,6 +462,9 @@ def appendix_tables(n: dict) -> None:
     n["VerUvDate"] = re.search(r'exclude-newer = "(\d{4}-\d{2}-\d{2})', (ROOT / "pyproject.toml").read_text()).group(1)
     out = subprocess.run(["uv", "run", "pytest", "--collect-only", "-q"], cwd=ROOT, capture_output=True, text=True).stdout
     n["TestCount"] = re.search(r"(\d+) tests? collected", out).group(1)
+    # Les contrôles d'empreinte (un test par fichier brut) gonflent le total : on les compte à part.
+    n["TestIntegrity"] = str(out.count("test_manifest.py::test_raw_file_matches_manifest"))
+    n["TestLogic"] = str(int(n["TestCount"]) - int(n["TestIntegrity"]))
     n["ManifestFiles"] = f"{len(pd.read_csv(ROOT / 'docs' / 'manifest_raw.csv')):,}"
 
     # Degrés-jours : formule fermée contre intégration numérique sur une grille aléatoire de cas.

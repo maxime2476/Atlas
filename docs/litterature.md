@@ -2,6 +2,8 @@
 
 *Rédigée le 2026-10-10. La revue n'est pas exhaustive : elle porte sur les travaux les plus proches de la question d'ATLAS.*
 
+> **Document de phase 1, en partie dépassé (note du 2026-10-12).** Les §§ 1 à 8 décrivent l'état du projet avant la phase 0 bis. La contribution annoncée au § 7 (décomposition chaleur / humidité du sol, maïs irrigué « exploratoire ») n'est plus celle du projet : après la phase 0 bis, la question principale est l'écart de rendement entre maïs irrigué et non irrigué (Q1), et la contribution méthodologique est la mesure de la taille des tests. La position à jour est celle du mémoire (`memoire/chapters/02_literature.tex`). Le § 9 donne les niveaux de lecture à jour des références qu'il cite.
+
 ## Niveau de lecture
 
 Chaque référence porte l'un des niveaux suivants :
@@ -244,8 +246,8 @@ Point nouveau relevé dans la méthodologie SAA : les terres sont rattachées au
 |---|---|---|
 | Morales & Villalobos (2023), *Frontiers in Plant Science*, DOI 10.3389/fpls.2023.1128388 | Avec une partition ordonnée dans le temps, même la forêt aléatoire (RMSE 35-38 %) n'a qu'un **avantage limité** sur une référence sensée (moyenne de l'exploitation, 42 %) | [RÉSUMÉ] |
 | Paudel et al. (2021) | Les tendances calculées sur toute la série font fuiter de l'information ; comparaison obligatoire aux références naïves | [RÉSUMÉ] |
-| Prépublication arXiv 2512.15140 (Allemagne, NUTS-3) | Performances très dégradées sur des années indépendantes par rapport à un découpage spatial ; des SHAP « crédibles » peuvent provenir de modèles peu fiables temporellement | [SECONDAIRE] |
-| Étude tchèque (2026, *ScienceDirect* S2666154326000323) | Le découpage aléatoire surestime la qualité ; le découpage temporel la fait chuter | [SECONDAIRE] |
+| Baatz, R. (2025), « Generalization and Feature Attribution in Machine Learning Models for Crop Yield and Anomaly Prediction in Germany », prépublication arXiv 2512.15140 (non évaluée par les pairs) | Performances très dégradées sur des années indépendantes par rapport à un découpage spatial ; des SHAP « crédibles » peuvent provenir de modèles peu fiables temporellement | [RÉSUMÉ] (page arXiv, consultée le 2026-10-12) |
+| Petrovic, Paluba, Nofrizal & Kucera (2026), « Analyzing meteorological effects on crop yield and yield prediction through machine learning with different data partitioning approaches: A case study from Czech Republic », *Journal of Agriculture and Food Research* 26 : 102662, DOI 10.1016/j.jafr.2026.102662 | Le découpage aléatoire surestime la qualité ; le découpage temporel la fait chuter | [SECONDAIRE] (notice Crossref vérifiée le 2026-10-12 ; résumé non lu) |
 
 **Conséquence pour ATLAS :** la validation glissante par origine, déjà prévue, est la bonne. Il faut s'attendre à un gain modeste, voire nul, sur la référence naïve, et le présenter comme un résultat.
 

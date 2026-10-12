@@ -90,3 +90,9 @@ Pour l'échantillon principal, cela laisse surtout le Haut-Rhin et le Bas-Rhin (
    Résultat attendu : Q1 devient défendable sur ce point. L'explication restera rédigée comme a posteriori.
 2. **Étape 2 :** à faire seulement si un ratio par m³ restreint à quelques départements vous intéresse. Il faut d'abord auditer le recensement agricole 2020 (part du maïs dans l'irrigation).
 3. Dans tous les cas, la conclusion de Q1 reste une **association**.
+
+---
+
+*Errata du 2026-10-12 (audit avant publication) :*
+- *Volume du masque 2008 : les quatre archives régionales téléchargées font 81 à 284 Mo, soit ≈ 0,63 Go au total, et non « environ 1,1 Go » (§ 2) ni « 260-280 Mo par région » pour toutes (§ 1).*
+- *Licence du RPG 1.0 : vérifiée le 2026-10-12 sur la fiche data.gouv « RPG » (Licence Ouverte 2.0), qui liste les ressources RPG 1.0 2008 ; la mention « comme le RPG 2.0 » du § 1 était une présomption.*

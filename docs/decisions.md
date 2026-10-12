@@ -248,3 +248,17 @@ Ajout **non pré-spécifié en phase 4 bis**, motivé par la relecture et l'audi
   - attributions bibliographiques ramenées aux résumés lus (`docs/litterature.md`, § 9) ;
   - annexe C complétée ;
   - règle SAA des surfaces non récoltées prise en compte dans la discussion.
+
+## Audit avant HAL : écarts et corrections consignés (2026-10-11 et 2026-10-12)
+
+Audit complet en lecture seule par quatre relecteurs (code, économétrie, données et publication, textes publics), puis corrections en trois lots. Aucune estimation n'a changé.
+
+- **Phase 4, H1 :** l'intervalle à 95 % bilatéral prévu par la spécification n'a jamais été calculé ; l'omission n'avait pas été déclarée. Il reste à calculer (inversion du WCR par année).
+- **Phase 4, WCR sur les contrôles de M1 :** calculé en plus de β₂ et δ₁, sans être prévu. Sans conséquence sur les conclusions.
+- **Validation du WCR (`resultats_phase4.md`) :** l'affirmation « −0,967 contre −0,973 » était fausse. Le t du WCR (CR0) vaut −1,040, identique au t CR0 de `fixest` ; le t CR1 vaut −0,973.
+- **Liste des Conley mis à NA (entrée « Phase 4 bis : estimations ») :** elle est incomplète. Sont aussi concernés Q1-R2, Q1-R4, Q1-R7 et Q1-R9 ; en phase 4, R1, R7, R9 et R14 ; en Q2, R1 (colonne `conley_non_dp_corrigee`).
+- **VigiEau (entrée « Phase 2 bis ») :** les indicateurs couvrent 2012-2025, et non 2012-2024.
+- **Diagnostics ajoutés pour le mémoire, non journalisés jusqu'ici :** `R/18_residual_autocorr.R` (autocorrélation d'ordre 1 des résidus, `diag_autocorr_residus.csv`) et `R/wcr/exemple.R` (Monte Carlo autonome, `wcr_exemple_montecarlo.csv`). Ce sont des descriptions, sans règle de décision.
+- **Prévision :** `phase5_synthese_vs_B0.csv` n'était produit par aucun script ; il l'est désormais par `scripts/15_forecast_cv.py --synthese`, avec des valeurs identiques.
+- **Mémoire et résumés :** réserves ajoutées (62 % des paires de Q1 viennent des années exploratoires ; « moitié » rapportée à l'estimation 2010-2025 ; explication par le relief présentée comme a posteriori) ; une affirmation fausse corrigée (l'irrigué dépasse le non irrigué dans 431 paires sur 435, pas dans toutes) ; licences des sources vérifiées en ligne le 2026-10-11.
+- **Ensilage et abandon :** harmonisés dans tous les textes. L'abandon est compté avec un rendement nul ; seul le passage du grain à l'ensilage peut biaiser l'écart, vers le bas si ce sont les pires parcelles qui partent.

@@ -1,18 +1,22 @@
 [project]
 name = "atlas"
 version = "0.1.0"
-description = "ATLAS : chocs thermiques, déficit hydrique du sol et rendements du blé en France (panel départemental)"
+description = "ATLAS : chaleur estivale, irrigation et rendements du maïs et du blé en France (panels départementaux)"
 readme = "README.md"
 requires-python = ">=3.12,<3.13"
 dependencies = [
     "duckdb",    # lecture et agrégation des csv.gz SIM sans décompression préalable
-    "geopandas", # jointure spatiale grille SIM ↔ départements (apporte shapely, pyproj, pyogrio)
+    "geopandas", # jointure spatiale grille SIM ↔ départements
     "matplotlib", # figures descriptives statiques (rapport)
+    "numpy",     # importé directement dans les scripts
     "openpyxl",  # lecture des fichiers xlsx de la SAA (Agreste)
     "pandas",
     "pyarrow",   # interface Parquet entre étapes (et avec R en phase 4)
+    "pyogrio",   # lecture des shapefiles RPG (src/atlas/rpg.py)
+    "pyproj",    # reprojections Lambert II étendu / Lambert 93 / WGS84
     "scikit-learn",  # module prédictif (phase 5) : ridge, forêt aléatoire, gradient boosting
     "rasterio",  # lecture des GeoTIFF NDVI (AppEEARS, phase 6)
+    "shapely",   # géométries des mailles (src/atlas/spatial.py)
 ]
 
 [dependency-groups]
