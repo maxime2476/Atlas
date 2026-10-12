@@ -41,7 +41,7 @@ for (r in seq_len(R)) {
   rej <- rej + (p < 0.05)
 }
 cat(sprintf("Monte-Carlo, %d panels de %d régions × %d années, vrai effet nul.\n", R, N_REG, N_YEAR))
-cat("Taux de rejet à tort au seuil de 5 % (erreur de Monte-Carlo ± 2,5 points) :\n")
+cat("Taux de rejet à tort au seuil de 5 % (intervalle de Monte-Carlo à 95 % : ± 2,5 points) :\n")
 print(round(rej / R, 3))
 
 # 2. Usage sur un seul jeu de données (comme sur des données réelles) ---------------

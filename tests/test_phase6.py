@@ -43,7 +43,7 @@ def test_maize_panel_keys_and_definition():
 COMP = ROOT / "data" / "processed" / "ndvi_dep_composite.parquet"
 
 
-def test_ndvi_features_use_only_composites_finished_before_forecast_date():
+def test_ndvi_features_use_only_composites_finished_before_forecast_date(monkeypatch):
     """Au 1er juin, aucune variable NDVI ne doit dépendre d'un composite se terminant le 1er juin ou après."""
     comp = load(COMP)
     import importlib.util
@@ -54,12 +54,11 @@ def test_ndvi_features_use_only_composites_finished_before_forecast_date():
     late = comp["fin"] >= pd.to_datetime(dict(year=comp["annee"], month=6, day=1))
     comp_mod = comp.copy()
     comp_mod.loc[late, "ndvi"] = 99.0          # valeurs absurdes sur les composites non disponibles au 1er juin
-    orig = mod.pd.read_parquet
-    mod.pd.read_parquet = lambda p, *a, **k: comp_mod if str(p).endswith("ndvi_dep_composite.parquet") else orig(p, *a, **k)
-    try:
-        changed = mod.ndvi_features()
-    finally:
-        mod.pd.read_parquet = orig
+    orig = pd.read_parquet
+    # monkeypatch restaure pandas.read_parquet à la fin du test, même en cas d'échec.
+    monkeypatch.setattr(mod.pd, "read_parquet",
+                        lambda p, *a, **k: comp_mod if str(p).endswith("ndvi_dep_composite.parquet") else orig(p, *a, **k))
+    changed = mod.ndvi_features()
     june = [c for c in base.columns if c.endswith("_juin") and c.startswith("ndvi")]
     assert np.allclose(base[june].to_numpy(), changed[june].to_numpy(), equal_nan=True)
     assert (changed[[c for c in base.columns if c.endswith("_juillet")]] == 99.0).any().any()  # le 1er juillet les voit

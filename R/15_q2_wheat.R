@@ -67,7 +67,7 @@ for (k in regs[-1]) {      # une région de référence omise : la somme est abs
 }
 r5 <- p
 r5$gdd_0_32_remplissage <- r5$gdd_0_30_remplissage
-r5$dd_32_remplissage <- r5$dd_30_remplissage
+r5$dd_32_remplissage <- r5$dd_30_remplissage  # dans la sortie, terme = « dd_32_remplissage » désigne dd_30
 rob <- rbind(
   main,
   one(r1, "dd_32_remplissage", c(RHS_M1, trend_vars), "Q2-R1 + tendances régionales"),

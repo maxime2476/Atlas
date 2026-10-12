@@ -51,11 +51,11 @@ The implementation is tested against an independent numerical integration and on
 Windows are fixed calendar periods, chosen before any estimation.
 \begin{itemize}
   \item \textbf{Maize:} July and August, chosen in advance to cover flowering and early grain filling.
-  \item \textbf{Wheat,} harvest year $t$: autumn (September to November of $t-1$), winter (December of $t-1$ to February), spring (March--April) and grain filling (May--June). Extreme heat is counted in the grain-filling window.
+  \item \textbf{Wheat,} harvest year $t$: autumn (September to November of $t-1$), winter (December of $t-1$ to February), spring (March--April) and grain filling (May--June; strictly, heading to grain filling, since flowering falls in late May or early June in most departments; \cite{noiajunior2025}). Extreme heat is counted in the grain-filling window.
 \end{itemize}
 Fixed windows ignore the shift of crop stages from year to year and across regions; \textcite{leroux2024} show how earlier phenology can avoid part of the water deficit. This is a known limitation of the design (\cref{sec:discussion}).
 
-For wheat, the threshold of 32\,$^{\circ}$C came with a fallback rule fixed in advance: if the exposure carried too little information (see below), the threshold would drop to 30\,$^{\circ}$C. The rule did not trigger, but narrowly: $N_{\mathrm{eff}} = \NeffWheatExact$, and \NeffWheatNoTwentyFive{} without the provisional year 2025. For maize, the threshold was set at 32\,$^{\circ}$C in the pre-specified specification, with 30\,$^{\circ}$C as a robustness check.
+For wheat, the threshold of 32\,$^{\circ}$C came with a fallback rule fixed in advance: if the exposure carried too little information (see below), the threshold would drop to 30\,$^{\circ}$C. The rule did not trigger, but narrowly: $N_{\mathrm{eff}} = \NeffWheatExact$, and \NeffWheatNoTwentyFive{} without the provisional year 2025. For maize, the threshold was set at 32\,$^{\circ}$C in the specification written in advance, with 30\,$^{\circ}$C as a robustness check.
 
 \subsection{Over which fields}
 
@@ -90,8 +90,8 @@ The numbers are small. For wheat over 2010--2025, $N_{\mathrm{eff}} = \NeffWheat
 {\footnotesize\setlength{\tabcolsep}{4pt}\input{tables/relief}}
 \end{table}
 
-The two maize masks, drawn about eight years apart, agree closely. The department-area measure departs from them mainly in \ReliefCount{} departments: Puy-de-Dôme, Isère, Drôme, Jura, Rhône and Ain. In 2003 it shows up to \ReliefGapMax{} fewer degree-days than the maize mask.
+The two maize masks, drawn about eight years apart, agree closely, except in the Rhône, where the 2008 mask gives \ReliefRhoneMaskGap{} fewer degree-days in 2003. The department-area measure departs from them mainly in \ReliefCount{} departments: Puy-de-Dôme, Isère, Drôme, Jura, Rhône and Ain. In 2003 it shows up to \ReliefGapMax{} fewer degree-days than the maize mask.
 
-The altitude columns explain why. In these \ReliefCount{} departments, the average maize field lies \ReliefAltDiffMin{} to \ReliefAltDiffMax{}~m below the average altitude of the department: maize is grown in the plains and valleys, while much of the department is upland where no maize grows. A department-wide average then measures largely the heat of the uplands. Across the 17 departments, the gap in measured heat and the gap in altitude have a correlation of $\ReliefAltCorr$. I looked for this explanation after seeing the results, so it is a description, not a test; but it is checked on the data rather than assumed.
+The altitude columns explain why. In these \ReliefCount{} departments, the average maize field lies \ReliefAltDiffMin{} to \ReliefAltDiffMax{}~m below the average altitude of the department: maize is grown in the plains and valleys, while much of the department is upland where no maize grows. A department-wide average then measures largely the heat of the uplands. Across the 17 departments, the gap in measured heat and the gap in altitude, both computed as department area minus maize mask, have a correlation of $\ReliefAltCorr$. I looked for this explanation after seeing the results, so it is a description, not a test; but it is checked on the data rather than assumed.
 
 Elsewhere the measures are close, with one exception in the other direction: in the Yonne, the department-area measure is \ReliefYonneGap{} degree-days higher than the maize mask. The consequences for the main result are reported in \cref{sec:maize}.

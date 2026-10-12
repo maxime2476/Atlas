@@ -9,8 +9,8 @@
 | Météo 1958-2025 | `05_build_weather_monthly.py` (années étendues) | `data/interim/weather_cell_month.parquet` (7,27 M lignes) | 1958 : août à décembre (début de SIM) ; aucun mois incomplet hors décembre 2025 |
 | Masque blé (BTH) | `07_build_wheat_mask.py` | `weights_cell_dep_wheat.parquet` | **Identique** au masque des phases 2-6 (9 471 lignes, écart maximal des poids nul) |
 | Masque maïs (MIS) | `07_build_wheat_mask.py --culture MIS` | `weights_cell_dep_maize.parquet`, `weather_dep_month_maize.parquet` | 1,53 à 1,79 Mha selon le millésime ; corrélation départementale avec la SAA **maïs grain** de 0,993 (avec le fourrage : 0,04) |
-| Restrictions d'eau | `23_vigieau_indicators.py` | `vigieau_dep_ete.parquet` (100 départements × 2012-2025) | Voir § 3 |
-| Fenêtres du blé 1959-2025 | `06_exposure_check.py --weights wheat --first-year 1959` | `weather_dep_harvest_wheat_1959.parquet` | 85 départements × 67 récoltes |
+| Restrictions d'eau | `23_vigieau_indicators.py` | `vigieau_dep_ete.parquet` (100 codes : 96 départements métropolitains et 4 DROM × 2012-2025) | Voir § 3 |
+| Fenêtres du blé 1959-2025 | `06_exposure_check.py --weights wheat --first-year 1959` | `weather_dep_harvest_wheat_1959.parquet` | 95 départements × 67 récoltes (6 365 lignes) ; le panel n'en garde que 85 |
 | Panel blé 1959-2025 | `09_build_panel.py` | `panel_ble_1959.parquet` (5 695 lignes) | 1990-2025 identique à `panel_ble_long` ; 27 rendements manquants (1959-1967), non imputés |
 | Panel maïs 2000-2025 | `22_build_panel_mais.py` | `panel_mais_long.parquet` (format long : département × année × modalité) | Voir § 2 |
 
@@ -43,8 +43,8 @@ Avec le masque maïs, l'exposition résiduelle est plus forte qu'avec la pondér
 - **Source :** fichier global `arretes.csv` (12 823 arrêtés, de 2010 à 2026).
 - **Indicateurs :** nombre de jours de juillet-août où au moins une zone du département est à un niveau donné. On distingue « au moins vigilance », « au moins alerte renforcée » et « crise ».
 - **Qualité :** le niveau de gravité manque pour 99,6-100 % des arrêtés en 2010-2011 (années exclues), 13-21 % en 2012-2015, 5-11 % en 2016-2022 et ≤ 1 % depuis 2023.
-- **Conséquence :** H3 est étudiée en principal sur 2016-2025 (`periode_principale`), avec 2012-2025 en robustesse.
-- **Moyenne nationale des jours de crise en juillet-août :** 32,0 en 2022 ; 21,2 en 2023 ; 19,3 en 2019 et en 2025 ; 3,1 en 2013-2014.
+- **Conséquence :** H3 est étudiée en principal sur 2016-2025 (`periode_principale`). Une robustesse sur 2012-2025 était envisagée ici ; elle n'a été retenue ni dans la spécification 4 bis ni exécutée (erratum du 2026-10-12).
+- **Moyenne sur les 100 codes (DROM compris) des jours de crise en juillet-août :** 32,0 en 2022 ; 21,2 en 2023 ; 19,3 en 2019 et en 2025 ; 3,1 en 2013-2014.
 
 ## 4. Série blé 1959-2025
 

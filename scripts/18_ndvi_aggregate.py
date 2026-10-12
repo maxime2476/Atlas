@@ -56,7 +56,8 @@ def main() -> None:
         year, doy = map(int, PAT.search(f.name).groups())
         rel_file = f.with_name(f.name.replace("_NDVI_", "_pixel_reliability_"))
         with rasterio.open(f) as rn, rasterio.open(rel_file) as rr:
-            assert (rn.transform, rn.width, rn.height) == grid and (rr.transform, rr.width, rr.height) == grid
+            if not ((rn.transform, rn.width, rn.height) == grid and (rr.transform, rr.width, rr.height) == grid):
+                raise RuntimeError("grille raster différente de celle du premier composite")
             ndvi = rn.read(1).ravel()
             rel = rr.read(1).ravel()
         valid = in_cell & (ndvi != -3000) & np.isin(rel, [0, 1])
@@ -77,7 +78,8 @@ def main() -> None:
         print(f"{f.name[:60]} : {start} | départements avec NDVI : {int(g['ndvi'].notna().sum())}/{len(g)} | "
               f"NDVI médian {np.nanmedian(g['ndvi']):.3f}")
     res = pd.concat(out, ignore_index=True)
-    assert not res.duplicated(["dep_code", "annee", "doy"]).any()
+    if res.duplicated(["dep_code", "annee", "doy"]).any():
+        raise RuntimeError("doublons (dep_code, annee, doy)")
     res.to_parquet(PROC / "ndvi_dep_composite.parquet", index=False)
     print(f"écrit {len(res)} lignes (département × composite)")
 

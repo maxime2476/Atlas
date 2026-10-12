@@ -30,7 +30,8 @@ def main() -> None:
         ["dep_code", "annee", "log_rendement", "rendement_q_ha", "surface_ref_ha", "echantillon_principal",
          "source_rendement", "provisoire"]]
     out = panel.merge(h[["dep_code", "annee"] + keep], on=["dep_code", "annee"], how="left", validate="one_to_one")
-    assert out[keep].notna().all().all() and len(out) == len(panel)
+    if not (out[keep].notna().all().all() and len(out) == len(panel)):
+        raise RuntimeError("variables manquantes ou lignes perdues")
     out.to_parquet(PROC / "forecast_features.parquet", index=False)
     print(f"{len(out)} lignes, {len(keep)} variables météo ({len(VARS)} × {len(FC_WINDOWS)} fenêtres)")
 

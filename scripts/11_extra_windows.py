@@ -20,7 +20,8 @@ def main() -> None:
     h = harvest_year_windows(dep_month, range(2010, 2026), windows={"mjj": [(0, 5), (0, 6), (0, 7)]})
     out = h[["dep_code", "annee", "dd_0_mjj", "dd_32_mjj"]].copy()
     out["gdd_0_32_mjj"] = out["dd_0_mjj"] - out["dd_32_mjj"]
-    assert out.notna().all().all() and not out.duplicated(["dep_code", "annee"]).any()
+    if out.isna().any().any() or out.duplicated(["dep_code", "annee"]).any():
+        raise RuntimeError("valeurs manquantes ou doublons (dep_code, annee)")
     out.to_parquet(PROC / "weather_dep_harvest_wheat_mjj.parquet", index=False)
     print(f"{len(out)} lignes ; dd_32_mjj moyenne {out.dd_32_mjj.mean():.2f}, max {out.dd_32_mjj.max():.1f}")
 

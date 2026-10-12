@@ -48,7 +48,7 @@ Une valeur négative signifie une prévision meilleure que B1. Les intervalles e
 
 | Variante | Date | B1 | L1 | RIDGE | RF | GBM |
 |---|---|---|---|---|---|---|
-| Principale | 1er juin | +0,0085 * | +0,0125 * | +0,0065 | +0,0035 | +0,0058 |
+| Principale | 1er juin | +0,0085 * | +0,0125 * | +0,0064 | +0,0035 | +0,0057 |
 | Principale | 1er juillet | +0,0085 * | +0,0169 * | +0,0140 | +0,0034 | +0,0051 |
 | Longue | 1er juin | +0,0040 | +0,0036 | −0,0019 | −0,0020 | −0,0014 |
 | Longue | 1er juillet | +0,0040 | +0,0046 | −0,0044 | −0,0024 | −0,0028 |
@@ -78,7 +78,7 @@ Une valeur négative signifie une prévision meilleure que B1. Les intervalles e
 - 2024 : 60,8 / 71,2 / **61,1** / **59,4** ;
 - 2019 : 79,3 / 70,5 / 70,2 / 71,1.
 
-**Détection des pertes** (rendement observé inférieur de plus de 10 % à B1 ; perte prédite si la prévision est inférieure de plus de 5 % à B1) : rappel de 40 à 54 % et précision de 35 à 59 % pour RIDGE, RF et GBM (`phase5_pertes.csv`). Comme ces seuils sont définis par rapport à B1, cette mesure hérite de sa faiblesse.
+**Détection des pertes** (rendement observé inférieur de plus de 10 % à B1 ; perte prédite si la prévision est inférieure de plus de 5 % à B1) : rappel de 40 à 55 % et précision de 35 à 59 % pour RIDGE, RF et GBM (`phase5_pertes.csv`). Comme ces seuils sont définis par rapport à B1, cette mesure hérite de sa faiblesse.
 
 **RIDGE :** les α choisis par la validation interne varient de 0,1 à 1 000 selon les plis. Les variables thermiques sont fortement colinéaires (`gdd`, `tmin`, `tmax`), ce qui donne des prévisions instables : 81,4 q/ha au niveau national en 2024 et 56,0 en 2017. Ce n'est **pas** corrigé a posteriori, ce qui reviendrait à régler le modèle sur les années test.
 
@@ -91,7 +91,7 @@ Une valeur négative signifie une prévision meilleure que B1. Les intervalles e
 
 1. **Selon le critère pré-spécifié (comparaison à B1)**, RF satisfait formellement la condition de gain, avec un *skill* de 16 % et un intervalle excluant 0. **Mais B1 est une mauvaise référence** : prolonger une tendance linéaire dégrade la prévision, B0 battant B1 sur les 10 années test. Cela concorde avec le plafonnement des rendements français depuis le milieu des années 1990 (Gouache et al. 2015, citant Brisson et al. 2010). Conclure à un gain de la météo sur la seule base de B1 serait **trompeur**.
 2. **Face à la référence la plus simple (B0), aucun gain de la météo n'est démontré.** Dans la variante principale (6 à 15 années d'entraînement), tous les modèles font moins bien que B0 en moyenne. Avec l'entraînement long (1990-), RIDGE, RF et GBM gagnent 7 à 20 %, mais ce n'est pas significatif sur 10 années test. C'est cohérent avec Morales & Villalobos (2023) et avec Gouache et al. (2015) : sur des années futures, l'erreur est environ deux fois celle de la validation croisée.
-3. **Ce que la météo apporte, ponctuellement :** l'année humide 2024 est bien prévue au 1er juillet par les modèles non linéaires. 2016, l'événement composé décrit par Ben-Ari et al. (2018), ne l'est par aucun modèle. C'est une observation sur deux années, pas une généralisation.
+3. **Ce que la météo apporte, ponctuellement :** l'année humide 2024 est bien prévue au 1er juillet par les modèles non linéaires. 2016, l'événement composé décrit par Ben-Ari et al. (2018), n'est anticipée par aucun modèle au niveau national : la prévision la plus basse, RIDGE au 1er juillet, donne 71,1 q/ha contre 54,0 observés (`phase5_national.csv`). En RMSE départementale, RIDGE fait pourtant un peu mieux que B0 en 2016 (0,34 au 1er juillet et 0,36 au 1er juin, contre 0,37), contrairement à RF et GBM (0,42 à 0,43). C'est une observation sur deux années, pas une généralisation.
 4. **Un résultat cohérent avec la phase 4 :** peu d'années informatives et des chocs nationaux font que ni l'inférence ni la prévision ne tirent un signal robuste de la météo départementale sur 2010-2025.
 
 **Formulation retenue :** « Sur 2016-2025, des modèles fondés sur la météo connue au 1er juin ou au 1er juillet ne prévoient pas mieux le rendement départemental du blé que la moyenne historique du département. Ils améliorent nettement la prévision d'une année humide (2024), mais pas celle de 2016. »
@@ -105,6 +105,9 @@ Une valeur négative signifie une prévision meilleure que B1. Les intervalles e
 | **Important** | Instabilité de RIDGE (α de 0,1 à 1 000, variables colinéaires) | Mauvaises performances qui ne reflètent pas le potentiel d'un modèle linéaire régularisé | Rapporté sans réglage a posteriori. Piste : fixer d'avance une grille d'α plus haute ou réduire les variables thermiques, à évaluer seulement sur de nouvelles années |
 | Mineur | Le masque blé 2015-2017 est une information future pour les années test 2016-2017 | Fuite légère | Rapportée (§ 1 de la spécification) |
 | Mineur | Séries SAA rétropolées (2022) et SIM révisée | Le test n'est pas un vrai test en temps réel | Rapporté |
+| Mineur | Échantillon choisi avec le statut qualité publié en 2025 et les surfaces 2010-2012 (ajout du 2026-10-12) | Information de sélection postérieure à certaines années test : pseudo-temps réel | Rapporté ; ne touche pas la cible |
+| Mineur | Degrés-jours du 31 mai (prévision au 1er juin) et du 30 juin (1er juillet) calculés avec TINF_H du lendemain, qui couvre jusqu'à 18 h UTC le jour de la prévision (ajout du 2026-10-12) | Quelques heures postérieures à la date de prévision | Effet négligeable, rapporté |
+| Mineur | α de la ridge choisi en retirant une année d'entraînement à la fois, y compris des années postérieures à celle retirée ; résidus de B1 ajusté sur tout l'entraînement (ajout du 2026-10-12) | Validation interne non chronologique | Aucune fuite vers l'année test ; rapporté |
 | Mineur | La détection des pertes est définie par rapport à B1 | Mesure qui hérite d'un biais de tendance | Signalé ; à redéfinir par rapport à B0 dans une prochaine itération |
 | — | Fuite de données | Aucune détectée | `tests/test_forecast.py` (5 tests, dont l'invariance à la cible de l'année test et à la météo postérieure) |
 

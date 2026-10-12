@@ -5,6 +5,8 @@ Sorties : memoire/tables/numbers.tex (macros \\newcommand utilisées dans le tex
 Règle : aucun chiffre de résultat n'est saisi à la main dans le mémoire ; le texte n'utilise que ces macros.
 """
 
+import math
+
 import pandas as pd
 
 from atlas.download import ROOT
@@ -63,7 +65,8 @@ def data_numbers(n: dict) -> None:
     n["SpliceCorrIrr"] = f"{j[j.modalite == 'irrigue'][['old', 'rendement_q_ha']].corr().iloc[0, 1]:.2f}"
     n["SpliceCorrRain"] = f"{j[j.modalite == 'non_irrigue'][['old', 'rendement_q_ha']].corr().iloc[0, 1]:.2f}"
 
-    # Masque maïs RPG (MIS) contre la SAA : maïs grain (code 18) et maïs fourrage (feuille FOU, code 06).
+    # Masque maïs RPG (MIS) contre la SAA : code 18 (total maïs grain et maïs semence, 16 + 17 ; la semence en fait environ 4 %
+    # en 2015-2017) et maïs fourrage (feuille FOU, code 06).
     from atlas.saa import read_sheet_wide, to_long
     area = pd.read_parquet(proc / "maize_area_cell_dep_rpg.parquet").groupby(["dep_code", "millesime"])["surf_ha"].sum()
     grain = saa[(saa.culture_code == "18") & saa.metropole & saa.annee.between(2015, 2017)].set_index(["dep_code", "annee"])["surface_ha"]
@@ -86,6 +89,10 @@ def data_numbers(n: dict) -> None:
     main59 = w59[w59.echantillon_principal]
     n["WheatLongMissing"] = str(int(main59.rendement_q_ha.isna().sum()))
     n["WheatLongMissingLast"] = str(int(main59.loc[main59.rendement_q_ha.isna(), "annee"].max()))
+    # 1976 contre les autres années avant 2000 : moyenne simple des départements de Q2, degrés-jours > 32 °C en mai-juin.
+    heat = main59[main59.log_rendement.notna()].groupby("annee").dd_32_remplissage.mean()
+    n["HeatSeventySix"] = f"{heat.loc[1976]:.2f}"
+    n["HeatPreTwoThousandOtherMax"] = f"{heat[(heat.index < 2000) & (heat.index != 1976)].max():.2f}"
 
     allw = pd.read_parquet(ROOT / "data" / "interim" / "weather_cell_month.parquet", columns=["swi"])["swi"]
     n["SwiMin"], n["SwiMax"] = f"{allw.min():.2f}", f"{allw.max():.2f}"
@@ -135,6 +142,8 @@ def exposure_numbers(n: dict) -> None:
     pairs = pd.read_parquet(proc / "panel_mais_long.parquet").pivot_table(index=["dep_code", "annee"], columns="modalite",
                                                                           values="log_rendement").dropna().index
     m = m.set_index(["dep_code", "annee"]).loc[lambda x: x.index.isin(pairs)].reset_index()
+    # exposure_table retire les effets fixes par twoway_residuals, exact pour un panel équilibré ; ici 435 paires
+    # pour 17 × 26 = 442 cases : N_eff est une approximation.
     by_year, ne = expo.exposure_table(m, "dd_32_ja")
     n["NeffMaize"] = f"{ne:.1f}"
     n["NeffMaizeShareTwoThousandThree"] = f"{100 * by_year.loc[2003, 'part_variance']:.0f}"
@@ -157,6 +166,9 @@ def exposure_numbers(n: dict) -> None:
     large = mes[mes.ecart_surface_moins_masque_2003 < -5]
     n["ReliefCountLarge"] = words.get(len(large), str(len(large)))                 # écart > 5 °C·jour
     n["ReliefGapSmallMin"] = f"{-big.ecart_surface_moins_masque_2003.max():.0f}"
+    # Seul désaccord notable entre les deux masques maïs (2015-2017 contre 2008), été 2003 : le Rhône.
+    rh = mes.set_index("dep_code").loc["69"]
+    n["ReliefRhoneMaskGap"] = f"{rh.masque_2015_2017_2003 - rh.masque_2008_2003:.1f}"
     n["ReliefYonneGap"] = f"{mes.set_index('dep_code').loc['89', 'ecart_surface_moins_masque_2003']:.1f}"
     mes = mes.sort_values("ecart_surface_moins_masque_2003")
     rows = [f"{r.name} ({r.dep_code}) & {r.masque_2015_2017_2003:.1f} & {r.masque_2008_2003:.1f} & "
@@ -187,6 +199,8 @@ def inference_tables(n: dict) -> None:
     """Tableaux du chapitre 6 : taille des tests sur chaque jeu de données, puissance (blé 2010-2025)."""
     lab = {"cluster_dep": "cluster_dep", "conley_200": "conley_200", "wcr_annee": "wcr_annee"}
     rows = []
+    # Les libellés (nombre de départements, années) décrivent le plan de chaque échantillon et sont écrits à la
+    # main, comme le dit l'annexe A ; les tailles viennent des CSV.
     sim = pd.read_csv(TAB / "phase4_simulation_inference.csv")
     s4 = sim[sim.beta_vrai == 0].set_index("inference")["taux_rejet_5pct"]
     rows.append(("Wheat, May--June heat, 83 depts, 2010--2025 (two-sided)", 16, int(sim.R.iloc[0]), s4))
@@ -224,7 +238,7 @@ def inference_tables(n: dict) -> None:
     n["WheatPowerWCRDouble"] = f"{100 * sim[sim.beta_vrai.round(3) == -0.03].set_index('inference').loc['wcr_annee', 'taux_rejet_5pct']:.0f}"
     n["SimR"] = str(int(sim.R.iloc[0]))
     ex = pd.read_csv(TAB / "wcr_exemple_montecarlo.csv").set_index("inference")["taille_5pct"] * 100
-    n["ExDep"], n["ExCrOne"], n["ExWcr"] = (f"{ex[k]:.1f}" for k in ["cluster_region", "cluster_annee_cr1", "wcr_annee"])
+    n["ExRegion"], n["ExCrOne"], n["ExWcr"] = (f"{ex[k]:.1f}" for k in ["cluster_region", "cluster_annee_cr1", "wcr_annee"])
 
 
 def maize_tables(n: dict) -> None:
@@ -365,8 +379,8 @@ def wheat_tables(n: dict) -> None:
     added = rob[rob.specification.str.match(r"R1[1-3] ")]
     n["WheatRobPreTot"], n["WheatRobPreNeg"] = str(len(pre)), str(int((pre.estimation < 0).sum()))
     n["WheatRobAddTot"], n["WheatRobAddNeg"] = str(len(added)), str(int((added.estimation < 0).sum()))
-    n["WheatNoTwentyFivePct"] = pct(-100 * (pd.Series([rob[rob.specification.str.startswith("R3 ")].estimation.iloc[0]]).apply(
-        lambda b: __import__("math").exp(b) - 1).iloc[0]))
+    b_r3 = rob[rob.specification.str.startswith("R3 ")].estimation.iloc[0]   # R3 : sans 2025
+    n["WheatNoTwentyFivePct"] = pct(-100 * (math.exp(b_r3) - 1))
     loyo = pd.read_csv(TAB / "phase4_loyo.csv")
     n["LoyoNeg"], n["LoyoTot"] = str(int((loyo.estimation < 0).sum())), str(len(loyo))
 
@@ -428,7 +442,7 @@ def forecast_tables(n: dict) -> None:
         for mname in ["RIDGE", "RF", "GBM"]:
             g = nd[(nd.date == d) & (nd.modele == mname)].set_index("comparaison")
             same, vs0 = g.loc["vs_meme_modele_sans_ndvi"], g.loc["vs_B0"]
-            excl = same.ic95_haut < 0
+            excl = (same.ic95_bas > 0) or (same.ic95_haut < 0)   # même convention que forecast.tex
             nrows.append(f"{date[d]} & {model[mname]} & ${100 * same.skill:+.1f}$ & "
                          f"[${1000 * same.ic95_bas:+.2f}$, ${1000 * same.ic95_haut:+.2f}$]{'$^*$' if excl else ''} & "
                          f"${100 * vs0.skill:+.0f}$ \\\\")
@@ -619,7 +633,8 @@ def main() -> None:
         "effect of irrigation. Methodologically, standard errors clustered by department or Conley reject a true null in "
         f"{n['UsualSizeMin']}% to {n['UsualSizeMax']}% of placebo simulations on these panels. Wheat yields over "
         "1959-2025 and out-of-sample yield forecasts give null results.")
-    assert len(abstract) <= 1920, len(abstract)
+    if len(abstract) > 1920:
+        raise RuntimeError(f"résumé trop long : {len(abstract)} caractères")
     (ROOT / "memoire" / "arxiv_abstract.txt").write_text(abstract + "\n")
 
     lines = ["% GÉNÉRÉ par scripts/26_tables_memoire.py à partir de reports/tables/ : ne pas modifier à la main."]

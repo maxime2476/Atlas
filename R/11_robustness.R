@@ -24,6 +24,7 @@ run <- function(label, df, rhs = RHS_M1, term = TERM, fe = "dep_code + annee", f
 
 rows <- list()
 rows$M1 <- run("M1 (référence)", base)
+# L'exposition 2019 qui sert à exprimer l'effet en % reste la moyenne pondérée par la surface, comme ailleurs.
 rows$R1 <- run("R1 sans pondération", base, weighted = FALSE)
 rows$R2 <- run("R2 sans 84, 30, 48", subset(base, !dep_code %in% c("84", "30", "48")))
 rows$R3 <- run("R3 sans 2025", subset(base, annee < 2025))

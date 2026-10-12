@@ -3,9 +3,10 @@
 #
 # Pourquoi : dans un panel où les chocs sont communs à toutes les unités une même période (météo,
 # prix, politique nationale), les erreurs-types usuelles (cluster par unité, Conley) peuvent rejeter
-# à tort bien plus souvent que le niveau nominal. Le bootstrap par période, avec peu de grappes,
-# reste fiable s'il est restreint et utilise les poids de Webb (Cameron, Gelbach & Miller 2008 ;
-# Webb 2023). Ce fichier fournit ce test et un moyen de VÉRIFIER sa taille sur vos propres données.
+# à tort bien plus souvent que le niveau nominal. Avec peu de grappes, le bootstrap par période est
+# en général plus fiable s'il est restreint et utilise les poids de Webb (Cameron, Gelbach & Miller
+# 2008 ; Webb 2023), sans garantie avec très peu de grappes ou des grappes déséquilibrées. Ce fichier
+# fournit ce test et un moyen de VÉRIFIER sa taille sur vos propres données (placebo_size).
 #
 # Principe du WCR (Frisch-Waugh-Lovell, MCO pondérés) :
 #   1. on retire les effets fixes de y, x et des autres régresseurs z (fixest::demean, pondéré) ;
@@ -32,7 +33,9 @@ webb_weights <- function(G) {
 # cluster  : nom de la variable de grappe ; weights : nom de la colonne de poids (mettre une colonne
 #            de 1 pour des MCO non pondérés) ; B : nombre de tirages ; seed : graine.
 # Retour   : t observé, p bilatérale (symétrique), p_left (H1 : beta < 0), p_right (H1 : beta > 0),
-#            nombre de grappes G et B.
+#            nombre de grappes G et B. p est la part des B tirages au moins aussi extrêmes que t,
+#            sans la convention (1 + #)/(B + 1) : p = 0 signifie qu'aucun tirage ne l'atteint, à lire
+#            p < 1/B (ex. p < 1/9 999).
 wcr_pvalue <- function(data, y, x, z, fe, cluster, weights, B = 9999, seed = 20261010) {
   w <- data[[weights]]
   X <- as.matrix(data[, c(y, x, z)])
@@ -110,9 +113,13 @@ wcr_wald_pvalue <- function(data, y, xs, z, fe, cluster, weights, B = 9999, seed
 # conserve la structure spatiale de l'exposition mais n'a, par construction, aucun lien avec y.
 # `tests` : liste nommée de fonctions(sim) -> p-valeur, où sim contient la colonne `x_placebo`.
 # Retour : taux de rejet au seuil `alpha` pour chaque test (la taille nominale est alpha).
-# L'erreur de Monte-Carlo vaut environ sqrt(alpha (1 - alpha) / R) : ±1,3 point pour R = 300.
+# L'erreur-type de Monte-Carlo de la taille vaut environ sqrt(alpha (1 - alpha) / R) : 1,3 point pour
+# R = 300 à 5 % (intervalle à 95 % : ±2,5 points).
 # Limites : y reste fixe et les R placebos ne sont que des permutations des T champs observés, donc
-# peu nombreux et non indépendants quand T est petit ; le diagnostic est indicatif, pas une preuve.
+# peu nombreux et non indépendants quand T est petit ; la dépendance temporelle de y au sein d'une
+# unité n'est donc pas testée. Le test placebo retire la vraie exposition (la passer dans `tests` si
+# on veut la garder) : son effet éventuel reste dans l'erreur. Le diagnostic est indicatif, pas une
+# preuve.
 placebo_size <- function(data, x, unit, period, tests, R = 300, alpha = 0.05, seed = 20261013) {
   periods <- sort(unique(data[[period]]))
   field <- tapply(data[[x]], list(data[[unit]], data[[period]]), identity)

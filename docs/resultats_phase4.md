@@ -101,7 +101,7 @@ Forme de la relation SWI (description) : le sommet est à SWI ≈ 0,41. Seuls 16
 
 - l'estimation varie de **−0,0290** (sans 2025) à **−0,0059** (sans 2022) ;
 - elle reste négative dans les 16 cas ;
-- sans 2012, 2016 ou 2022, elle s'affaiblit (−0,008 à −0,011) ; sans 2020 ou 2025, elle se renforce.
+- sans 2012, 2016 ou 2022, elle s'affaiblit (−0,006 à −0,011) ; sans 2020 ou 2025, elle se renforce.
 
 C'est un estimateur qui dépend de quelques années, comme le laissait prévoir la concentration de l'exposition.
 
@@ -128,15 +128,15 @@ Relecture par l'agent `econometrics-reviewer` : aucun défaut bloquant ; ses cor
 ### Observé
 
 - **Chaleur extrême.** À département et année donnés, 1 °C·jour de plus au-delà de 32 °C en mai-juin est associé à un log-rendement plus faible d'environ 0,015 (≈ −1,5 %). Le signe est négatif dans la spécification principale, dans 9 robustesses sur 10 et dans les 16 estimations *leave-one-year-out*. Il s'inverse avec la fenêtre mai-juillet (R10 : +0,0036, non significatif).
-- **Inférence.** La simulation montre que, sur ces données, seule l'inférence par année (WCR) a la bonne taille. Le cluster par département et Conley rejettent à tort dans 56 % et 39 % des cas sous H0. Avec le WCR, aucun coefficient météo n'est significatif : p ≥ 0,14 pour la chaleur extrême, quelle que soit la spécification ; p = 0,32 pour le test joint du SWI.
+- **Inférence.** La simulation montre que, sur ces données, seule l'inférence par année (WCR) a la bonne taille. Le cluster par département et Conley rejettent à tort dans 56 % et 39 % des cas sous H0. Avec le WCR, aucun coefficient météo n'est significatif : p bilatérale ≥ 0,14 pour la chaleur extrême, quelle que soit la spécification (H1 étant unilatérale, la plus petite p unilatérale est 0,071, sans 2025 en R3 ; 0,19 pour M1) ; p = 0,32 pour le test joint du SWI.
 - **Puissance.** Le WCR ne détecte un vrai effet de −1,5 % par °C·jour que dans 12 % des cas, et de −3 % que dans 29 %.
 
 ### Interprétation
 
-1. **H1 (chaleur extrême) n'est pas établie** selon la règle pré-spécifiée : le résultat ne résiste pas aux trois inférences. Il est **compatible** avec un effet négatif de la chaleur extrême, d'un ordre de grandeur proche des estimations publiées, mais il n'est ni démontré ni exclu.
+1. **H1 (chaleur extrême) n'est pas établie** selon la règle pré-spécifiée : le résultat ne résiste pas aux trois inférences. Il est **compatible** avec un effet négatif de la chaleur extrême, mais il n'est ni démontré ni exclu.
 2. **H2 (effet propre de l'eau) n'est pas établie non plus.** La forte significativité en cluster département et en Conley n'est pas crédible, puisque ces inférences sont fortement sur-dimensionnées sur ces données. De plus, le SWI est un produit de modèle qui dépend en partie de la température (médiateur) : son coefficient est associatif.
 3. **La raison est structurelle, pas technique.** Les chocs de rendement sont corrélés entre départements une même année, au-delà de 200 km. Une fois les effets fixes retirés, l'information effective se réduit à quelques années (environ 3 à 4 pour la chaleur extrême). **Seize récoltes ne suffisent pas** pour une inférence fiable sur des effets de cet ordre : c'est un résultat de puissance, pas une preuve d'absence d'effet.
-4. **La sensibilité à la fenêtre est systématique.** Le coefficient de chaleur extrême s'affaiblit à mesure que la fenêtre avance dans l'été : −0,015 (mai-juin), −0,0065 (16 mai - 15 juillet), +0,004 (mai-juillet). Ce profil est **compatible** avec une sensibilité maximale autour de la floraison (fin mai - début juin, d'après Nóia Júnior et al. 2025) plutôt qu'en fin de remplissage, mais aucune de ces estimations n'est significative avec le WCR. La fenêtre de référence n'est pas changée a posteriori. La fenêtre avancée (R11) n'est pas informative, faute d'exposition.
+4. **Un profil décroissant avec la fenêtre, non significatif.** Le coefficient de chaleur extrême s'affaiblit à mesure que la fenêtre avance dans l'été : −0,015 (mai-juin), −0,0065 (16 mai - 15 juillet), +0,004 (mai-juillet). Ce profil est **compatible** avec une sensibilité maximale autour de la floraison (fin mai - début juin, d'après Nóia Júnior et al. 2025) plutôt qu'en fin de remplissage, mais aucune de ces estimations n'est significative avec le WCR, et les fenêtres, de longueurs et d'expositions différentes, donnent des coefficients par °C·jour peu comparables. La fenêtre de référence n'est pas changée a posteriori. La fenêtre avancée (R11) n'est pas informative, faute d'exposition.
 5. **Classes de température (R14).** La forme est celle attendue, avec une réponse négative à partir de 27-30 °C et des classes fraîches légèrement positives, mais elle est **très imprécise** : erreurs-types en cluster année de 0,03 à 0,05 pour les classes chaudes. Elle concorde qualitativement avec les seuils publiés (Schlenker & Roberts 2009 ; Gammans et al. 2017), sans les confirmer.
 6. **Montagne (R13).** Exclure les 7 départements où au moins 25 % du blé est cultivé au-dessus de 600 m ne change pas l'estimation (−0,0152). La moindre fiabilité de SAFRAN en altitude ne semble pas expliquer le résultat.
 

@@ -28,7 +28,8 @@ def maize_price() -> tuple[pd.Series, float, float]:
     root = ET.parse(RAW / "insee_ippap_mais_010776430.xml").getroot()
     ippap = pd.Series({int(o.attrib["TIME_PERIOD"]): float(o.attrib["OBS_VALUE"])
                        for o in root.iter() if o.tag.endswith("Obs")}).sort_index()
-    d = json.load(open(RAW / "eurostat_apri_ap_crpouta_FR_mais.json"))
+    with open(RAW / "eurostat_apri_ap_crpouta_FR_mais.json") as f:
+        d = json.load(f)
     idx = {v: int(k) for k, v in d["dimension"]["time"]["category"]["index"].items()}
     eur = pd.Series({idx[int(k)]: v for k, v in d["value"].items()}).sort_index()
     ratio = (eur / ippap).loc[2012:2016]

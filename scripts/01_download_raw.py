@@ -134,7 +134,7 @@ def main() -> None:
                         help="millésimes RPG 1.0 (îlots) pour les régions de l'échantillon maïs, ex. 2008")
     parser.add_argument("--prix", action="store_true", help="IPPAP blé tendre et maïs (INSEE), prix Eurostat")
     parser.add_argument("--saa-ancienne", action="store_true", help="SAA 2000-2020 avant recalage (maïs irrigué)")
-    parser.add_argument("--vigieau", action="store_true", help="arrêtés de restriction d'eau 2012-2024")
+    parser.add_argument("--vigieau", action="store_true", help="arrêtés de restriction d'eau : fichiers annuels 2012-2024 et fichier global (utilisé, depuis 2010)")
     parser.add_argument("--schauberger", action="store_true",
                         help="rendements départementaux longs (robustesse 1990-2009)")
     args = parser.parse_args()

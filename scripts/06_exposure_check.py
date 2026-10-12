@@ -3,7 +3,8 @@
 Usage : uv run python scripts/06_exposure_check.py [--weights area|wheat] [--first-year 1990]
 Entrées : data/processed/weather_dep_month_<weights>.parquet, data/interim/saa_cop_departements_long.parquet
 Sorties : data/processed/weather_dep_harvest_<weights>[_<first-year>].parquet, tableau imprimé
-(période principale 2010-2025 ; --first-year 1990 pour la robustesse sur période longue)
+(période principale 2010-2025 ; --first-year 1990 pour la robustesse sur période longue ; --first-year 1959
+pour la série blé longue de la phase 4 bis)
 
 Applique la règle de repli fixée dans docs/decisions.md (N_eff < 4 -> 30 °C).
 Aucune régression du rendement sur la météo n'est estimée ici.
@@ -60,7 +61,8 @@ def main() -> None:
     saa = pd.read_parquet(SAA)
     pop = wheat_population(saa)
     panel = harvest[harvest["dep_code"].isin(pop)].copy()
-    assert len(panel) == len(pop) * len(years), "panel météo non équilibré"
+    if len(panel) != len(pop) * len(years):
+        raise RuntimeError("panel météo non équilibré")
     print(f"pondération : {args.weights} | population : {len(pop)} départements × {len(years)} récoltes = {len(panel)}")
 
     results = {}
@@ -81,7 +83,8 @@ def main() -> None:
     # Effet minimal détectable (informatif) : écart-type résiduel du log-rendement après les deux effets fixes.
     y = saa[(saa["culture_code"] == "01") & saa["dep_code"].isin(pop)][["dep_code", "annee", "rendement_q_ha"]]
     y = y.assign(log_y=np.log(y["rendement_q_ha"]))
-    assert len(y) == len(panel) and y["log_y"].notna().all()
+    if not (len(y) == len(panel) and y["log_y"].notna().all()):
+        raise RuntimeError("rendements manquants ou lignes perdues dans la jointure")
     e = twoway_residuals(y, "log_y")
     sigma = np.sqrt((e ** 2).sum() / (len(y) - len(pop) - len(years) + 1))
     print(f"\nσ résiduel du log-rendement (effets fixes seuls) : {sigma:.4f}")

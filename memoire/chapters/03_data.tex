@@ -20,7 +20,7 @@ IGN / ASP, parcel register (RPG) v2.0 & Grain maize and soft wheat parcels & Par
 IGN / ASP, RPG v1.0 (anonymised blocks) & Blocks whose main crop is maize & 4 regions, 2008 & Licence Ouverte 2.0 \\
 IGN, ADMIN EXPRESS COG CARTO & Department boundaries & 2026 edition & Licence Ouverte 2.0 \\
 IGN, altimetry service (RGE ALTI) & Mean altitude of grid cells & 8~km cells & Licence Ouverte 2.0 \\
-Ministry of Ecological Transition, VigiEau & Water-restriction orders and severity levels & Departments, 2012--2025 & Licence Ouverte 2.0 \\
+Ministry of Ecological Transition, VigiEau & Water-restriction orders and severity levels & Departments, orders from 2010 (used: 2012--2025) & Licence Ouverte 2.0 \\
 INSEE, producer price index (IPPAP); Eurostat \texttt{apri\_ap\_crpouta} & Maize and wheat prices & 2000--2025 & INSEE: Licence Ouverte 2.0; Eurostat: reuse with attribution \\
 NASA LP DAAC, MOD13Q1 v6.1 \parencite{didan2021} & NDVI, 250~m, 16-day composites & 2010--2025 & CC0 (NASA), citation requested \\
 \bottomrule
@@ -37,7 +37,7 @@ NASA LP DAAC, MOD13Q1 v6.1 \parencite{didan2021} & NDVI, 250~m, 16-day composite
 
 \paragraph{Exclusions.} \MaizeRemoved{} department-year-mode observations have a missing or zero yield and are dropped; they are listed in the project documentation. The maize models compare the two modes, so they use the \MaizePairs{} department-years where both are observed, of which \MaizeMainPairs{} are in the main sample.
 
-\paragraph{Wheat.} For soft wheat, the SAA long series cover 2010--2025. Over 1959--2009, I use the RAW version of the departmental yields compiled by \textcite{schauberger2022}. Their data come from hand-digitised statistics before 1989 and from the former Agreste database afterwards, and I checked their compatibility with the SAA on the 2010--2018 overlap. The population is the \WheatDeps{} departments with at least 1,000~ha of wheat on average over 2010--2012; the main sample keeps the \WheatMainDeps{} with quality status~1, which gives \WheatMainObs{} observations over 2010--2025. In the long panel, \WheatLongMissing{} yields of the main sample are missing, all in 1959--\WheatLongMissingLast; they are dropped, not imputed.
+\paragraph{Wheat.} For soft wheat (soft winter wheat in the SAA; ``soft wheat below), the SAA long series cover 2010--2025. Over 1959--2009, I use the RAW version of the departmental yields compiled by \textcite{schauberger2022}. Their data come from hand-digitised statistics before 1989 and from the former Agreste database afterwards, and I checked their compatibility with the SAA on the 2010--2018 overlap. The population is the \WheatDeps{} departments with at least 1,000~ha of wheat on average over 2010--2012; the main sample keeps the \WheatMainDeps{} with quality status~1, which gives \WheatMainObs{} observations over 2010--2025. In the long panel, \WheatLongMissing{} yields of the main sample are missing, all in 1959--\WheatLongMissingLast; they are dropped, not imputed.
 
 \paragraph{What yields measure.} SAA yields are a synthesis of several sources, and many are rounded: \WheatIntegerShare\,\% of wheat yields over 2010--2025 are whole numbers of quintals per hectare. Rounding adds noise of at most 0.5 quintal, about 1\,\% of yield, to the outcome. Land is attributed to the department of the farm's headquarters, not to the department of the parcel, which creates small mismatches near borders. The 2025 values are provisional.
 

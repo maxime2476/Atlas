@@ -31,7 +31,8 @@ def read_ippap() -> pd.Series:
 
 
 def read_eurostat() -> pd.Series:
-    d = json.load(open(RAW / "prix" / "eurostat_apri_ap_crpouta_FR_ble_tendre.json"))
+    with open(RAW / "prix" / "eurostat_apri_ap_crpouta_FR_ble_tendre.json") as f:
+        d = json.load(f)
     idx = {v: int(k) for k, v in d["dimension"]["time"]["category"]["index"].items()}
     return pd.Series({idx[int(k)]: v for k, v in d["value"].items()}).sort_index()
 
@@ -40,7 +41,8 @@ def prices() -> pd.DataFrame:
     ippap, eur = read_ippap(), read_eurostat()
     ratio = (eur / ippap).loc[2012:2016]
     # Contrôle du raccord fixé dans la spécification : rapport stable sur 2012-2016.
-    assert ratio.max() - ratio.min() < 0.002, ratio
+    if not (ratio.max() - ratio.min() < 0.002):
+        raise RuntimeError(f"rapport Eurostat / IPPAP instable sur 2012-2016 : {ratio}")
     k = ratio.mean()
     out = pd.DataFrame({"annee": range(2010, 2026)})
     out["ippap_base2020"] = out["annee"].map(ippap)
@@ -56,7 +58,9 @@ def wheat_losses(price: pd.DataFrame) -> pd.DataFrame:
     w = saa[(saa["culture_code"] == "01") & saa["metropole"] & (saa["surface_ha"] > 0)].copy()
     rows = []
     for t in range(2010, 2026):
-        normal = w[w["annee"] != t].groupby("dep_code")["rendement_q_ha"].mean()  # hors année t
+        # Normale descriptive : moyenne de toutes les AUTRES années 2010-2025, futures et provisoire 2025
+        # comprises, sans tendance. Ce n'est pas une prévision disponible l'année t.
+        normal = w[w["annee"] != t].groupby("dep_code")["rendement_q_ha"].mean()
         cur = w[w["annee"] == t].assign(normal=lambda d: d["dep_code"].map(normal)).dropna(subset=["normal"])
         p = float(price.set_index("annee").loc[t, "prix_eur_q"])
         vol = ((cur["normal"] - cur["rendement_q_ha"]) * cur["surface_ha"]).sum()   # q
@@ -72,7 +76,11 @@ def maize_panel() -> pd.DataFrame:
     m = saa[saa["culture_code"].isin(["14", "15"]) & saa["metropole"]]
     wide = m.pivot_table(index=["dep_code", "annee"], columns="culture_code",
                          values=["rendement_q_ha", "surface_ha"]).reset_index()
-    wide.columns = ["dep_code", "annee", "rdt_irrigue", "rdt_non_irrigue", "surf_irrigue", "surf_non_irrigue"]
+    # 14 = maïs grain irrigué, 15 = maïs grain non irrigué (SAA) : renommage par (mesure, code), pas par position.
+    names = {("dep_code", ""): "dep_code", ("annee", ""): "annee",
+             ("rendement_q_ha", "14"): "rdt_irrigue", ("rendement_q_ha", "15"): "rdt_non_irrigue",
+             ("surface_ha", "14"): "surf_irrigue", ("surface_ha", "15"): "surf_non_irrigue"}
+    wide.columns = [names[c] for c in wide.columns]
     ref = wide[wide["annee"].between(2010, 2012)].groupby("dep_code")[["surf_irrigue", "surf_non_irrigue"]].mean()
     pop = ref[(ref["surf_irrigue"] >= 1000) & (ref["surf_non_irrigue"] >= 1000)].index
     wide = wide[wide["dep_code"].isin(pop)].copy()
@@ -92,8 +100,10 @@ def maize_panel() -> pd.DataFrame:
     wide = wide.merge(h[["dep_code", "annee", "dd_32_ja", "swi_ja", "prec_ja"]], on=["dep_code", "annee"],
                       how="left", validate="one_to_one")
     wide = wide.merge(panel_mod.centroids(), on="dep_code", how="left", validate="many_to_one")
-    assert wide[["ecart_log", "dd_32_ja", "swi_ja", "lat_centroide"]].notna().all().all()
-    assert not wide.duplicated(["dep_code", "annee"]).any()
+    if not (wide[["ecart_log", "dd_32_ja", "swi_ja", "lat_centroide"]].notna().all().all()):
+        raise RuntimeError("valeurs manquantes dans le panel maïs")
+    if wide.duplicated(["dep_code", "annee"]).any():
+        raise RuntimeError("doublons (dep_code, annee)")
     return wide
 
 

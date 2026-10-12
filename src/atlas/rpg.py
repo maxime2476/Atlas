@@ -43,8 +43,9 @@ def wheat_area_by_cell_dep(parcels: gpd.GeoDataFrame, dep_27572: gpd.GeoDataFram
     joined = gpd.sjoin(pts, dep_27572[["dep_code", "geometrie"]], how="left", predicate="within")
     if joined.index.duplicated().any():
         raise RuntimeError("Un centroïde tombe dans plusieurs départements")
-    known = grid_cells.assign(on_grid=True)
-    joined = joined.merge(known, on=["LAMBX", "LAMBY"], how="left")
+    known = grid_cells[["LAMBX", "LAMBY"]].assign(on_grid=True)
+    # many_to_one : une maille dupliquée dans la grille doublerait les surfaces sans erreur.
+    joined = joined.merge(known, on=["LAMBX", "LAMBY"], how="left", validate="many_to_one")
     # Les deux surfaces « hors » peuvent se recouvrir (point hors département et hors grille).
     control = {
         "parcelles": len(pts),

@@ -2,6 +2,12 @@
 
 *Rédigé le 2026-10-10. Document de travail : les décisions marquées « en attente » ne sont pas validées.*
 
+> **Errata et suites (2026-10-12).** Ce document décrit l'état de la phase 0 ; il n'est pas réécrit. Constats ultérieurs :
+> - **Eurostat `apri_ap_crpouta`** : la série du blé tendre n'a de valeurs que jusqu'en 2016 dans le JSON brut, et non jusqu'en 2024 (`docs/sources.md`).
+> - **RPG** : validé et utilisé (masques blé et maïs 2015-2017, RPG 1.0 2008 pour Q1-R9) ; **VigiEau** : validé en phase 0 bis ; **NDVI MODIS** : téléchargé et utilisé en phase 6 (`docs/sources.md`).
+> - **Volume SIM 2009-2025** : 17 fichiers, environ 2,34 Go compressés (manifeste), et non 2,2 Go.
+> - **Maïs : 39, 41 puis 38 départements.** Les § 3.1 et 3.3 comptent les départements ayant **au moins une année** avec 1 000 ha ou plus (de maïs irrigué : 39 ; de chaque modalité : 41) ; les phases suivantes retiennent la **moyenne de référence 2010-2012** (38 départements, dont 17 en statut 1). L'écart vient de cette différence de critère.
+
 Convention de statut utilisée dans tout le document :
 
 - **[TESTÉ]** : vérifié par un accès réel pendant la phase 0 (téléchargement d'un échantillon, lecture d'en-tête, requête API).

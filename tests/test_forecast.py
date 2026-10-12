@@ -16,6 +16,20 @@ def test_june_features_exclude_june_weather():
     assert all(f.split("_")[-1] in DATES["juillet"] for f in features("juillet"))
 
 
+def test_may_window_uses_may_only():
+    """Les variables `*_mai` (prévision au 1er juin) sont celles du seul mois de mai de l'année de récolte."""
+    if not FEAT.exists():
+        pytest.skip("exécuter scripts/14_forecast_features.py")
+    f = pd.read_parquet(FEAT)
+    dm = pd.read_parquet(ROOT / "data" / "processed" / "weather_dep_month_wheat.parquet")
+    may = dm[dm["month"] == 5].rename(columns={"year": "annee"})
+    j = f.merge(may, on=["dep_code", "annee"], how="inner", validate="one_to_one")
+    assert len(j) == len(f)
+    for v in ["dd_32", "prec", "swi", "tmax"]:
+        assert np.allclose(j[f"{v}_mai"], j[v])
+    assert np.allclose(j["gdd_0_32_mai"], j["dd_0"] - j["dd_32"])
+
+
 def test_b1_recovers_department_effects_and_trend():
     rows = [{"dep_code": d, "annee": t, "surface_ref_ha": 1.0,
              "log_rendement": base + 0.01 * (t - 2010)} for d, base in [("A", 4.0), ("B", 4.3)]

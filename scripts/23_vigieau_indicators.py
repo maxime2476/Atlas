@@ -46,6 +46,9 @@ def main() -> None:
     a["fin"] = pd.to_datetime(a["date_fin"], errors="coerce").fillna(FILE_DATE)
     a["niveau"] = a["zones_alerte.niveau_gravite"].map(decree_level)
     a = a.dropna(subset=["debut", "departement"])
+    # Liste des départements prise AVANT le filtre sur le niveau : un département dont aucun arrêté n'a de
+    # niveau reçoit 0 jour, et non une ligne absente (donc NaN dans les jointures de l'étape 22).
+    deps = sorted(a["departement"].str.strip().unique())
     missing = (a.assign(annee=a["debut"].dt.year).groupby("annee")["zones_alerte.niveau_gravite"]
                .apply(lambda s: s.isna().mean()))
     a = a[(a["niveau"] > 0) & (a["fin"] >= a["debut"])]
@@ -64,14 +67,14 @@ def main() -> None:
                          "jours_ar_plus_ja": int((lvl >= 3).sum()), "jours_crise_ja": int((lvl >= 4).sum())})
     out = pd.DataFrame(rows)
     # Département-année sans aucun arrêté en juillet-août : 0 jour (et non une valeur manquante).
-    deps = sorted(a["dep_code"].unique())
     full = pd.MultiIndex.from_product([deps, list(YEARS)], names=["dep_code", "annee"]).to_frame(index=False)
     out = full.merge(out, on=["dep_code", "annee"], how="left").fillna(0)
     for c in ["jours_vigilance_plus_ja", "jours_ar_plus_ja", "jours_crise_ja"]:
         out[c] = out[c].astype(int)
     out["part_arretes_sans_niveau"] = out["annee"].map(missing).fillna(0).round(3)
     out["periode_principale"] = out["annee"] >= 2016
-    assert out["jours_vigilance_plus_ja"].le(62).all() and (out["jours_crise_ja"] <= out["jours_ar_plus_ja"]).all()
+    if not (out["jours_vigilance_plus_ja"].le(62).all() and (out["jours_crise_ja"] <= out["jours_ar_plus_ja"]).all()):
+        raise RuntimeError("plus de 62 jours en juillet-août, ou jours de crise > jours d'alerte renforcée")
     out.to_parquet(OUT, index=False)
     nat = out.groupby("annee")[["jours_ar_plus_ja", "jours_crise_ja"]].mean().round(1)
     print(f"{len(out)} lignes ({out.dep_code.nunique()} départements × {len(YEARS)} étés)")

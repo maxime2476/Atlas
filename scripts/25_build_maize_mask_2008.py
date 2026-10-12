@@ -9,7 +9,6 @@ Les couches extraites (data/interim/rpg1/) sont supprimées à la fin (régéné
 Déclaration de la robustesse : docs/decisions.md (« Robustesse Q1-R9 »), avant estimation.
 """
 
-import shutil
 import subprocess
 
 import pandas as pd
@@ -41,7 +40,11 @@ def main() -> None:
         print(f"{reg} : {ctl['parcelles']:,} îlots groupe 02, {ctl['surface_ha'] / 1e3:.0f} kha ; "
               f"hors département {ctl['hors_departement_ha']:.0f} ha, hors grille {ctl['hors_grille_ha']:.0f} ha")
         parts.append(area)
-    shutil.rmtree(INTERIM)
+        # Suppression limitée aux fichiers extraits par 7z (le dossier n'est retiré que s'il est vide).
+        for f in out.glob("ILOTS_ANONYMES.*"):
+            f.unlink()
+        out.rmdir()
+    INTERIM.rmdir()
     # Un îlot proche d'une frontière régionale peut tomber dans un département d'une autre région : on somme.
     area = pd.concat(parts).groupby(["LAMBX", "LAMBY", "dep_code"], as_index=False)["surf_ha"].sum()
     area["w_maize2008"] = area["surf_ha"] / area.groupby("dep_code")["surf_ha"].transform("sum")

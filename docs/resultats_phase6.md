@@ -51,13 +51,13 @@ Rscript R/13_maize_gap.R
 | Écart | 23,0 % | 35,5 % | **3,5 %** |
 | Non irrigué | 25,0 % | 34,0 % | **7,0 %** |
 
-Comme pour le blé, cluster et Conley sont fortement surdimensionnés, et seul le WCR est jugé fiable. Sa taille (3,5 % à 7,0 %, avec une erreur Monte-Carlo d'environ 1,5 point) est acceptable.
+Comme pour le blé, cluster et Conley sont fortement surdimensionnés, et seul le WCR est jugé fiable. Sa taille (3,5 % à 7,0 %, avec une erreur Monte-Carlo d'environ 1,5 point) reste proche de 5 %, mais 7,0 % est environ 1,3 erreur-type au-dessus : pour le rendement non irrigué, le WCR rejette peut-être un peu trop souvent.
 
 **Interprétation (prudente) :**
 
 - Les **signes vont dans le sens de H4** : davantage de chaleur extrême en juillet-août s'accompagne d'un écart irrigué / non irrigué plus grand, et un sol plus humide d'un écart plus petit.
 - Le coefficient de chaleur sur l'écart passe le WCR (p = 0,03) dans l'échantillon principal, mais pas avec tous les statuts (p = 0,06). Pour le SWI, c'est l'inverse.
-- Le résultat le plus net est l'**association négative entre chaleur de juillet-août et rendement du maïs non irrigué** : −6 % par °C·jour au-delà de 32 °C, avec p = 0,002 au WCR. Pour le maïs irrigué, elle est trois fois plus faible (−2 %).
+- Le résultat le plus net est l'**association négative entre chaleur de juillet-août et rendement du maïs non irrigué** : −6 % par °C·jour au-delà de 32 °C, avec p = 0,002 au WCR. Pour le maïs irrigué, elle est environ 2,5 fois plus faible (−2,3 %).
 - La comparaison avec le blé est cohérente avec une **différence d'exposition**, pas forcément de sensibilité : le maïs subit la chaleur de juillet-août, plus intense et plus variable d'une année à l'autre, alors que le blé est récolté avant le cœur de l'été.
 
 **Limites, qui interdisent une lecture causale de l'irrigation :**
@@ -122,15 +122,15 @@ Comme pour le blé, cluster et Conley sont fortement surdimensionnés, et seul l
 | Date | Modèle | Gain par rapport au même modèle **sans** NDVI | IC à 95 % de l'écart de MSE | Années meilleures | *Skill* par rapport à **B0** (IC de l'écart à B0) |
 |---|---|---|---|---|---|
 | 1er juin | RIDGE | +1,6 % | [−0,0016 ; +0,0006] | 8/10 | −25 % (contient 0) |
-| 1er juin | RF | +1,6 % | **[−0,0009 ; −0,0001]** | 7/10 | −13 % (contient 0) |
+| 1er juin | RF | +1,6 % | **[−0,0008 ; −0,0001]** | 7/10 | −13 % (contient 0) |
 | 1er juin | GBM | +3,5 % | **[−0,0023 ; −0,00002]** | 8/10 | −20 % (contient 0) |
 | 1er juillet | RIDGE | +27,7 % | **[−0,0224 ; −0,0011]** | 6/10 | −15 % (contient 0) |
 | 1er juillet | RF | +1,6 % | [−0,0010 ; +0,00001] | 6/10 | −13 % (contient 0) |
-| 1er juillet | GBM | +7,6 % | **[−0,0046 ; −0,0003]** | 8/10 | −12 % (contient 0) |
+| 1er juillet | GBM | +7,6 % | **[−0,0045 ; −0,0003]** | 8/10 | −12 % (contient 0) |
 
 **Interprétation (prédictive uniquement) :**
 
 1. **Le NDVI apporte une information supplémentaire faible mais détectable** à la météo : le gain est positif dans les 6 combinaisons modèle × date, et significatif dans 4 sur 6. C'est cohérent avec son rôle d'indicateur intégré de l'état du couvert. Le grand gain de RIDGE au 1er juillet reflète surtout la **stabilisation** d'un modèle instable (phase 5), notamment en 2024.
 2. **Il ne suffit pas à battre la moyenne départementale (B0).** Les modèles ajoutent leur correction à B1, une référence à tendance, plus faible que B0 sur toutes les années test. Ce handicap structurel, déjà relevé en phase 5, domine le gain du NDVI.
 3. **Piste, non testée ici pour ne pas multiplier les choix a posteriori :** construire les corrections sur B0 plutôt que sur B1, à pré-spécifier et à évaluer sur de nouvelles années.
-4. **2016 n'est pas mieux anticipée avec le NDVI** (RMSE de 0,43 avec RF et GBM, contre 0,37 pour B0). Au 1er juin, le couvert ne trahit pas encore la perte, ce qui est cohérent avec un mécanisme de fin de cycle (excès d'eau, maladies, faible rayonnement en juin).
+4. **2016 n'est pas anticipée avec le NDVI par RF et GBM** (RMSE de 0,41 à 0,43, contre 0,37 pour B0). RIDGE fait mieux que B0 cette année-là (0,31 au 1er juillet, 0,36 au 1er juin), mais il le faisait déjà sans NDVI (0,34 et 0,36), et sa prévision nationale rate la perte (phase 5). Au 1er juin, le couvert ne trahit pas encore la perte, ce qui est cohérent avec un mécanisme de fin de cycle (excès d'eau, maladies, faible rayonnement en juin).

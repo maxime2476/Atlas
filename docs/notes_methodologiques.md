@@ -2,6 +2,8 @@
 
 *Rédigées le 2026-10-10. Ces notes **précèdent** tout calcul d'exposition : aucun degré-jour n'a encore été codé.*
 
+> *Document historique (phase 1), non réécrit. État actuel de la chaîne : SIM 1958-2025, degrés-jours codés et testés ; voir `README.md` et `docs/sources.md`.*
+
 ---
 
 ## 1. Fenêtres, unités et convention de date de `TINF_H` et `TSUP_H`
@@ -46,7 +48,7 @@ Reste possible : demander confirmation à Météo-France (la documentation est m
 ### Unités
 
 - Températures en °C au 1/10, confirmé par les valeurs observées (`TSUP_H` max 2009 = 40,6 °C).
-- **`SWI` : écart à la notice.** La notice indique « % », mais les valeurs vont de −0,035 à 2,075. C'est un indice sans dimension, environ 0 au point de flétrissement et 1 à la capacité au champ. Cette lecture est conforme à la définition usuelle du Soil Wetness Index de Météo-France, mais **elle reste à confirmer**. Tout seuil devra s'exprimer sur cette échelle.
+- **`SWI` : écart à la notice.** La notice indique « % », mais les valeurs vont de −0,035 à 2,075 en 2009 (maximum 1,686 en 1958 ; la plage dépend de l'année). C'est un indice sans dimension, environ 0 au point de flétrissement et 1 à la capacité au champ. Cette lecture est conforme à la définition usuelle du Soil Wetness Index de Météo-France, mais **elle reste à confirmer**. Tout seuil devra s'exprimer sur cette échelle.
 
 ---
 
@@ -105,7 +107,7 @@ Sources lues : « RPG — Suivi des évolutions » (révision de septembre 2026)
   - robustesse 1 : masque fixe v1.0 2010-2012 (îlots du groupe 01, sur la même période que la définition de la population) ;
   - robustesse 2 : aucun masque (moyenne sur la surface du département), comme Ben-Ari et al. (2018).
 - **Promesse à ne pas faire :** « pondération par les parcelles cultivées de chaque année sur toute la période ».
-- **Technique :** les archives `.7z` demandent l'outil système `7zip` (décision du 2026-10-10, installation par l'utilisateur en attente, voir `docs/decisions.md`). Les shapefiles régionaux 2015-2017 sont probablement plus légers ; à vérifier en phase 2 avant tout téléchargement.
+- **Technique :** les archives `.7z` demandent l'outil système `7zip` (décision du 2026-10-10, installation par l'utilisateur en attente, voir `docs/decisions.md` ; *installé ensuite et utilisé, note du 2026-10-12*). Les shapefiles régionaux 2015-2017 sont probablement plus légers ; à vérifier en phase 2 avant tout téléchargement.
 
 ---
 

@@ -18,9 +18,9 @@ Dans ces panels, l'exposition et le résidu sont corrélés entre unités une m�
 
 - le cluster par département rejette à tort dans 16 à 56 % des cas ;
 - Conley à 200 km, dans 16 à 39 % ;
-- le WCR par année, dans 3,7 à 4,3 %.
+- le WCR par année, dans 3,5 à 7,0 % (tests bilatéraux en phases 4 et 6, unilatéraux en phase 4 bis).
 
-Avec peu de périodes (une dizaine ou moins), le CR1 par période devient lui aussi peu fiable. Le WCR avec poids de Webb est alors recommandé (Cameron, Gelbach & Miller 2008 ; Webb 2023).
+Dans l'exemple simulé, le CR1 par année a lui aussi la bonne taille : avec 25 périodes, il ne montre pas d'avantage du WCR sur le CR1. Avec peu de périodes (une dizaine ou moins), le CR1 par période devient peu fiable. Le WCR avec poids de Webb est alors recommandé (Cameron, Gelbach & Miller 2008 ; Webb 2023), sans garantie : sa taille se vérifie avec `placebo_size`.
 
 ## Fonctions
 
@@ -59,19 +59,20 @@ placebo_size(df, x = "chaleur", unit = "departement", period = "annee", tests = 
 
 1. **Frisch-Waugh-Lovell :** on retire les effets fixes (`fixest::demean`, pondéré), puis on projette sur `z`.
 2. **Tirages :** sous H0, chaque résidu restreint est multiplié par un poids de Webb tiré par grappe. Les poids prennent six valeurs : ±√(3/2), ±1, ±√(1/2).
-3. **Re-projection :** à chaque tirage, la variable simulée est re-projetée sur les effets fixes et sur `z`. Sans cette étape, la taille est faussée ; elle était de 8,7 % au lieu de 6,6 % dans une version antérieure du projet.
+3. **Re-projection :** à chaque tirage, la variable simulée est re-projetée sur les effets fixes et sur `z`. Sans cette étape, la taille est faussée : dans un premier diagnostic du projet, avec un placebo iid peu informatif, elle était de 8,7 % sans re-projection et de 6,6 % avec (R = 500). Ces deux chiffres comparent les versions ; ce ne sont pas des tailles de référence.
 4. **Comparaison :** on compare la statistique t observée (erreurs-types par grappe, sans facteur de petit échantillon puisqu'il se simplifie) à celle des tirages.
 
 **Validation :**
 
-- la statistique t observée est comparée à celle de `fixest` ;
+- la statistique t observée est identique au t de `fixest` avec erreurs-types CR0 par grappe (sur M1 : −1,040 dans les deux cas) ;
 - la taille est vérifiée par simulation, dans `exemple.R` et sur chaque jeu de données du projet.
 
 Il n'y a pas de suite de tests unitaires R.
 
 ## Limites
 
-- `placebo_size` garde y fixe et ne permute que les périodes de x : avec T périodes, les placebos sont peu nombreux et non indépendants. C'est un diagnostic indicatif.
+- `placebo_size` garde y fixe et ne permute que les périodes de x : avec T périodes, les placebos sont peu nombreux et non indépendants, et la dépendance temporelle de y au sein d'une unité n'est pas testée. La régression placebo retire la vraie exposition, dont l'effet éventuel reste dans l'erreur. C'est un diagnostic indicatif.
+- La p-valeur est la part des tirages au moins aussi extrêmes, sans la convention (1 + #)/(B + 1) : une p de 0 se lit p < 1/B.
 - **Graine :** `wcr_pvalue` appelle `set.seed(seed)`. Dans une boucle de simulation, il faut tirer les permutations avant les tests (comme `placebo_size`) ou passer une graine différente à chaque tour (comme `R/14_q1_maize.R`). Sinon, les tirages se répètent.
 - Le test porte sur un coefficient à la fois, ou sur un test joint, avec des grappes à une seule dimension.
 - Le temps de calcul est proportionnel à n × B.

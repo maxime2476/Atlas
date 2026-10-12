@@ -51,6 +51,7 @@ def test_maize_mask_matches_saa_grain_maize():
     a = load("maize_area_cell_dep_rpg.parquet")
     saa = pd.read_parquet(ROOT / "data" / "interim" / "saa_cop_departements_long.parquet")
     rpg = a.groupby(["dep_code", "millesime"])["surf_ha"].sum()
+    # Code 18 de la SAA : total maïs grain et maïs semence (16 + 17) ; la semence en fait environ 4 % en 2015-2017.
     grain = saa[(saa.culture_code == "18") & saa.metropole & saa.annee.between(2015, 2017)]
     grain = grain.set_index(["dep_code", "annee"])["surface_ha"]
     grain.index.names = rpg.index.names

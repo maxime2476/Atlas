@@ -59,7 +59,8 @@ def collect() -> None:
     pts.to_parquet(RAW, index=False)
     # Ajout au manifeste (même format que scripts/01_download_raw.py).
     manifest = ROOT / "docs" / "manifest_raw.csv"
-    rows = list(csv.DictReader(open(manifest, newline="")))
+    with open(manifest, newline="") as f:
+        rows = list(csv.DictReader(f))
     rows = [r for r in rows if r["file"] != str(RAW.relative_to(ROOT))]
     rows.append({"source": "ign_altimetrie", "file": str(RAW.relative_to(ROOT)), "url": URL + " (POST, ign_rge_alti_wld)",
                  "access_date": date.today().isoformat(), "size_bytes": RAW.stat().st_size, "sha256": sha256_of_file(RAW)})
@@ -85,7 +86,8 @@ def main() -> None:
     # 2 mailles côtières (29, 50 ; 16 ha de blé, poids <= 0,02 %) n'ont aucun point valide (presque
     # entièrement en mer) : altitude fixée à 0 m (niveau de la mer), sans effet mesurable sur le critère.
     n_missing = int(w["altitude_moy_m"].isna().sum())
-    assert n_missing <= 5 and w.loc[w["altitude_moy_m"].isna(), "wheat_ha"].sum() < 100, "trop de blé sans altitude"
+    if not (n_missing <= 5 and w.loc[w["altitude_moy_m"].isna(), "wheat_ha"].sum() < 100):
+        raise RuntimeError("trop de blé sans altitude")
     w["altitude_moy_m"] = w["altitude_moy_m"].fillna(0.0)
     print(f"mailles de blé sans point valide (altitude fixée à 0 m) : {n_missing}")
     dep = w.assign(haut=lambda d: d.w_wheat * (d.altitude_moy_m >= 600)).groupby("dep_code").agg(

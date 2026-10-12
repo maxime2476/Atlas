@@ -51,6 +51,8 @@ for (beta_vrai in c(0, -0.015, -0.03)) {
   }
   res[[length(res) + 1]] <- data.frame(beta_vrai = beta_vrai, inference = names(rej),
                                        taux_rejet_5pct = as.numeric(rej) / R, R = R,
+                                       # erreur-type de Monte-Carlo d'une taille de 5 % ; elle ne vaut pas
+                                       # pour les lignes de puissance (sqrt(p (1 - p) / R) avec p le taux observé)
                                        erreur_monte_carlo = sqrt(0.05 * 0.95 / R))
 }
 sim_out <- do.call(rbind, res)

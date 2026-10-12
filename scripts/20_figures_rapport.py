@@ -26,6 +26,8 @@ def save(fig, name, lang="fr"):
     else:
         fig.savefig(MEMOIRE_FIG / f"{name}.pdf")
 
+# Les effectifs des libellés (« 17 dép. », « 83 dép. », années) décrivent le plan de chaque échantillon et sont
+# écrits à la main, comme dans les tableaux du mémoire (annexe A) ; les valeurs tracées viennent des CSV.
 INK, INK2, SURFACE, BLUE, ORANGE, GRID = "#0b0b0b", "#52514e", "#fcfcfb", "#2a78d6", "#eb6834", "#e6e5e1"
 
 
@@ -48,12 +50,15 @@ def fig_rendement(lang="fr"):
     for yr in [2003, 2016, 2024]:
         ax.plot(yr, nat[yr], "o", color=BLUE, markersize=5, markeredgecolor=SURFACE, markeredgewidth=1.5)
         ax.annotate(str(yr), (yr, nat[yr]), xytext=(7, -3), textcoords="offset points", fontsize=8, color=INK)
-    ax.text(1999.5, 80.5, "Schauberger et al. (RAW)", ha="center", fontsize=8, color=INK2)
-    ax.text(2017.5, 80.5, "SAA, Agreste (2025 provisoire)" if lang == "fr" else "SAA, Agreste (2025 provisional)",
-            ha="center", fontsize=8, color=INK2)
+    # x en années, y en fraction de la hauteur : les sources sont écrites juste au-dessus du cadre, sans
+    # chevaucher la courbe quelle que soit l'échelle.
+    top = ax.get_xaxis_transform()
+    ax.text(1999.5, 1.01, "Schauberger et al. (RAW)", ha="center", va="bottom", fontsize=8, color=INK2, transform=top)
+    ax.text(2017.5, 1.01, "SAA, Agreste (2025 provisoire)" if lang == "fr" else "SAA, Agreste (2025 provisional)",
+            ha="center", va="bottom", fontsize=8, color=INK2, transform=top)
     ax.set_ylabel("q/ha", color=INK2)
     if lang == "fr":
-        ax.set_title("Rendement du blé tendre d'hiver, 85 départements (moyenne pondérée)", loc="left", fontsize=10, color=INK)
+        ax.set_title("Rendement du blé tendre d'hiver, 85 départements (moyenne pondérée)", loc="left", fontsize=10, color=INK, pad=16)
     style(ax)
     fig.tight_layout()
     save(fig, "fig1_rendement_national", lang)

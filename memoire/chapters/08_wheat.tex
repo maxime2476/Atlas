@@ -6,7 +6,7 @@ Wheat was the starting point of the project. Its results are null, but they are 
 \begin{figure}[H]
 \centering
 \includegraphics[width=0.95\textwidth]{figures/fig1_rendement_national.pdf}
-\caption{Soft winter wheat yield, area-weighted mean of the 85 departments of the population. The shaded period comes from \textcite{schauberger2022}, the rest from the SAA. Yields have plateaued since the mid-1990s, a break also modelled by \textcite{gouache2015}; 2016 and 2024 are the two largest losses since 2010.}
+\caption{Soft winter wheat yield, 1990--2025 (the full series starts in 1959), area-weighted mean of the 85 departments of the population. The shaded period comes from \textcite{schauberger2022}, the rest from the SAA. Yields have plateaued since the mid-1990s, a break also modelled by \textcite{gouache2015}; 2016 and 2024 are the two largest losses since 2010.}
 \label{fig:wheat-yield}
 \end{figure}
 
@@ -52,7 +52,7 @@ The natural answer to too few years is more years. Over 1959--2025, the model M3
 
 \paragraph{The main hypothesis is not established.} The association is \QtwoPct\,\% lower yield per degree-day, close to the estimate on 2010--2025, but a value this negative is not rare when there is no effect: the one-sided $p$-value is \QtwoP. The size of this test on these data is \QtwoSizeWCR\,\%, close to the nominal level in the placebo diagnostic. The sign is negative in all \QtwoRobTot{} robustness checks, and significant in \QtwoRobSig: the one without 2025 (one-sided $p = \QtwoNoTwentyFiveP$, two-sided $\QtwoNoTwentyFivePtwo$). I do not retain it. The rule was fixed in advance, and choosing the variant that ``works'' after seeing the results is exactly what pre-specification is meant to prevent. This sample also contains the 2010--2025 sample, so the similar estimate is not an independent replication.
 
-\paragraph{Why more years did not help much.} Multiplying the number of harvests by four only raised the effective number of informative years from \NeffWheat{} to \NeffWheatLong. Before 2000, only one summer, 1976, brought substantial heat above 32\,$^{\circ}$C in May--June across the sample, so most of the added years carry almost no information on it.
+\paragraph{Why more years did not help much.} Multiplying the number of harvests by four only raised the effective number of informative years from \NeffWheat{} to \NeffWheatLong. Before 2000, only one summer, 1976, brought substantial heat above 32\,$^{\circ}$C in May--June across the sample (\HeatSeventySix{} degree-days on average over the departments, against at most \HeatPreTwoThousandOtherMax{} in any other year before 2000), so most of the added years carry almost no information on it.
 
 \paragraph{Has wheat become more or less sensitive?} The heat slope is $-\SlopeA$\,\% per degree-day over 1959--1981, $-\SlopeB$\,\% over 1982--2003 and $-\SlopeC$\,\% over 2004--2025. The joint bootstrap test that the three slopes are equal gives $p = \QtwoWaldP$; its size was not measured. I find no detectable change, but with so little information this is an absence of evidence, not evidence of stability. Varieties, sowing dates and practices also changed over these decades, so even a detected change would have been descriptive.
 

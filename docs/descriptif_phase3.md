@@ -72,7 +72,7 @@ Les tableaux sont dans `reports/tables/` et les figures dans `reports/figures/` 
 **Observé :**
 
 - Les variables de **température moyenne ou cumulée** (`gdd_0_32_*`, `dd_0_automne`, `tmin_hiver`) gardent **moins de 5 %** de leur variance après effets fixes. Leur variation est surtout géographique et nationale : leurs coefficients seront peu précis.
-- Les variables d'eau et la chaleur extrême gardent 20 à 44 % de leur variance.
+- La chaleur extrême et les variables d'eau gardent 21 à 44 % de leur variance, sauf l'ETP (13 %).
 
 ## 4. Colinéarité entre chaleur et eau (hypothèse H2)
 

@@ -50,7 +50,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 
 - les données brutes (≈ 22 Go) ne sont **pas versionnées** ;
 - leurs URL, dates d'accès et **SHA-256** sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie ;
-- les points d'attention de chaque source sont détaillés dans `docs/sources.md` et `docs/phase0bis_cadrage.md`. La SAA 2000-2009 a été localisée par exploration du site Agreste (navigation automatisée en lecture seule), puis contrôlée : 94-95 % de valeurs identiques aux séries actuelles sur 2010-2020.
+- les points d'attention de chaque source sont détaillés dans `docs/sources.md` et `docs/phase0bis_cadrage.md`. La SAA 2000-2009 a été localisée par exploration du site Agreste (navigation automatisée en lecture seule), puis contrôlée : sur 2010-2020, 95 % des rendements concordent à 0,5 q/ha près avec les séries actuelles (1 674 paires comparées).
 
 ## 3. Architecture et flux de données
 
@@ -127,7 +127,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
 - **Dépendance à la mesure de la chaleur :**
   - avec une météo pondérée par la surface du département plutôt que par les parcelles de maïs, le coefficient n'est **pas significatif** (p = 0,22) ;
   - ce n'est pas une simple atténuation par erreur de mesure : sur 2010-2025, cette mesure donne même un coefficient plus fort (0,038 contre 0,024). La divergence se concentre sur 2000-2009 (−0,0009 contre +0,011) et persiste sur 2000-2009 sans 2003 (0,009 contre 0,038) ;
-  - la réplication 2000-2009 n'existe qu'avec le masque maïs, choisi après l'analyse exploratoire de la phase 6.
+  - la réplication 2000-2009 n'existe qu'avec le masque maïs, choisi après l'analyse exploratoire de la phase 6 ;
   - **un masque maïs d'époque (îlots RPG 2008) donne le même résultat** (+1,5 %, p = 0,007 ; robustesse déclarée avant estimation, après la relecture). L'âge du masque n'explique donc pas la divergence ;
   - celle-ci se concentre dans les départements de relief (Puy-de-Dôme, Isère, Drôme, Jura), où le maïs pousse en plaine et en vallée. En 2003, la pondération surfacique y sous-estime la chaleur subie par la culture de 7 à 10 °C·jour. C'est une explication a posteriori, cohérente avec le choix du masque maïs comme mesure principale, fixé avant estimation.
 - **Valorisation descriptive,** en euros courants, pour les 17 départements : les quintaux **associés** à l'irrigation lors d'un été plus chaud que la normale valent environ **49 M€ en 2003** (fourchette indicative de 8 à 98 M€), 9 M€ en 2019 et 14 M€ en 2022. Ce n'est pas la valeur totale de l'irrigation, ni un gain causal.
@@ -224,9 +224,9 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
   - Q1 : environ 1 min ;
   - Q2 : environ 3 min (simulation de taille comprise) ;
   - prévision : 10 min ;
-  - NDVI : de 1 à plusieurs heures côté NASA, plus 35 min.
+  - NDVI : de 1 à plusieurs heures côté NASA, puis environ 15 min d'agrégation et 30 min de prévision (`data/README.md`).
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
-  - Au 2026-10-12, 563 tests passent : 457 vérifications d'empreintes des fichiers bruts (une par fichier) et 106 tests de logique et de données.
+  - Au 2026-10-12, 564 tests passent : 457 vérifications d'empreintes des fichiers bruts (une par fichier) et 107 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).
 - **Graines :** fixées (20261010 et suivantes).

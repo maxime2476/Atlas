@@ -61,6 +61,8 @@ print(format(hyp[, c("hypothese", "variable_expliquee", "terme", "estimation", "
                      "p_conley", "p_unilaterale", "p_holm", "n", "annees")], digits = 3), row.names = FALSE)
 
 # --- Robustesses de A1 --------------------------------------------------------
+# swap() copie une variable de remplacement sous le nom de la variable principale : dans la sortie, la colonne
+# `terme` reste « dd_32_ja » pour R3, R4 (en réalité dd_30_ja) et R5 ; le libellé de la spécification fait foi.
 swap <- function(df, from, to) { for (i in seq_along(from)) df[[to[i]]] <- df[[from[i]]]; df }
 rob <- list(
   one(subset(mz), "dd_32_ja", RHS, "Q1-R1 38 départements (tous statuts)"),

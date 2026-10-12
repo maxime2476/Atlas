@@ -2,6 +2,8 @@
 
 *Rédigé le 2026-10-10. Aucun lien entre météo et rendement n'a été estimé à ce stade.*
 
+> *Document historique (phase 2), non réécrit : il décrit la chaîne sur SIM 2009-2025 (1989-2025 pour la période longue). Elle a ensuite été étendue à 1958-2025 et au masque maïs ; voir `data/README.md`.*
+
 ## 1. Chaîne de traitement
 
 | Étape | Script | Entrée | Sortie | Contrôles |

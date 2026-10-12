@@ -47,8 +47,8 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 
 | Code | Estimation | p WCR unilatérale | p Holm | Conclusion |
 |---|---|---|---|---|
-| H2a : un sol plus humide réduit l'écart (`swi_ja`) | −0,352 par unité de SWI | 0,012 | 0,024 | Soutenue |
-| H2b : la chaleur pénalise le maïs non irrigué | −2,5 % par °C·jour | < 0,0001 | < 0,0001 | Soutenue |
+| H2a : un sol plus humide est associé à un écart plus faible (`swi_ja`) | −0,352 par unité de SWI | 0,012 | 0,024 | Soutenue |
+| H2b : la chaleur est associée à un rendement non irrigué plus faible | −2,5 % par °C·jour | < 1/9 999 (aucun tirage n'atteint t ; le CSV affiche 0) | ≤ 4/9 999 | Soutenue |
 | H2c : la chaleur pénalise aussi le maïs irrigué | −1,0 % par °C·jour | 0,002 | 0,005 | Soutenue |
 | H3 : les jours de crise VigiEau réduisent la protection (2016-2025) | Interaction **positive** (+0,0008) | 0,961 | 0,961 | **Non soutenue**, signe opposé |
 
@@ -74,7 +74,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 - **Exception :** avec la météo pondérée par la surface (R3), le coefficient n'est pas significatif (p = 0,22).
   - Ce n'est **pas** une simple atténuation par erreur de mesure. Avec cette pondération, l'estimation sur 2010-2025 est même **plus forte** (0,038 contre 0,024). L'écart vient de 2000-2009 (−0,0009 contre +0,011), une période dominée par 2003.
   - Le résultat de Q1 dépend donc de la mesure de la chaleur pour les années 2000-2009. **Le qualificatif « robuste » n'est pas justifié.**
-- **2003 :** le résultat ne dépend pas de la canicule de 2003 (R8).
+- **2003 :** le résultat ne repose pas uniquement sur la canicule de 2003 (R8 : 0,024 sans 2003, taille non vérifiée pour cette variante). Sur 2000-2009 sans 2003, les deux mesures de la chaleur divergent toujours (0,038 avec le masque, 0,009 avec la pondération surfacique ; `phase4bis_q1_exploratoire.csv`, exploratoire).
 
 ### Valorisation descriptive (17 départements, conditionnelle à β̂)
 
@@ -87,7 +87,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 | 2022 | +1,9 | 0,33 million | 14 | 3 à 25 |
 
 - **Ce que mesurent ces chiffres :** des **quintaux associés** à l'irrigation lors d'un été plus chaud que la normale de chaque département, pour les 17 départements de l'échantillon (160 847 à 212 786 ha irrigués selon l'année).
-- **Convention de calcul :** la formule s'applique au rendement non irrigué, ce qui est prudent. Appliquée au rendement irrigué, Y_I × (1 − exp(−βΔ)), elle donnerait environ 28 % de plus en 2003.
+- **Convention de calcul :** la formule s'applique au rendement non irrigué, ce qui est prudent. Appliquée au rendement irrigué, Y_I × (1 − exp(−βΔ)), elle donnerait environ 29 % de plus en 2003 (`\ValAltPct` du mémoire, script 26).
 - **Euros courants :** 2022 vaut plus que 2019 malgré moins de quintaux, parce que le prix passe de 21 à 41 €/q. Ce n'est **pas** la valeur totale de l'irrigation, qui inclut aussi l'avantage moyen de l'irrigué, ni un gain causal.
 - **Pourquoi 2022 pèse peu :** sa sécheresse est mal captée par la seule chaleur au-dessus de 32 °C dans ces départements.
 - **Fourchette :** elle repose sur l'IC du cluster par année (CR1) ; c'est une indication seulement.

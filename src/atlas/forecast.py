@@ -63,7 +63,11 @@ def standardize(xtr: np.ndarray, xte: np.ndarray):
 
 
 def choose_ridge_alpha(x: np.ndarray, y: np.ndarray, w: np.ndarray, years: np.ndarray) -> float:
-    """α par validation croisée interne : une année d'entraînement retirée à la fois (MSE pondérée)."""
+    """α par validation croisée interne : une année d'entraînement retirée à la fois (MSE pondérée).
+
+    Cette validation interne n'est pas chronologique (elle utilise des années postérieures à l'année retirée),
+    mais elle ne voit jamais l'année test : aucune fuite vers le pli évalué.
+    """
     scores = {}
     for a in RIDGE_ALPHAS:
         err = []

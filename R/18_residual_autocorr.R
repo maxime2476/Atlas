@@ -1,7 +1,10 @@
 # Étape 18 (R) : diagnostic non pré-spécifié, demandé par la relecture du mémoire.
 # Le bootstrap par année suppose l'indépendance entre années ; le placebo à années permutées ne peut pas
 # détecter une sur-taille due à une dépendance temporelle intra-département. On mesure donc l'autocorrélation
-# d'ordre 1 des résidus, au sein de chaque département, pour A1 (maïs) et B1 (blé 1959-2025).
+# d'ordre 1 des résidus, au sein de chaque département, pour A1 (maïs) et B1 (blé 1959-2025 ; « B1 » est le nom de
+# la spécification 4 bis, M3 dans le mémoire). Limites : des résidus après effets fixes biaisent rho vers le bas
+# (biais de Nickell, environ -1/(T-1), soit -0,04 pour T = 26) ; pour le blé, quelques paires d'années consécutives
+# traversent les ruptures de source de 1989 et 2010.
 # Usage : Rscript R/18_residual_autocorr.R ; sortie : reports/tables/diag_autocorr_residus.csv
 
 source("R/common.R")

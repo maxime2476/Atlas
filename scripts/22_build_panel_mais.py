@@ -95,8 +95,10 @@ def main() -> None:
     out = out.merge(panel_mod.centroids(), on="dep_code", how="left", validate="many_to_one")
     ctl.append(("jointure météo (maïs, surface) + VigiEau + centroïdes", len(y), len(out)))
 
-    assert not out.duplicated(["dep_code", "annee", "modalite"]).any()
-    assert out["dd_32_ja"].notna().all() and out["dd_32_ja_surf"].notna().all() and out["lat_centroide"].notna().all()
+    if out.duplicated(["dep_code", "annee", "modalite"]).any():
+        raise RuntimeError("doublons (dep_code, annee, modalite)")
+    if not (out["dd_32_ja"].notna().all() and out["dd_32_ja_surf"].notna().all() and out["lat_centroide"].notna().all()):
+        raise RuntimeError("chaleur ou centroïde manquant dans le panel maïs")
     out = out.sort_values(["dep_code", "annee", "modalite"]).reset_index(drop=True)
     out.to_parquet(PROC / "panel_mais_long.parquet", index=False)
 

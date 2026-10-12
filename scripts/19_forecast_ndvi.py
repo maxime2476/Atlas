@@ -1,6 +1,6 @@
 """Étape 19 : le NDVI améliore-t-il la prévision ? (protocole : docs/decisions.md, « NDVI : protocole fixé... »)
 
-Usage : uv run python scripts/19_forecast_ndvi.py   (~6 min)
+Usage : uv run python scripts/19_forecast_ndvi.py   (durée : voir data/README.md)
 Entrées : data/processed/ndvi_dep_composite.parquet, data/processed/forecast_features.parquet
 Sorties : data/processed/ndvi_features.parquet, reports/tables/phase6_ndvi_*.csv
 

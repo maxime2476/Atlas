@@ -1,7 +1,7 @@
 """Étape 12 : indicateurs par demi-mois pour les robustesses R11, R12 et R14 (docs/decisions.md).
 
-Usage : uv run python scripts/12_build_semimonthly.py   (~6 min)
-Entrées : SIM quotidienne 2009-2025, poids du masque blé (data/processed/weights_cell_dep_wheat.parquet)
+Usage : uv run python scripts/12_build_semimonthly.py   (durée : voir data/README.md)
+Entrées : SIM quotidienne 2010-2025 (avril-juillet ; plus le 1er janvier 2026 s'il est présent, sans effet ici), poids du masque blé (data/processed/weights_cell_dep_wheat.parquet)
 Sortie : data/processed/weather_dep_harvest_wheat_extra.parquet (département × récolte 2010-2025) :
   gdd_0_32_m2s, dd_32_m2s   fenêtre décalée de -2 semaines (16 avril - 15 juin)
   gdd_0_32_p2s, dd_32_p2s   fenêtre décalée de +2 semaines (16 mai - 15 juillet)
@@ -47,7 +47,9 @@ def main() -> None:
         out["dd_32"] = double_sine(tmin, tmax, tnext, 32)
         for name, lo, hi in zip(BIN_NAMES, EDGES[:-1], EDGES[1:]):
             out[name] = double_sine_time_in_bin(tmin, tmax, tnext, lo, hi)
-        agg = out.groupby(["LAMBX", "LAMBY", "year", "month", "demi"], as_index=False).sum(min_count=1)
+        # Masquage strict, comme weather.monthly : un jour manquant rend la variable du demi-mois manquante.
+        g = out.groupby(["LAMBX", "LAMBY", "year", "month", "demi"])
+        agg = g.sum().where(g.count().eq(g.size(), axis=0)).reset_index()
         parts.append(agg)
         print(f"{year}: {len(df):,} maille-jours -> {len(agg):,} maille-demi-mois ({time.perf_counter() - t0:.0f} s)")
     cell = pd.concat(parts, ignore_index=True)
@@ -58,7 +60,8 @@ def main() -> None:
     for w, periods in WINDOWS.items():
         sel = dep.merge(pd.DataFrame(periods, columns=["month", "demi"]), on=["month", "demi"])
         g = sel.groupby(["dep_code", "year"])
-        assert (g.size() == len(periods)).all(), w
+        if not ((g.size() == len(periods)).all()):
+            raise RuntimeError(f"demi-mois manquants dans la fenêtre {w}")
         block = g[values].sum().reset_index().rename(columns={"year": "annee"})
         if w == "remplissage":
             block = block[["dep_code", "annee"] + BIN_NAMES]
@@ -66,7 +69,8 @@ def main() -> None:
             block = block[["dep_code", "annee", "dd_0", "dd_32"]].assign(gdd_0_32=lambda d: d.dd_0 - d.dd_32)
             block = block.rename(columns={"dd_32": f"dd_32_{w}", "gdd_0_32": f"gdd_0_32_{w}"}).drop(columns="dd_0")
         res = block if res is None else res.merge(block, on=["dep_code", "annee"], validate="one_to_one")
-    assert res.notna().all().all() and np.allclose(res[BIN_NAMES].sum(axis=1), 61)  # mai + juin = 61 jours
+    if not (res.notna().all().all() and np.allclose(res[BIN_NAMES].sum(axis=1), 61)):  # mai + juin = 61 jours
+        raise RuntimeError("valeurs manquantes ou classes de température ne sommant pas à 61 jours")
     res.to_parquet(PROC / "weather_dep_harvest_wheat_extra.parquet", index=False)
     print(f"écrit {len(res)} lignes ; somme des classes = 61 jours vérifiée ; "
           f"jours ≥ 33 °C en mai-juin : moyenne {res.bin_ge33.mean():.3f}, max {res.bin_ge33.max():.2f}")

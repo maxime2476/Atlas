@@ -23,7 +23,8 @@ fit <- function(df, rhs, fe = "dep_code + annee", weighted = TRUE, y = "log_rend
 }
 
 # Une ligne par coefficient d'intérêt : estimation, trois inférences, effet en %.
-# p-valeurs de Conley : degrés de liberté par défaut de fixest ; noyau uniforme, sans dimension temporelle.
+# p-valeurs de Conley : degrés de liberté par défaut de fixest ; noyau uniforme, sans dimension temporelle ;
+# distance par défaut de fixest, « triangular » (approximation de la distance), et non « spherical ».
 summarise_term <- function(model, df, term, rhs, fe_vars = c("dep_code", "annee"), weighted = TRUE,
                            label = "", conley_km = CONLEY_KM, exposure_2019 = NA, B = 9999,
                            pct_meaningful = TRUE, y = "log_rendement") {

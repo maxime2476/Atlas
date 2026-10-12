@@ -96,7 +96,8 @@ def download(task_id: str) -> None:
                      "url": f"{API}/bundle/{task_id}/{f['file_id']}", "access_date": date.today().isoformat(),
                      "size_bytes": dest.stat().st_size, "sha256": digest})
     manifest = ROOT / "docs" / "manifest_raw.csv"
-    old = [r for r in csv.DictReader(open(manifest, newline="")) if r["file"] not in {x["file"] for x in rows}]
+    with open(manifest, newline="") as fh:
+        old = [r for r in csv.DictReader(fh) if r["file"] not in {x["file"] for x in rows}]
     with open(manifest, "w", newline="") as fh:
         w = csv.DictWriter(fh, fieldnames=["source", "file", "url", "access_date", "size_bytes", "sha256"])
         w.writeheader()

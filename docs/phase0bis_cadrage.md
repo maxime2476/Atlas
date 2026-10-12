@@ -65,7 +65,7 @@ L'extension européenne (régions NUTS 2), la plus puissante mais aussi la plus 
 
 **Q1, maïs et irrigation :**
 
-- **Taille :** 17 départements × 16 ans = 270 observations (statut 1), ou 38 × 16 = 606 (tous statuts). C'est petit mais informatif : la taille du WCR est vérifiée et N_eff = 6,9.
+- **Taille :** 270 observations (17 départements en statut 1, 2010-2025), ou 606 (38 départements, tous statuts). Ce sont des comptages après retrait des valeurs manquantes, et non des produits (17 × 16 = 272 ; 38 × 16 = 608). C'est petit mais informatif : la taille du WCR est vérifiée et N_eff = 6,9.
 - **Sélection et composition :**
   - le partage irrigué / non irrigué de la SAA est en partie **construit** (statut 2 ou 3 pour 21 départements sur 38) ;
   - les surfaces irriguées changent d'une année à l'autre, et l'on irrigue d'abord les meilleures terres ou les exploitations les mieux équipées.
@@ -137,6 +137,6 @@ L'extension européenne (régions NUTS 2), la plus puissante mais aussi la plus 
    **Fait nouveau :** les anciennes séries SAA permettent d'allonger le panel maïs à **2000-2025**. Le statut qualité n'existant pas avant 2010, on applique le statut 2025 sur toute la période. C'est une limite à documenter. Effectifs à recalculer en phase 2 bis.
 3. Téléchargements réalisés : SIM 1958-1988 (≈ 4,2 Go), VigiEau 2012-2024, IPPAP maïs, SAA anciennes séries.
 4. Vérification de la SAA 2000-2009 faite par Claude avec Playwright, à la demande de l'utilisateur.
-   - Chromium sans interface a été installé dans `~/.cache/ms-playwright`, et ses bibliothèques manquantes extraites localement depuis les paquets Ubuntu (`apt-get download`), **sans `sudo`**.
+   - Chromium sans interface a été installé dans le cache de l'utilisateur, et ses bibliothèques manquantes extraites localement depuis les paquets Ubuntu (`apt-get download`), **sans `sudo`**.
    - La vérification TLS n'a pas été désactivée : Chromium complète lui-même la chaîne de certificats d'Agreste.
    - Navigation en lecture seule ; le fichier a ensuite été téléchargé par `scripts/01_download_raw.py --saa-ancienne`.
