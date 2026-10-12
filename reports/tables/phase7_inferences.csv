@@ -1,0 +1,4 @@
+"specification","estimation","n","p_wcb_annee","p_wcb_annee_unilateral_droite","se","p_unilateral_droite"
+"G8 DML (forêts aléatoires, 5 plis par années)",0.0154979357216768,435,0.0321032103210321,0.0156015601560155,NA,NA
+"G9a jackknife par année (CV3)",0.0157778591926995,435,NA,NA,0.0105663963880881,0.0739481322240312
+"G9b randomisation (5 000 dérangements, stat. beta)",0.0157778591926995,435,NA,NA,NA,0.0012

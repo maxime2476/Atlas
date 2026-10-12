@@ -59,7 +59,7 @@ def data_numbers(n: dict) -> None:
     j = old.merge(new.rename(columns={"dep_code": "DEP"}), on=["DEP", "annee", "modalite"]).dropna(subset=["old", "rendement_q_ha"])
     j = j[(j.old > 0) & (j.rendement_q_ha > 0)]
     diff = (j.old - j.rendement_q_ha).abs()
-    n["SpliceN"] = str(len(j))
+    n["SpliceN"] = f"{len(j):,}"
     n["SpliceShare"] = f"{100 * (diff <= 0.5).mean():.0f}"
     n["SpliceMedian"] = f"{(j.old - j.rendement_q_ha).median():.1f}"
     n["SpliceCorrIrr"] = f"{j[j.modalite == 'irrigue'][['old', 'rendement_q_ha']].corr().iloc[0, 1]:.2f}"
@@ -270,7 +270,7 @@ def maize_tables(n: dict) -> None:
     en = {"A1": "Main specification", "Q1-R1": "38 departments (all quality statuses)", "Q1-R2": "2010--2025 only",
           "Q1-R3": "Weather weighted by department area", "Q1-R4": "Threshold 30\\,$^{\\circ}$C", "Q1-R5": "July only",
           "Q1-R6": "Unweighted", "Q1-R7": "Without 2025 (provisional)", "Q1-R8": "Without 2003",
-          "Q1-R9": "2008 maize mask (declared after review)"}
+          "Q1-R9": "2008 maize mask (added later)"}
     rrows = [f"{en[r.specification.split(' ', 1)[0]]} & ${r.estimation:+.4f}$ & ${r.effet_pct_par_unite:+.2f}$ & "
              f"{pv(r.p_wcb_annee_unilateral_droite)} & {int(r.n)} & "
              f"{int(r.n_departements) if pd.notna(r.n_departements) else n['MaizeMainDeps']} \\\\" for r in rob.itertuples()]
@@ -558,6 +558,10 @@ def main() -> None:
         return 100 * (math.exp(b) - 1)
     n["CiNinetyLow"], n["CiNinetyHigh"] = pct(bound("A1", 0.90, "borne_inf"), 2), pct(bound("A1", 0.90, "borne_sup"), 1)
     n["CiNinetyFiveLow"], n["CiNinetyFiveHigh"] = pct(bound("A1", 0.95, "borne_inf"), 2), pct(bound("A1", 0.95, "borne_sup"), 1)
+    # L'intervalle du blé doit porter sur le beta de M1 (phase 4, 83 départements), pas sur celui de R4.
+    m1_est = pd.read_csv(TAB / "phase4_principal.csv").query("specification == 'M1' and terme == 'dd_32_remplissage'")
+    if abs(ci[ci.modele.str.startswith("M1")].estimation.iloc[0] - m1_est.estimation.iloc[0]) > 1e-12:
+        raise SystemExit("l'intervalle E1 du blé ne porte pas sur le beta de M1")
     n["WheatCiLow"], n["WheatCiHigh"] = pct(bound("M1", 0.95, "borne_inf")), pct(bound("M1", 0.95, "borne_sup"))
     dep = pd.read_csv(TAB / "phase4bis_q1_revue_departements.csv")
     loo, relief = dep[dep.n_departements == 16], dep[dep.n_departements == 11].iloc[0]
@@ -575,6 +579,41 @@ def main() -> None:
     qe = pd.read_csv(TAB / "phase4bis_q1_eobs.csv").iloc[0]
     n["EobsPct"], n["EobsP"] = pct(qe["effet_pct_par_unite"]), pv(qe["p_wcb_annee_unilateral_droite"])
     n["EobsCorr"] = f"{qe['correlation_eobs_sim']:.2f}"
+    # Analyses complémentaires v1.2 (R/22, scripts/28-29), déclarées avant calcul, exploratoires.
+    it = pd.read_csv(TAB / "phase7_interactions.csv")
+    n["RelInter"], n["RelInterP"] = f"{it.estimation.iloc[0]:.4f}", pv(it.p_wcb_annee.iloc[0])
+    n["IrrInterP"] = pv(it.p_wcb_annee.iloc[2])
+    ens = pd.read_csv(TAB / "phase7_ensilage.csv").iloc[0]
+    n["SilageShare"], n["SilageP"] = pct(100 * ens.moyenne_part, 0), pv(ens.p_wcb_annee_unilateral_droite)
+    inf = pd.read_csv(TAB / "phase7_inferences.csv").set_index("specification")
+    n["DmlBeta"] = f"{inf.loc[inf.index.str.startswith('G8')].estimation.iloc[0]:.4f}"
+    n["DmlP"] = pv(inf.loc[inf.index.str.startswith("G8")].p_wcb_annee_unilateral_droite.iloc[0])
+    n["CvThreeP"] = pv(inf.loc[inf.index.str.startswith("G9a")].p_unilateral_droite.iloc[0])
+    n["RiP"] = pv(inf.loc[inf.index.str.startswith("G9b")].p_unilateral_droite.iloc[0])
+    sz = pd.read_csv(TAB / "phase7_tailles.csv").set_index("diagnostic").taux * 100
+    n["WithinYearSize"] = pct(sz[sz.index.str.startswith("G3a")].iloc[0])
+    n["HtwobSize"] = pct(sz[sz.index.str.contains("H2b")].iloc[0])
+    n["HtwocSize"] = pct(sz[sz.index.str.contains("H2c")].iloc[0])
+    n["ConleyFixedPct"] = pct(sz[sz.index.str.startswith("G9c")].iloc[0], 0)
+    lv = pd.read_csv(TAB / "phase7_levier_annees.csv")
+    l03 = lv[lv.annee == 2003].set_index("periode")
+    n["LevThree"], n["LevThreeEarly"] = pct(100 * l03.loc["2000-2025", "part_sxx"], 0), pct(100 * l03.loc["2000-2009", "part_sxx"], 0)
+    n["NeffLevAll"], n["NeffLevEarly"] = pct(l03.loc["2000-2025", "n_eff_periode"]), pct(l03.loc["2000-2009", "n_eff_periode"])
+    g6 = pd.read_csv(TAB / "phase7_pentes_departements.csv")
+    n["EbTau"], n["EbQp"] = f"{g6.tau.iloc[0]:.4f}", pv(g6.p_Q.iloc[0])
+    n["EbMin"], n["EbMax"] = f"{g6.pente_retrecie.min():.3f}", f"{g6.pente_retrecie.max():.3f}"
+    n["EbCorIrr"], n["EbCorAlt"] = f"{g6.cor_retrecie_part_irr.iloc[0]:.2f}", f"{g6.cor_retrecie_ecart_alt.iloc[0]:.2f}"
+    n["ForestP"] = pv(pd.read_csv(TAB / "phase7_foret_causale.csv").p_differential.iloc[0])
+    eo = pd.read_csv(TAB / "phase7_eolien.csv")
+    n["WindIrrPct"], n["WindIrrP"] = pct(eo.effet_pct_par_unite.iloc[0], 2), pv(eo.p_wcb_annee.iloc[0])
+    n["WindMinP"] = pv(eo.p_wcb_annee.iloc[1:].min())
+    cf = pd.read_csv(TAB / "phase7_prevision_conforme.csv")
+    cf = cf[(cf.variante == "principale_2010") & (cf.modele != "B1")]
+    n["ConfCovMin"], n["ConfCovMax"] = pct(100 * cf.couverture_moyenne.min(), 0), pct(100 * cf.couverture_moyenne.max(), 0)
+    vb = pd.read_csv(TAB / "phase7_prevision_vs_B0.csv")
+    trees = vb[vb.modele.isin(["RF_B0", "GBM_B0"])]
+    n["BzeroTreeMin"], n["BzeroTreeMax"] = pct(100 * trees.skill_vs_B0.min(), 0), pct(100 * trees.skill_vs_B0.max(), 0)
+    n["BzeroTreeSig"] = str(int((trees.ic95_haut < 0).sum()))
     n["EobsSdEffect"] = pct(100 * (math.exp(qe["estimation"] * qe["sd_intra_eobs"]) - 1), 1)
     n["SimSdEffect"] = pct(100 * (math.exp(h.loc["H1", "estimation"] * qe["sd_intra_sim"]) - 1), 1)
     n["QoneReplPtwo"] = f"{h.loc['réplication', 'p_wcb_annee']:.2f}"
@@ -610,7 +649,7 @@ def main() -> None:
     # Départements de relief : sous-estimation de la chaleur 2003 par la pondération surfacique (> 5 °C·jour).
     mes = pd.read_csv(TAB / "phase4bis_q1_mesures_departement.csv")
     gap = -mes.loc[mes.ecart_surface_moins_masque_2003 < -5, "ecart_surface_moins_masque_2003"]
-    n["ReliefGapMin"], n["ReliefGapMax"] = f"{gap.min():.0f}", f"{gap.max():.0f}"
+    n["ReliefGapMin"], n["ReliefGapMax"] = f"{gap.min():.1f}", f"{gap.max():.1f}"
 
     # --- Q2, blé 1959-2025 --------------------------------------------------------------
     q2 = pd.read_csv(TAB / "phase4bis_q2_hypotheses.csv")
@@ -664,8 +703,9 @@ def main() -> None:
         f"{n['QonePct']}% wider gap in favour of irrigated maize (one-sided wild cluster bootstrap by year, "
         f"p = {n['QoneP']}). This meets the pre-specified rule, but {n['ExploSharePct']}% of the sample comes from the "
         "exploratory years. The only new evidence, 2000-2009, keeps the sign at about half the magnitude, a "
-        f"difference driven by 2003 (p = {n['QoneReplP']}, power about {n['ReplPower']}%), and not with heat averaged "
-        f"over whole departments. Without the six departments with uplands it is not significant (p = {n['NoReliefP']}). "
+        f"difference driven by 2003 (p = {n['QoneReplP']}, power about {n['ReplPower']}%), and does not hold with heat averaged "
+        f"over whole departments. Without the six departments with uplands it is not significant (p = {n['NoReliefP']}), "
+        f"nor with a cluster jackknife (p = {n['CvThreeP']}). "
         "The result holds with E-OBS "
         "temperatures. A pre-specified interaction with crisis-level water restrictions has the opposite sign to the "
         "hypothesis. The result is an association, not the causal effect of irrigation. In these panels, standard "

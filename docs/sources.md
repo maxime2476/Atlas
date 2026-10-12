@@ -150,11 +150,31 @@
 | Correspondance avec SIM | Point E-OBS le plus proche du centre de chaque maille SIM (au plus 0,07°). 106 mailles littorales du masque maïs tombent sur un point en mer (manquant toutes les années) ; aucune dans les 17 départements de l'échantillon principal |
 | Limites | Interpolation de stations, de niveau différent de SAFRAN : sur le masque maïs, E-OBS donne plus de degrés-jours > 32 °C en juillet-août que SIM (corrélation 0,95, `docs/decisions.md`) ; les fenêtres horaires de Tmin et Tmax suivent les conventions des fournisseurs nationaux et n'ont pas été vérifiées pour la France (SIM : `TINF_H` sur ]18-18 UTC], `TSUP_H` sur ]06-06 UTC]) ; une partie des stations françaises est commune à SAFRAN : ce n'est pas une mesure entièrement indépendante |
 
+## 8 ter. Registre national des installations de production et de stockage d'électricité (RTE, ODRÉ) : analyse G10 (v1.2)
+
+| Champ | Valeur |
+|---|---|
+| Producteur | RTE (article L142-9-1 du code de l'énergie), publié sur ODRÉ (Open Data Réseaux Énergies) et data.gouv.fr |
+| Page officielle | https://www.data.gouv.fr/datasets/5bfcc5a006e3e744e304ccf0 ; export : `https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/registre-national-installation-production-stockage-electricite-agrege/exports/csv` |
+| Licence | Licence Ouverte / Etalab 2.0 (page data.gouv consultée le 2026-10-12) |
+| Fichier | CSV séparé par « ; », 140 539 installations, 51 champs (noms techniques) ; instantané au 30/06/2026 |
+| Variables utilisées | `filiere` = « Eolien », `technologie` = « Terrestre », `codedepartement`, `datemiseenservice_date`, `puismaxinstallee` (kW) |
+| Limites | Installations **en service** à la date de l'instantané seulement (les parcs démantelés manquent ; un parc renouvelé peut porter une date récente) ; 34 installations terrestres sans date ou sans département retirées ; puissance installée, pas production |
+
+## 8 quater. SAA, feuilles FOU et TER (même fichier que le § 1) : variables v1.2
+
+- **FOU :** maïs fourrage et ensilage (plante entière) irrigué (ligne 04) et non irrigué (ligne 05), surfaces 2010-2025 par département ; utilisé pour la part du maïs non irrigué récolté en fourrage (analyse G2).
+- **TER :** SAU du département (ligne 33), moyenne 2010-2012 ; dénominateur de la densité éolienne (G10).
+- **Méthode du partage irrigué / non irrigué (recherche du 2026-10-12) :** les publications publiques consultées (SAA 2016-2024, « Chiffres et données » ; « Infos rapides » grandes cultures) décrivent la SAA comme une synthèse établie par les services régionaux (SRISE), combinant des enquêtes (Structure, Terres, vergers) et des données administratives (ASP, aides PAC). Les rendements en cours de campagne sont estimés par ces services. **Aucune ne définit « irrigué »** (surface irriguée l'année, ou équipée pour l'irrigation). Les PDF méthodologiques renvoient désormais une page de connexion. Question à poser au SSP ; l'enquête Pratiques culturales grandes cultures (2017, 2021, 2025), qui relève l'irrigation et le rendement à la parcelle, pourrait valider le partage au niveau régional.
+
 ## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |
 |---|---|---|
 | BNPE, volumes prélevés pour l'irrigation (OFB / agences de l'eau) | Auditée en phase 0 ter, échantillons non conservés | Volumes annuels toutes cultures confondues, ruptures de déclaration ; voir `docs/phase0ter_audit.md` |
+| MIRCA-OS (surfaces irriguées et pluviales par culture, 5′, 2000-2020) | Repérée le 2026-10-12, non téléchargée | Licence CC BY-NC-ND ; la part irriguée de la SAA, complète pour l'échantillon, suffit (G5) |
+| MODIS MOD11A2 (température de surface, 1 km) | Déclarée (G11), non commandée | Jeton AppEEARS expiré le 2026-10-12 ; à reprendre avec un jeton renouvelé |
+| Assurance récolte, aides PAC couplées, dates de semis | Recherchées le 2026-10-12 | Pas de série départementale publique trouvée |
 | Open-Meteo, API d'archives (ERA5, ERA5-Land) | Auditée le 2026-10-12 (documentation et conditions) | Limite gratuite de 10 000 appels par jour, chaque appel couvrant deux semaines pour un point : environ 200 000 appels pour les 1 784 mailles du masque, juillet-août 2000-2025 |
 | NASA POWER | Repérée le 2026-10-12, non auditée | Grille d'environ 0,5°, trop grossière pour un masque de mailles de 8 km |
 | NDVI VIIRS (successeur de MODIS) | Non téléchargé | Envisagé pour la continuité après Terra ; non nécessaire pour 2010-2025 |
@@ -163,12 +183,13 @@
 
 ## 10. Empreintes SHA-256 (générées depuis le manifeste le 2026-10-12)
 
-Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 107 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS ajoutés le 2026-10-12).
+Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 108 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS et le registre RTE ajoutés le 2026-10-12).
 
 | Fichier (`data/raw/…`) | Taille | Accès | SHA-256 |
 |---|---|---|---|
 | `agreste_saa/SAA-SeriesLongues-2010-2025_DonneesProvisoires-DepartementalesRegionales.zip` | 7.08 Mo | 2026-10-10 | `46e2ea9493ae34fac5d343e6cef51ac08a455d970ce78611c5d3b2365650d76f` |
 | `agreste_saa_ancienne/FDS_DEVELOPPE_2.zip` | 8.81 Mo | 2026-10-11 | `b7bbb133fd96335312bfe6613d39bd3f5faacc927d90c6fc9182b66e03911efa` |
+| `rte_registre/registre_installations_2026-06-30.csv` | 44.60 Mo | 2026-10-12 | `eb25840ffb6693614e9a2867bafba0b2bd9383a0ab0a6eab04ea9a33d220d18c` |
 | `eobs/tn_ens_mean_0.1deg_reg_1995-2010_v33.0e.nc` | 1061.73 Mo | 2026-10-12 | `66735f11fe61b98a76acc24d66ceda078579801dba13f8eabaeec2cfc0b95d31` |
 | `eobs/tn_ens_mean_0.1deg_reg_2011-2025_v33.0e.nc` | 922.88 Mo | 2026-10-12 | `10c44bf93e2b090a0c7cbaad07eedfa54aca0b92ece8a909067ef6d160ede2d4` |
 | `eobs/tx_ens_mean_0.1deg_reg_1995-2010_v33.0e.nc` | 1067.57 Mo | 2026-10-12 | `8a770f8a8c9d7d967d7241ec36e90d027b043d39b658a813d938c2c92834dfc7` |

@@ -57,9 +57,14 @@ b_maize <- coef(fit(d, RHS, y = "ecart_log"))[["dd_32_ja"]]
 ci_maize <- cbind(modele = "A1 maïs 2000-2025", terme = "dd_32_ja", estimation = b_maize,
                   invert(d, "ecart_log", "dd_32_ja", "swi_ja", b_maize, half_width = 0.04))
 
-wheat <- load_panel()
+# Échantillon de M1 en phase 4 (R/10) : 83 départements de statut 1, 1 328 observations. Une première version
+# de ce script prenait les 85 départements (robustesse R4) ; corrigé le 2026-10-12 (docs/decisions.md).
+wheat <- subset(load_panel(), echantillon_principal)
+stopifnot(nrow(wheat) == 1328)
 RHS_M1 <- c("gdd_0_32_remplissage", "dd_32_remplissage", "prec_printemps", "dd_0_automne", "prec_automne")
 b_wheat <- coef(fit(wheat, RHS_M1))[["dd_32_remplissage"]]
+p4 <- read.csv("reports/tables/phase4_principal.csv")
+stopifnot(abs(b_wheat - p4$estimation[p4$specification == "M1" & p4$terme == "dd_32_remplissage"]) < 1e-12)
 ci_wheat <- cbind(modele = "M1 blé 2010-2025 (H1 phase 4)", terme = "dd_32_remplissage", estimation = b_wheat,
                   invert(wheat, "log_rendement", "dd_32_remplissage", setdiff(RHS_M1, "dd_32_remplissage"),
                          b_wheat, half_width = 0.2, step = 0.001))  # 16 grappes : intervalle large

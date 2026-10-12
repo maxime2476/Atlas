@@ -37,7 +37,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 
 - **H1 est établie selon la règle pré-spécifiée** (p = 0,007 < 0,05 et taille de 3,7 % ≤ 10 %), au sens de cette règle seulement : 270 des 435 paires (62 %) appartiennent à 2010-2025, la période dont l'analyse exploratoire (phase 6) a suggéré l'hypothèse. La seule preuve nouvelle est la décennie 2000-2009, ci-dessous.
 - Chaque degré-jour au-dessus de 32 °C en juillet-août est associé à un écart de rendement plus large d'environ 1,6 % en faveur du maïs irrigué.
-- Sur les dix années 2000-2009, que l'analyse exploratoire de la phase 6 n'avait pas vues, l'estimation garde **le même signe avec le masque maïs, pour un effet environ deux fois plus faible** (+1,1 % contre +2,4 % sur 2010-2025 avec le même masque).
+- Sur les dix années 2000-2009, que l'analyse exploratoire de la phase 6 n'avait pas vues, l'estimation garde **le même signe avec le masque maïs, pour un effet environ deux fois plus faible** (+1,1 % contre +2,5 % sur 2010-2025 avec le même masque).
 - **Cette réplication dépend de la mesure de la chaleur.** Avec la pondération surfacique utilisée en phase 6, l'estimation sur 2000-2009 est nulle (−0,0009 ; § « Diagnostics exploratoires »). Elle n'est donc pas convergente avec la mesure de la phase 6.
 - Avec 10 grappes, la taille du WCR, mesurée ensuite (diagnostic D2, déclaré avant calcul), est de 5,7 % ; mais sa puissance contre un vrai effet de 0,011 n'est que de 11 % : une p de 0,049 est une preuve faible. La p bilatérale vaut 0,10.
 
@@ -80,17 +80,18 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 
 **Prix :** IPPAP maïs × 0,2192 €/q par point ; raccord stable sur 2012-2016 (écart maximal 0,0009 < 0,002).
 
-| Été | Écart moyen à la normale de `dd_32_ja` (°C·jour, pondéré) | Quintaux associés à l'irrigation | Valeur (M€) | Fourchette IC 90 % (M€) |
+| Été | Écart moyen à la normale de `dd_32_ja` (°C·jour, pondéré) | Quintaux associés à l'irrigation | Valeur (M€) | Fourchette (M€), IC 90 % par inversion du WCR (E1) |
 |---|---|---|---|---|
-| 2003 | +13,7 | 2,98 millions | **49** | 8 à 98 |
-| 2019 | +2,5 | 0,43 million | 9 | 2 à 17 |
-| 2022 | +1,9 | 0,33 million | 14 | 3 à 25 |
+| 2003 | +13,7 | 2,98 millions | **49** | 16 à 170 |
+| 2019 | +2,5 | 0,43 million | 9 | 3 à 27 |
+| 2022 | +1,9 | 0,33 million | 14 | 5 à 40 |
 
 - **Ce que mesurent ces chiffres :** des **quintaux associés** à l'irrigation lors d'un été plus chaud que la normale de chaque département, pour les 17 départements de l'échantillon (160 847 à 212 786 ha irrigués selon l'année).
 - **Convention de calcul :** la formule s'applique au rendement non irrigué, ce qui est prudent. Appliquée au rendement irrigué, Y_I × (1 − exp(−βΔ)), elle donnerait environ 29 % de plus en 2003 (`\ValAltPct` du mémoire, script 26).
 - **Euros courants :** 2022 vaut plus que 2019 malgré moins de quintaux, parce que le prix passe de 21 à 41 €/q. Ce n'est **pas** la valeur totale de l'irrigation, qui inclut aussi l'avantage moyen de l'irrigué, ni un gain causal.
 - **Pourquoi 2022 pèse peu :** sa sécheresse est mal captée par la seule chaleur au-dessus de 32 °C dans ces départements.
-- **Fourchette :** elle repose sur l'IC du cluster par année (CR1) ; c'est une indication seulement.
+- **Fourchette :** depuis la v1.1, elle repose sur l'intervalle à 90 % de β obtenu par inversion du WCR (analyse E1) ; la version 1.0.0 utilisait l'IC du cluster par année (CR1) prévu par la spécification (8 à 98 M€ en 2003), dont la taille n'était pas vérifiée. C'est une indication seulement.
+- **Extrapolation :** la formule applique à tout l'excès de chaleur de l'été, part nationale comprise, une pente identifiée par les écarts entre départements une même année ; dans la régression, la part nationale est absorbée par les effets année.
 
 ---
 
@@ -229,7 +230,7 @@ Déclarées dans `docs/decisions.md` avec leurs règles de lecture avant calcul,
 | Analyse | Résultat | Lecture |
 |---|---|---|
 | E1, intervalle de β (A1, inversion du WCR) | 90 % : [0,0055 ; 0,0438] ; 95 % : [0,0045 ; 0,0490] (β = 0,0158) | Descriptive : signe soutenu, ampleur imprécise (facteur 8) |
-| E1, blé phase 4 (M1, H1) | β = −0,0151 ; 95 % : [−0,0801 ; +0,0239] | Intervalle prévu par la spécification de la phase 4, enfin calculé |
+| E1, blé phase 4 (M1, H1) | β = −0,0149 ; 95 % : [−0,0795 ; +0,0241] (première version erronée, sur les 85 départements de R4 : [−0,0801 ; +0,0239]) | Intervalle prévu par la spécification de la phase 4, enfin calculé |
 | E2 (a), sans chaque département | β de 0,0117 à 0,0185 ; p < 0,05 dans 17 cas sur 17 | Descriptive |
 | E2 (b), sans les six départements de relief (01, 26, 38, 39, 63, 69) | β = 0,0098, p unilatérale = 0,146, 11 départements | **Règle fixée : H1 est déclarée dépendante de ces départements** |
 | E3 (a), sans SWI | β = 0,0173, p = 0,001 | — |

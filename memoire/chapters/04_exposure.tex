@@ -44,7 +44,7 @@ A half-cycle has the same average as the full cycle with the same bounds, so the
 \end{equation}
 The implementation is tested against an independent numerical integration and on limit cases (\cref{app:degree_days}). The maize models use extreme degree-days above 32\,$^{\circ}$C, written \ddthirtytwo; the wheat models also use growing degree-days between 0 and 32\,$^{\circ}$C, $\mathrm{DD}_0 - \mathrm{DD}_{32}$.
 
-\paragraph{Limits.} The real daily cycle is not sinusoidal: temperature rises fast in the morning and falls slowly in the evening. The variable is air temperature at 2~m, not canopy temperature. And an 8~km reanalysis probably smooths local extremes, so \ddthirtytwo{} likely understates the heat measured at stations. I have not verified this last point.
+\paragraph{Limits.} The real daily cycle is not sinusoidal: temperature rises fast in the morning and falls slowly in the evening. The variable is air temperature at 2~m, not canopy temperature. And an 8~km reanalysis may smooth local extremes, so \ddthirtytwo{} may understate the heat measured at stations. A partial check is consistent with this: computed in the same way from E-OBS, a grid interpolated from station records, July--August degree-days above 32\,$^{\circ}$C are higher, on average over 2000--2025, in every department of the main maize sample (\cref{sec:maize}). E-OBS is itself an interpolation, so this is not a comparison with stations.
 
 \subsection{Over which weeks}
 

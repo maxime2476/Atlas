@@ -94,6 +94,10 @@ VIGIEAU_FILES = {  # nom publié -> chemin daté sur data.gouv (relevé le 2026-
 # Usage non commercial (recherche, enseignement) ; vérification de la mesure de chaleur de Q1 (v1.1).
 EOBS_BASE = "https://knmi-ecad-assets-prd.s3.amazonaws.com/ensembles/data/Grid_0.1deg_reg_ensemble/"
 EOBS_FILES = [f"{v}_ens_mean_0.1deg_reg_{p}_v33.0e.nc" for v in ["tn", "tx"] for p in ["1995-2010", "2011-2025"]]
+# Registre national des installations de production et de stockage d'électricité (RTE, ODRÉ), Licence Ouverte 2.0.
+# Export complet (noms de champs, séparateur « ; ») ; instantané au 30/06/2026 (page data.gouv consultée le 2026-10-12).
+REGISTRE_URL = ("https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
+                "registre-national-installation-production-stockage-electricite-agrege/exports/csv")
 
 
 def parse_years(text: str) -> list[int]:
@@ -142,6 +146,7 @@ def main() -> None:
     parser.add_argument("--schauberger", action="store_true",
                         help="rendements départementaux longs (robustesse 1990-2009)")
     parser.add_argument("--eobs", action="store_true", help="E-OBS Tmin/Tmax 0,1° 1995-2025 (environ 4 Go)")
+    parser.add_argument("--eolien", action="store_true", help="registre national des installations électriques (RTE, ODRÉ)")
     args = parser.parse_args()
 
     rows, source_of = [], {}
@@ -182,6 +187,9 @@ def main() -> None:
     if args.eobs:
         for name in EOBS_FILES:
             get("eobs", EOBS_BASE + name, RAW / "eobs" / name)
+
+    if args.eolien:
+        get("rte_registre", REGISTRE_URL, RAW / "rte_registre" / "registre_installations_2026-06-30.csv")
 
     update_manifest(rows, source_of)
     print(f"manifeste mis à jour : {MANIFEST.relative_to(ROOT)}")

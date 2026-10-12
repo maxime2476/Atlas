@@ -55,6 +55,11 @@ Rscript R/19_q1_power_size.R                                      # diagnostics 
 uv run python scripts/01_download_raw.py --eobs                    # v1.1 : E-OBS Tmin/Tmax 0,1°, 1995-2025 (~4 Go)
 uv run python scripts/27_eobs_heat.py                             # degrés-jours > 32 °C de juillet-août avec E-OBS
 Rscript R/20_q1_eobs.R                                            # vérification Q1-E (source de température)
+uv run python scripts/01_download_raw.py --eolien                  # v1.2 : registre RTE des installations (~45 Mo)
+uv run python scripts/29_eolien.py                                # puissance éolienne par département et année
+uv run python scripts/28_complements_python.py preparer           # covariables, fourrage, DML (G8)
+Rscript R/22_q1_complements.R                                     # analyses complémentaires G1-G10 (~5 min)
+uv run python scripts/28_complements_python.py prevision          # prévision : intervalles conformes, modèles sur B0 (~5 min)
 Rscript R/wcr/exemple.R                                           # exemple simulé du module wcr (Monte-Carlo)
 # 7. Figures, mémoire et tests
 uv run python scripts/20_figures_rapport.py                       # figures du README (PNG) et du mémoire (PDF)
