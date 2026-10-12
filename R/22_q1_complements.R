@@ -1,5 +1,5 @@
-# Étape 22 (R) : analyses complémentaires v1.2 (G1-G10 sauf G11-G12), déclarées avant calcul dans docs/decisions.md
-# (« Analyses complémentaires (v1.2) ») ; non pré-spécifiées, exploratoires.
+# Étape 22 (R) : analyses complémentaires (G1-G10 sauf G11-G12), déclarées avant calcul dans docs/decisions.md
+# (« Analyses complémentaires ») ; non pré-spécifiées, exploratoires.
 # Prérequis : uv run python scripts/28_complements_python.py preparer ; uv run python scripts/29_eolien.py
 # Usage : Rscript R/22_q1_complements.R ; sorties : reports/tables/phase7_*.csv
 

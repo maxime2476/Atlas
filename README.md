@@ -8,10 +8,10 @@
 >   - **Force de la preuve :** la règle fixée d'avance est remplie, mais 62 % de l'échantillon vient des années (2010-2025) qui ont suggéré l'hypothèse. La seule preuve nouvelle, 2000-2009, garde le signe à environ la moitié de l'estimation (p = 0,049, puissance de 11 %), un écart dû à 2003.
 >   - **Ampleur :** intervalle à 90 % de 0,55 % à 4,5 % par °C·jour (inversion du bootstrap) : le signe est soutenu, pas l'ampleur.
 >   - **Dépendance aux départements de relief :** retirer un département quelconque laisse le résultat significatif (1,2 à 1,9 %), mais **sans les six départements de relief, il tombe à 1,0 % et n'est plus significatif (p = 0,146)**. Le résultat tient sans contrôle d'humidité du sol (1,7 %) et avec le bilan hydrique P − ETP (1,2 %, p = 0,035). Analyses ajoutées après une relecture simulée, déclarées avant calcul.
->   - **Datation :** la spécification, le journal des décisions et les premiers résultats sont entrés dans le dépôt par le même commit ; l'ordre « spécification puis estimation » repose sur le journal de l'auteur. Seuls les diagnostics D1-D2 ont été commités avant calcul.
->   - Puissance du test (diagnostic ajouté après la v1.0.0, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
->   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 (vérification ajoutée après la v1.0.0, déclarée avant calcul mais sans commit préalable).
->   - **Analyses complémentaires (v1.2, déclarées avant calcul, exploratoires) :** la pente ne diffère pas de façon détectable entre départements de relief et autres (p = 0,78), ni selon la part irriguée ; aucun passage du grain à l'ensilage n'est détecté les étés chauds (2010-2025) ; un placebo intra-année confirme la taille du test (3,7 %). Mais **un jackknife par grappes (CV3), plus conservateur, donne p = 0,074** : la significativité dépend de la méthode d'inférence. Sur 2000-2009, 2003 porte 80 % de l'information sur la chaleur.
+>   - **Datation :** la spécification, le journal des décisions et les résultats sont publiés ensemble ; l'ordre « spécification puis estimation », comme la déclaration avant calcul des vérifications ajoutées ensuite, repose sur le journal de l'auteur.
+>   - Puissance du test (diagnostic ajouté dans un second temps, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
+>   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 (vérification ajoutée dans un second temps, déclarée avant calcul).
+>   - **Analyses complémentaires (ajoutées après un audit, déclarées avant calcul, exploratoires) :** la pente ne diffère pas de façon détectable entre départements de relief et autres (p = 0,78), ni selon la part irriguée ; aucun passage du grain à l'ensilage n'est détecté les étés chauds (2010-2025) ; un placebo intra-année confirme la taille du test (3,7 %). Mais **un jackknife par grappes (CV3), plus conservateur, donne p = 0,074** : la significativité dépend de la méthode d'inférence. Sur 2000-2009, 2003 porte 80 % de l'information sur la chaleur.
   - **Réserve :** le résultat dépend de la mesure de la chaleur. Il n'est pas significatif si la météo est moyennée sur tout le département au lieu des parcelles de maïs, et la réplication sur 2000-2009 n'existe qu'avec la mesure sur les parcelles.
 >   - L'interaction pré-spécifiée avec les jours de restriction « crise » (VigiEau, H3) a le **signe opposé** à l'hypothèse.
 >   - C'est une association, pas un effet causal de l'irrigation.
@@ -26,6 +26,13 @@
 ## 1. Questions et intérêt
 
 Le projet s'est déroulé en deux temps.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/figures/frise_projet_dark.svg">
+  <img src="docs/figures/frise_projet.svg" alt="Frise des étapes du projet, du 10 au 12 octobre 2026 : cadrage sur le blé, données et panels, blé 2010-2025 (les tests usuels se révèlent trop permissifs), prévision et maïs exploratoire ; recentrage sur le maïs irrigué et non irrigué, analyse du maïs 2000-2025 spécifiée puis estimée, audit des données ; vérifications et audit final.">
+</picture>
+
+*Dates tirées du journal des décisions (`docs/decisions.md`) ; dans une journée, la frise montre l'ordre des étapes, pas leur durée.*
 
 **Premier temps (phases 0-7) : blé tendre d'hiver, 2010-2025.** Quel est l'effet des chocs de chaleur et de déficit hydrique du sol pendant les phases critiques sur le rendement départemental ? La météo, et le NDVI, connus au 1er juin ou au 1er juillet prévoient-ils le rendement mieux qu'une référence naïve ? L'effet de la chaleur sur le blé français est déjà établi sur 1950-2015 (Gammans, Mérel & Ortiz-Bobea 2017) : ATLAS en était une extension ciblée.
 
@@ -53,7 +60,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 | **MTE**, VigiEau « Donnée Sécheresse » (data.gouv.fr) | Arrêtés de restriction d'eau 2012-2025 | Licence Ouverte 2.0 |
 | **INSEE**, IPPAP blé tendre et maïs + **Eurostat** `apri_ap_crpouta` | Prix (valorisation descriptive) | Licence Ouverte 2.0 (INSEE) ; réutilisation avec mention de la source (Eurostat) |
 | **NASA LP DAAC**, MOD13Q1 v6.1 via AppEEARS | NDVI 250 m (prévision) | CC0, citation demandée (Didan 2021, DOI 10.5067/MODIS/MOD13Q1.061) |
-| **ECA&D / Copernicus**, E-OBS v33.0e (0,1°), 2000-2025 | Tmin et Tmax : vérification de la mesure de chaleur du maïs (v1.1) | Recherche et enseignement non commerciaux ; citation de Cornes et al. 2018 (DOI 10.1029/2017JD028200) obligatoire |
+| **ECA&D / Copernicus**, E-OBS v33.0e (0,1°), 2000-2025 | Tmin et Tmax : vérification de la mesure de chaleur du maïs | Recherche et enseignement non commerciaux ; citation de Cornes et al. 2018 (DOI 10.1029/2017JD028200) obligatoire |
 
 **Reproductibilité des données :**
 
@@ -63,24 +70,12 @@ Résultat : l'association est négative mais non établie, faute d'information (
 
 ## 3. Architecture et flux de données
 
-```text
-data/raw/      (non versionné, jamais modifié)  SAA (2 versions), SIM, E-OBS, RPG, ADMIN EXPRESS, VigiEau, prix, NDVI…
-   │  scripts/01-03 : téléchargement, contrôles, SAA en format long
-   ▼
-data/interim/  SAA longue ; météo maille × mois (8 984 mailles, 1958-2025)
-   │  scripts/04-09, 11-13 : poids spatiaux, degrés-jours (double sinus), masques blé et maïs RPG,
-   │                         fenêtres phénologiques, altitude, compatibilité Schauberger, panels blé
-   │  scripts/22-23 : panel maïs irrigué / non irrigué 2000-2025, restrictions VigiEau
-   │  scripts/25, 27 : masque maïs 2008 ; degrés-jours de juillet-août avec E-OBS (vérification)
-   │  scripts/28-29 : covariables, maïs fourrage, éolien, DML et prévision complémentaires (v1.2)
-   ▼
-data/processed/ panel_mais_long (38 départements × 2000-2025 × 2 modalités), panel_ble (2010-2025),
-                panel_ble_long (1990-2025), panel_ble_1959 (1959-2025), forecast_features, NDVI, prix
-   │  R/10-13 : modèles blé et maïs des phases 4-6 ; R/14-22 : phase 4 bis (Q1, Q2, analyses exploratoires, masque 2008, diagnostics, E-OBS, analyses E1-E4 et complémentaires)
-   │  scripts/14-15, 19 (scikit-learn) : prévision chronologique, NDVI ; scripts/16, 24 : valorisation
-   ▼
-reports/tables/ (versionné)   docs/resultats_phase*.md   docs/figures/
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/figures/pipeline_atlas_dark.svg">
+  <img src="docs/figures/pipeline_atlas.svg" alt="Chaîne de données d'ATLAS : fichiers bruts (data/raw, jamais modifiés), tables intermédiaires (data/interim), panels départementaux (data/processed), tables de résultats estimées en R et en Python (reports/tables), puis chiffres générés du mémoire et du README.">
+</picture>
+
+*Chaque étage n'est produit que par des scripts, à partir de l'étage précédent ; `data/` reste hors du dépôt, `reports/tables/` y figure. Diagramme généré par `scripts/32_diagrammes_readme.py` (mise en page « Medallion » de [diagram-design](https://github.com/cathrynlavery/diagram-design), MIT).*
 
 | Technologie | Rôle |
 |---|---|
@@ -107,10 +102,15 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
   - spécification M1 de la phase 4, avec des effets fixes **département × période de source** (1959-1988, 1989-2009, 2010-2025) pour absorber les ruptures de série ;
   - pentes de chaleur par période de 22-23 ans pour la question de l'adaptation.
 - **Blé 2010-2025 (phase 4) :** log(rendement) ~ effets fixes département et année + degrés-jours de croissance et extrêmes (mai-juin) + pluie de printemps + chaleur et pluie d'automne. Estimand : association de court terme avec un choc météo, pas effet du changement climatique.
-- **Inférence :**
+- **Inférence et règle de décision (schéma ci-dessous) :**
   - **wild cluster bootstrap restreint par année** (poids de Webb) ;
   - sa taille est vérifiée par simulation sur les données de chaque question (placebo = champ d'exposition réel à années permutées) ;
   - le cluster par département et Conley 200 km sont rapportés pour information.
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/figures/regle_decision_dark.svg">
+  <img src="docs/figures/regle_decision.svg" alt="Règle de décision : une hypothèse principale fixée avant estimation est estimée avec effets fixes département et année ; si la taille du test mesurée par placebo dépasse 10 %, elle n'est pas établie ; sinon, elle n'est établie que si la p-valeur unilatérale du bootstrap par année est inférieure à 0,05, par exemple le maïs (p = 0,007, taille 3,7 %), contrairement au blé 1959-2025 (p = 0,125) ; les vérifications ajoutées ensuite sont rapportées sans changer ce statut.">
+</picture>
 - **Prévision :**
   - origine glissante (entraînement 2010…*t*−1, test *t* = 2016-2025) ;
   - moyennes, tendance, standardisation et hyperparamètres estimés **dans le pli** ;
@@ -145,7 +145,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
 - **Valorisation descriptive,** en euros courants, pour les 17 départements : les quintaux **associés** à l'irrigation lors d'un été plus chaud que la normale valent environ **49 M€ en 2003** (fourchette de 16 à 170 M€, aux bornes de l'intervalle à 90 % de β obtenu par inversion du bootstrap), 9 M€ en 2019 et 14 M€ en 2022. C'est une valeur brute de production : ni la valeur totale de l'irrigation, ni une valeur nette du coût de l'eau, ni une valeur par m³ ou le coût d'une restriction, ni un gain causal. La formule linéaire surestime l'écart de 2003 d'environ 17 %.
 - **Ce que ce résultat n'est pas :** un effet causal de l'irrigation. Les parcelles irriguées diffèrent des autres, et lors des sécheresses une partie du maïs non irrigué semé pour le grain peut être récoltée en ensilage (les surfaces abandonnées restent comptées, avec un rendement nul). La part irriguée de l'année ne varie pas de façon détectable avec la chaleur, mais l'ensilage n'est pas observé.
 
-### 5.1 bis Analyses complémentaires v1.2 (`docs/resultats_complements_v12.md`)
+### 5.1 bis Analyses complémentaires (`docs/resultats_complements.md`)
 
 Déclarées avant calcul dans `docs/decisions.md`, non pré-spécifiées, exploratoires ; elles ne changent pas le statut de H1.
 
@@ -258,7 +258,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
   - Au 2026-10-12, 575 tests passent : 462 vérifications d'empreintes des fichiers bruts (une par fichier) et 113 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
-- **Reproduction vérifiée (2026-10-12), au commit `9f65cb4` :** sur un clone vierge, toute la chaîne relancée depuis les fichiers bruts redonne les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire de ce commit (`docs/decisions.md`). Les analyses ajoutées ensuite (puissance D1-D2, vérification E-OBS, analyses E1-E4 de la relecture simulée, analyses complémentaires v1.2) n'ont pas été reconstruites sur un clone vierge.
+- **Reproduction vérifiée (2026-10-12) :** sur un clone vierge du dépôt, avant l'ajout des vérifications complémentaires, toute la chaîne relancée depuis les fichiers bruts a redonné les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`). Les vérifications ajoutées ensuite (puissance D1-D2, E-OBS, analyses E1-E4 de la relecture simulée, analyses complémentaires) n'ont pas été reconstruites sur un clone vierge.
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).
 - **Graines :** fixées (20261010 et suivantes).
 
@@ -277,4 +277,4 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
 - **Code** (`src/`, `scripts/`, `R/`, `tests/`) : licence MIT (`LICENSE`) ; détail par type de contenu dans `NOTICE.md`.
 - **Texte du mémoire et documentation** : CC BY 4.0.
 - **Tables et figures** : dérivées de sources publiques qui gardent leurs propres licences (`docs/sources.md`).
-- **Citation** : `CITATION.cff`. Archive Zenodo (toutes versions) : [doi:10.5281/zenodo.23305095](https://doi.org/10.5281/zenodo.23305095) ; version 1.0.0 : [doi:10.5281/zenodo.23305096](https://doi.org/10.5281/zenodo.23305096).
+- **Citation** : `CITATION.cff`. Archive Zenodo : [doi:10.5281/zenodo.23305095](https://doi.org/10.5281/zenodo.23305095).

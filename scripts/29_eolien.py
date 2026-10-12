@@ -1,4 +1,4 @@
-"""Étape 29 : puissance éolienne terrestre raccordée cumulée par département et par année (analyse G10, v1.2).
+"""Étape 29 : puissance éolienne terrestre raccordée cumulée par département et par année (analyse G10).
 
 Usage : uv run python scripts/29_eolien.py   (après 01_download_raw.py --eolien)
 Entrées :
@@ -9,7 +9,7 @@ Sortie : data/processed/eolien_dep_annee.parquet (dep_code, annee, mw_cumul, sau
 Le registre est un instantané des installations EN SERVICE au 30/06/2026 : une éolienne démantelée avant
 cette date n'y figure pas, et un parc renouvelé (repowering) peut porter une date de mise en service récente.
 La puissance des premières années est donc mesurée avec erreur (sous-estimée). Déclaration : docs/decisions.md
-(« Analyses complémentaires (v1.2) »), avant calcul.
+(« Analyses complémentaires »), avant calcul.
 """
 
 import pandas as pd

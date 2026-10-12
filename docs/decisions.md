@@ -6,7 +6,7 @@ Chaque entrée indique la date, la décision, qui l'a prise et la justification.
 |---|---|---|---|
 | 2026-10-10 | Direction de la phase 0 validée : cœur explicatif (blé tendre d'hiver), module prédictif séparé, maïs irrigué exploratoire, récoltes 2010-2025, population à surface moyenne 2010-2012 ≥ 1 000 ha, *T\** = 32 °C avec repli documenté | Utilisateur | `docs/phase0_cadrage.md` |
 | 2026-10-10 | Contribution principale recentrée sur la décomposition chaleur / humidité du sol ; masque RPG rétrogradé en robustesse | Proposé par Claude, validé avec la phase 1 | `docs/litterature.md`, § 7 |
-| 2026-10-10 | Identité Git du dépôt : « Maxime Gourguechon » (configuration locale au dépôt). **Pas de commit pour l'instant.** | Utilisateur | — |
+| 2026-10-10 | Identité Git du dépôt : « Maxime Gourguechon » (configuration locale au dépôt). | Utilisateur | — |
 | 2026-10-10 | **Python 3.12** (3.12.14 géré par `uv`, `requires-python = ">=3.12,<3.13"`) au lieu de 3.14 | Utilisateur | Compatibilité plus large des roues binaires (géospatial, éventuelles bibliothèques GPU) ; version maintenue jusqu'à fin 2028. Aucun besoin GPU démontré à ce stade (voir ci-dessous) |
 | 2026-10-10 | Décompression du RPG par un outil système 7z (et non `py7zr`) | Utilisateur | Sur Ubuntu 26.04, `p7zip-full` n'existe plus : paquet équivalent `7zip` (7-Zip officiel 26.00). Installation par l'utilisateur : `sudo apt install 7zip`. **En attente.** *Suite : installé par l'utilisateur et utilisé pour le RPG 2015-2017 et 2008 (7-Zip 26.00, constaté le 2026-10-12).* |
 | 2026-10-10 | Allongement vers ~1990 avec Schauberger et al. (2022) : **conditionnel**, évalué en début de phase 2 | Utilisateur (« oui si cela a vraiment une utilité ») | Critères ci-dessous |
@@ -274,7 +274,7 @@ Audit complet en lecture seule par quatre relecteurs (code, économétrie, donn�
 
 ## Diagnostics de puissance et de taille de Q1, déclarés avant calcul (2026-10-12)
 
-Demandés par une relecture externe après la publication de la v1.0.0 ; **non pré-spécifiés** dans `specification_phase4bis.md`. Ils sont déclarés ici avant d'être calculés, avec leur règle de lecture. Script : `R/19_q1_power_size.R` ; sortie : `reports/tables/phase4bis_q1_puissance.csv`.
+Demandés par une relecture externe, dans un second temps ; **non pré-spécifiés** dans `specification_phase4bis.md`. Ils sont déclarés ici avant d'être calculés, avec leur règle de lecture. Script : `R/19_q1_power_size.R` ; sortie : `reports/tables/phase4bis_q1_puissance.csv`.
 
 - **Méthode commune** (celle de la taille de H1, `R/14`) : placebo = champ réel `dd_32_ja` à années permutées (dérangement, même permutation pour tous les départements), modèle A1 (`swi_ja` en contrôle, poids `surface_ref_ha`), WCR par année unilatéral à droite au seuil de 5 %, R = 300, B = 399, graines 20261013 puis r.
 - **D1, puissance de H1 (2000-2025, 17 départements) :** on ajoute un vrai effet β × placebo à `ecart_log`, pour β = 0 (contrôle : doit redonner une taille proche de 3,7 %), 0,008 (la moitié de l'estimation) et 0,016 (environ l'estimation).
@@ -285,7 +285,7 @@ Demandés par une relecture externe après la publication de la v1.0.0 ; **non p
 
 ## Reproduction propre depuis les fichiers bruts (2026-10-12)
 
-- **Procédure :** clone vierge du commit 9f65cb4 dans un autre dossier ; fichiers bruts reliés par liens symboliques (aucun téléchargement) ; environnements recréés par `uv sync --frozen` et `renv::restore()` ; toute la chaîne de `data/README.md` exécutée dans l'ordre (extraction RPG comprise, sans les étapes 01 et 17 de téléchargement), soit environ 1 h 30.
+- **Procédure :** clone vierge du dépôt dans un autre dossier (état du 2026-10-12, avant les vérifications complémentaires) ; fichiers bruts reliés par liens symboliques (aucun téléchargement) ; environnements recréés par `uv sync --frozen` et `renv::restore()` ; toute la chaîne de `data/README.md` exécutée dans l'ordre (extraction RPG comprise, sans les étapes 01 et 17 de téléchargement), soit environ 1 h 30.
 - **Résultat :**
   - les 24 fichiers intermédiaires et finaux de `data/interim/` et `data/processed/` sont identiques à ceux du dépôt de travail, dont le panel maïs (435 paires de l'échantillon principal) ;
   - toutes les tables de `reports/tables/` sont identiques à l'octet, sauf 7 tables de prévision (phases 5 et 6), qui diffèrent d'au plus 5 × 10⁻¹⁵ (arrondis de calcul en virgule flottante) ;
@@ -295,7 +295,7 @@ Demandés par une relecture externe après la publication de la v1.0.0 ; **non p
 
 ## Vérification de la mesure de chaleur de Q1 avec E-OBS, déclarée avant calcul (2026-10-12)
 
-Demandée par une relecture externe (sensibilité de H1 à la mesure de chaleur) ; **non pré-spécifiée** dans `specification_phase4bis.md`, exploratoire, prévue pour une v1.1. Elle sera rapportée quel que soit son résultat. Scripts : `scripts/27_eobs_heat.py`, puis `R/20_q1_eobs.R` ; sorties : `data/processed/weather_dep_eobs_ja.parquet`, `reports/tables/phase4bis_q1_eobs.csv` et `phase4bis_q1_eobs_departement.csv`.
+Demandée par une relecture externe (sensibilité de H1 à la mesure de chaleur) ; **non pré-spécifiée** dans `specification_phase4bis.md`, exploratoire, ajoutée dans un second temps. Elle sera rapportée quel que soit son résultat. Scripts : `scripts/27_eobs_heat.py`, puis `R/20_q1_eobs.R` ; sorties : `data/processed/weather_dep_eobs_ja.parquet`, `reports/tables/phase4bis_q1_eobs.csv` et `phase4bis_q1_eobs_departement.csv`.
 
 - **Source :** E-OBS v33.0e, Tmin et Tmax journalières, moyenne d'ensemble, grille 0,1° (`docs/sources.md`, § 8 bis). Choisie plutôt qu'Open-Meteo (quotas incompatibles avec 1 784 mailles) et qu'ERA5-Land (compte Copernicus nécessaire ; réanalyse de modèle plutôt qu'interpolation de stations).
 - **Seule la température change :** `dd_32_ja_eobs` reprend exactement la définition de `dd_32_ja` (double sinus avec Tmin du jour, Tmax du jour et Tmin du lendemain ; 1er juillet - 31 août de l'année de récolte ; poids du masque maïs RPG 2015-2017). Chaque maille SIM reçoit le point E-OBS le plus proche ; pas de point de remplacement : une maille manquante rend le département-année manquant.
@@ -303,7 +303,7 @@ Demandée par une relecture externe (sensibilité de H1 à la mesure de chaleur)
 - **Test :** WCR par année, unilatéral à droite, 9 999 tirages (`summarise_term`, comme Q1-R9).
 - **Lecture fixée d'avance :**
   - si β > 0 et p < 0,05, H1 ne dépend pas de la source de température (SAFRAN) ;
-  - sinon, H1 est déclarée sensible à la source de température, et la v1.1 le dit dans le résumé, le README et le chapitre 7. Le statut de H1 dans la v1.0 n'est pas réécrit.
+  - sinon, H1 est déclarée sensible à la source de température, et le résumé, le README et le chapitre 7 le disent. Le statut de H1 issu des analyses pré-spécifiées n'est pas réécrit.
 - **Lecture descriptive associée (sans règle de décision) :** le niveau des degrés-jours n'est pas comparable entre sources (E-OBS lisse davantage les extrêmes), donc β non plus. Sont rapportés : l'écart-type intra-département de chaque mesure, l'effet d'un écart-type intra-département, la corrélation des deux mesures (brute et intra-département), et une table par département (moyenne 2000-2025 et 2003).
 - **Contrôles faits avant cette déclaration, sans calculer de degré-jour :** structure des fichiers (grille, unités, valeur manquante) ; distance maille SIM - point E-OBS d'au plus 0,07° ; 106 mailles littorales du masque sans valeur (point en mer), aucune dans les 17 départements de l'échantillon principal.
 
@@ -311,22 +311,22 @@ Demandée par une relecture externe (sensibilité de H1 à la mesure de chaleur)
 - les deux mesures sont corrélées à 0,952 (0,953 en intra-département) ;
 - contrairement à ce que la déclaration supposait, E-OBS donne **plus** de degrés-jours > 32 °C que SIM (moyennes départementales 2,6 à 7,3 contre 1,0 à 3,9 ; écart-type intra-département 4,87 contre 3,63) ; la supposition « E-OBS lisse davantage les extrêmes » était fausse pour cette variable, ce qui ne change ni le modèle ni la règle ;
 - effet d'un écart-type intra-département : environ 7,5 % avec E-OBS, environ 5,9 % avec SIM.
-- **Réserve de procédure :** à la demande de l'utilisateur, la déclaration n'a pas été commitée avant le calcul. Son empreinte SHA-256 (`docs/decisions.md` avant l'ajout de ce résultat) était `2251e0ffca6ffae8bef58b40e1c018700b1cc70e7aecd5b93ce1d4629a288759`, calculée juste avant de lancer `scripts/27_eobs_heat.py` ; c'est une trace locale, pas un horodatage indépendant.
+- **Réserve de procédure :** à la demande de l'utilisateur, la déclaration n'a pas été horodatée de façon externe avant le calcul. Son empreinte SHA-256 (`docs/decisions.md` avant l'ajout de ce résultat) était `2251e0ffca6ffae8bef58b40e1c018700b1cc70e7aecd5b93ce1d4629a288759`, calculée juste avant de lancer `scripts/27_eobs_heat.py` ; c'est une trace locale, pas un horodatage indépendant.
 
 ## Relecture simulée (skill academic-research-skills) : tri et corrections de texte (2026-10-12)
 
-Relecture du mémoire par le skill tiers `academic-paper-reviewer` (mode full, copie locale non versionnée au commit d1e5171) : cinq relecteurs simulés en sous-agents séparés (adéquation, méthodologie, domaine, eau et reproductibilité, avocat du diable). **Les cinq tournent sur le même modèle que celui qui a rédigé une grande partie du texte** : leurs erreurs ne sont pas indépendantes. Décision : révision majeure, sans défaut fatal ni point critique. Les faits décisifs ont été revérifiés dans le dépôt ; un point de l'avocat du diable (magnitudes « probablement surestimées ») a été rejeté après vérification : avec le masque maïs, retirer 2003 augmente les estimations (0,0243 sur 2000-2025, 0,0380 sur 2000-2009), donc la baisse sur 2000-2009 vient de 2003. Rapports et lettre de décision conservés hors dépôt (dossier de travail).
+Relecture du mémoire par le skill tiers `academic-paper-reviewer` (mode full, copie locale non versionnée) : cinq relecteurs simulés en sous-agents séparés (adéquation, méthodologie, domaine, eau et reproductibilité, avocat du diable). **Les cinq tournent sur le même modèle que celui qui a rédigé une grande partie du texte** : leurs erreurs ne sont pas indépendantes. Décision : révision majeure, sans défaut fatal ni point critique. Les faits décisifs ont été revérifiés dans le dépôt ; un point de l'avocat du diable (magnitudes « probablement surestimées ») a été rejeté après vérification : avec le masque maïs, retirer 2003 augmente les estimations (0,0243 sur 2000-2025, 0,0380 sur 2000-2009), donc la baisse sur 2000-2009 vient de 2003. Rapports et lettre de décision conservés hors dépôt (dossier de travail).
 
-**Tri retenu par l'auteur :** corrections de texte maintenant (v1.1), quatre calculs déclarés ci-dessous, restructuration en article et documentation de la méthode SAA reportées.
+**Tri retenu par l'auteur :** corrections de texte maintenant, quatre calculs déclarés ci-dessous, restructuration en article et documentation de la méthode SAA reportées.
 
 **Corrections de texte faites (aucun résultat recalculé) :**
 - résumé (et `memoire/arxiv_abstract.txt`), introduction et conclusion : hiérarchie des preuves (62 % de paires exploratoires ; réplication 2000-2009 seule preuve neuve, faible, écart dû à 2003) ; tailles 3,7 % et 5,3 % citées ensemble ; exclusion du Sud-Ouest ; H3 de signe opposé ; message méthodologique ramené à une leçon connue mais décisive ici ;
-- datation : les spécifications, le journal et les premiers résultats sont entrés dans le dépôt par le même commit (9945a59 sur la branche, ed07d5d sur l'étiquette d'archive) ; les empreintes attestent la non-modification depuis, pas l'antériorité ; seules D1-D2 ont été commitées avant calcul (intro, §5.4, §10.5) ;
+- datation : les spécifications, le journal et les résultats sont publiés ensemble ; les empreintes attestent la non-modification depuis la publication, pas l'antériorité, qui repose sur le journal (intro, §5.4, §10.5) ;
 - Conley : « noyau uniforme, sans composante temporelle, tel qu'implémenté par fixest » ; matrices corrigées gardées dans les placebos, p-valeurs mises à NA dans les tables principales (§6, résumé, README) ;
 - §5 : équation de H3 ; le SWI lu comme humidité du sol non irrigué (la documentation SIM2 ne mentionne pas l'irrigation) ;
 - §7 : tailles de H2b et H2c non mesurées ; hypothèses possibles pour H3, non testées ; l'explication par le relief décrite pour 2003 seulement, avec l'argument d'échelle et la prémisse non testée d'une chaleur commune aux deux modes ; contrôle ensilage possible avec la surface de maïs fourrage, non fait ; valorisation : « because » retiré, surestimation de 2003 chiffrée (≈ 17 %, nouvelle macro `ValOverPct`), ce que le chiffre n'est pas, fourchette qui n'est pas un intervalle de confiance ;
 - §10 : chaleur ou étés chauds et secs (corrélation annuelle DD>32 / SWI de −0,59 sur l'échantillon) ; H3 ; E-OBS ; construction statistique possible du partage irrigué / non irrigué (signalée dès `docs/phase0_cadrage.md`) comme principale limite non testée de la variable expliquée ;
-- annexe A : reconstruction propre limitée au commit 9f65cb4 ; données brutes ≈ 26 Go ; README harmonisé ; `NOTICE.md` nomme les tables dérivées d'E-OBS et leur clause non commerciale.
+- annexe A : reconstruction propre limitée à l'état antérieur aux vérifications complémentaires ; données brutes ≈ 26 Go ; README harmonisé ; `NOTICE.md` nomme les tables dérivées d'E-OBS et leur clause non commerciale.
 
 ## Quatre analyses issues de la relecture, déclarées avant calcul (2026-10-12)
 
@@ -337,13 +337,13 @@ Relecture du mémoire par le skill tiers `academic-paper-reviewer` (mode full, c
 - **E3, chaleur ou sécheresse.** (a) A1 sans `swi_ja` ; (b) A1 avec le bilan hydrique climatique `prec_ja` − `etp_ja` (mm, juillet-août, masque maïs) à la place de `swi_ja` ; corrélation intra-département entre `dd_32_ja` et ce bilan. **Lecture fixée d'avance :** si β > 0 et p < 0,05 dans (a) et dans (b), l'association ne dépend pas du contrôle d'humidité retenu ; sinon, elle est déclarée sensible à ce contrôle. Dans tous les cas, le texte continue de parler d'étés chauds et secs : ces modèles ne séparent pas la chaleur de la sécheresse.
 - **E4, différence entre décennies.** A1 avec l'interaction `dd_32_ja` × 1{année ≤ 2009} (l'effet principal de la décennie est absorbé par les effets année) ; WCR bilatéral sur l'interaction ; même modèle sans 2003. Lecture : descriptive (« différence détectée » ou « non détectée » au seuil de 5 %), sans changer le statut de H1 ni de la réplication.
 
-**Résultats de E1-E4 (2026-10-12).** Calculs lancés à la demande de l'auteur sans commit préalable de la déclaration ; empreinte SHA-256 de `docs/decisions.md` juste avant le lancement : `598cfc5fc4b2b88be9563eadddea708871581a19b5f97557c3781822f4a13ef9` (trace locale, pas un horodatage indépendant). La grille du blé (±0,06 prévue) s'est révélée trop étroite pour l'intervalle à 95 % ; elle a été élargie à ±0,2 au pas de 0,001 avant tout résultat sur le blé.
-- E1 : maïs, 90 % [0,0055 ; 0,0438], 95 % [0,0045 ; 0,0490] ; blé phase 4, 95 % [−0,0801 ; +0,0239] (erroné : calculé sur les 85 départements ; corrigé dans l'entrée « Audit complet avant v1.1 »). Valorisation 2003 : 16 à 170 M€.
+**Résultats de E1-E4 (2026-10-12).** Calculs lancés à la demande de l'auteur sans horodatage externe de la déclaration ; empreinte SHA-256 de `docs/decisions.md` juste avant le lancement : `598cfc5fc4b2b88be9563eadddea708871581a19b5f97557c3781822f4a13ef9` (trace locale, pas un horodatage indépendant). La grille du blé (±0,06 prévue) s'est révélée trop étroite pour l'intervalle à 95 % ; elle a été élargie à ±0,2 au pas de 0,001 avant tout résultat sur le blé.
+- E1 : maïs, 90 % [0,0055 ; 0,0438], 95 % [0,0045 ; 0,0490] ; blé phase 4, 95 % [−0,0801 ; +0,0239] (erroné : calculé sur les 85 départements ; corrigé dans l'entrée « Audit complet »). Valorisation 2003 : 16 à 170 M€.
 - E2 : sans chaque département, β de 0,0117 à 0,0185, 17 p < 0,05 ; **sans les six départements de relief, β = 0,0098, p = 0,146 : selon la règle fixée, H1 est déclarée dépendante de ces départements**, ce que disent le résumé, l'introduction, le chapitre 7, la discussion, la conclusion et le README.
 - E3 : sans SWI, β = 0,0173 (p = 0,001) ; avec P − ETP, β = 0,0124 (p = 0,035) : selon la règle fixée, l'association ne dépend pas du contrôle d'humidité retenu.
 - E4 : interaction −0,0113 (p = 0,50) ; sans 2003, +0,0106 (p = 0,77) : aucune différence détectée.
 
-## Audit complet avant v1.1 : corrections (2026-10-12)
+## Audit complet : corrections (2026-10-12)
 
 Relecture intégrale du mémoire (47 pages), des scripts R et Python de la phase 4 bis, du README et des documents de résultats. Aucune règle de décision, spécification ni résultat principal n'est modifié.
 
@@ -363,9 +363,9 @@ Relecture intégrale du mémoire (47 pages), des scripts R et Python de la phase
 - typographie : signes moins des nombres négatifs hors mode mathématique (−0,0009, −0,47, intervalle du blé) ; guillemet fermant manquant (« soft wheat ») ; 1 674 avec séparateur ; écart de chaleur des départements de relief donné à une décimale (7,5 à 10,3 au lieu de 7 à 10, cohérent avec le tableau 5) ; « mountains » / « uplands » harmonisés ;
 - Q1-R9 : « declared after review » remplacé par « added later, declared before » (la relecture visée était celle de la phase 0 ter, à ne pas confondre avec la relecture simulée).
 
-**Documents :** README (phrase orpheline « celle-ci » sur le relief ; R/14-21 ; E1-E4 non reconstruites sur clone ; durée de R/21 ; décompte des robustesses blé : 11 des 12 spécifications qui changent le coefficient) ; `resultats_phase4bis.md` (fourchette de valorisation restée sur l'IC CR1 de la v1.0.0 : 16-170, 3-27, 5-40 M€ ; +2,5 % au lieu de +2,4 % sur 2010-2025) ; `resultats_phase4.md` (intervalle du blé).
+**Documents :** README (phrase orpheline « celle-ci » sur le relief ; R/14-21 ; E1-E4 non reconstruites sur clone ; durée de R/21 ; décompte des robustesses blé : 11 des 12 spécifications qui changent le coefficient) ; `resultats_phase4bis.md` (fourchette de valorisation restée sur l'IC CR1 du premier calcul : 16-170, 3-27, 5-40 M€ ; +2,5 % au lieu de +2,4 % sur 2010-2025) ; `resultats_phase4.md` (intervalle du blé).
 
-## Analyses complémentaires (v1.2), déclarées avant calcul (2026-10-12)
+## Analyses complémentaires, déclarées avant calcul (2026-10-12)
 
 Demandées par l'auteur après l'audit : pistes d'amélioration, variables nouvelles et méthodes nouvelles. **Aucune n'est pré-spécifiée** dans `specification_phase4bis.md` ; toutes sont exploratoires et seront rapportées quel que soit leur résultat. Elles ne changent ni le statut de H1 ni celui des autres hypothèses de la phase 4 bis. Modèle de base, sauf mention : A1 (écart log ~ `dd_32_ja` + `swi_ja` | département + année, poids `surface_ref_ha`, 17 départements, 435 paires) ; WCR par année, poids de Webb, 9 999 tirages (`summarise_term`) ; placebos à R = 300, B = 399 comme en `R/14`.
 
@@ -386,7 +386,7 @@ Demandées par l'auteur après l'audit : pistes d'amélioration, variables nouve
 
 Scripts prévus : `R/22_q1_complements.R` (G1-G7, G9, G10), `scripts/28_complements_python.py` (préparation des variables, G8, G12), `scripts/29_eolien.py` (registre). Sorties : `reports/tables/phase7_*.csv`.
 
-**Résultats des analyses complémentaires (2026-10-12).** Empreinte du journal juste avant le premier calcul : `44054e8a40a4ce1cdce0e1532caae83eff936daac0e159fe5ce17ff5decc1426` (trace locale, pas de commit préalable, à la demande de l'auteur). Détail : `docs/resultats_complements_v12.md`.
+**Résultats des analyses complémentaires (2026-10-12).** Empreinte du journal juste avant le premier calcul : `44054e8a40a4ce1cdce0e1532caae83eff936daac0e159fe5ce17ff5decc1426` (trace locale, sans horodatage externe, à la demande de l'auteur). Détail : `docs/resultats_complements.md`.
 - G1 : interaction chaleur × relief +0,0087, p = 0,78 : différence non détectée. G5 : interaction avec la part irriguée, p = 0,42 : non détectée.
 - G2 : part fourrage du maïs non irrigué ~ chaleur, p unilatérale = 0,43 : passage à l'ensilage non détecté ; A1 avec ce contrôle non estimé (condition non remplie).
 - G3a : taille du placebo intra-année 3,7 % ≤ 10 % : règle confortée. G3b : pas d'année anormale. G3c : 2003 = 41 % du levier (N_eff 4,8) ; 80 % sur 2000-2009 (N_eff 1,5).
@@ -399,3 +399,30 @@ Scripts prévus : `R/22_q1_complements.R` (G1-G7, G9, G10), `scripts/28_compleme
 - G11 : non fait (jeton AppEEARS expiré).
 - G12 : intervalles conformes trop larges (couverture 95 à 100 % pour 90 % visés) ; modèles d'arbres corrigeant B0 : +11 à +18 % sur B0, intervalle excluant zéro dans 3 cas sur 4, exploratoire (années déjà vues).
 - Écarts d'exécution : le contrôle de rejeu des placebos de R/14 a d'abord échoué, à cause d'une tolérance comparée à la valeur arrondie (0,037 au lieu de 11/300) et de l'ordre des tirages ; corrigé avant tout résultat de G3 et G4. `grf` 2.6.1 ajouté à renv (DESCRIPTION, renv.lock). Les fichiers `scripts/29_eolien.py` et `--eolien` dans `scripts/01_download_raw.py` sont nouveaux ; le registre est inscrit au manifeste.
+
+## G11, température de surface MODIS : protocole fixé avant réception des données (2026-10-12)
+
+Commande AppEEARS soumise le 2026-10-12 (tâche `0b1bbe88-8fbf-47c5-b36c-a27fb91934f9`, `scripts/30_lst_appeears.py`) : MOD11A2 v6.1, couches `LST_Day_1km` et `QC_Day`, composites de 8 jours commençant entre le 1er juillet et le 31 août, 2000-2025, contour de la France métropolitaine, GeoTIFF en EPSG:4326. Fichiers bruts dans `data/raw/nasa_appeears_lst/` (séparés du NDVI).
+
+- **Pixels valides :** LST ≠ 0 (valeur manquante) ; bits 0-1 de `QC_Day` = 00 (bonne qualité), ou = 01 avec une erreur de LST d'au plus 2 K (bits 6-7 ≤ 01). LST en °C = valeur × 0,02 − 273,15.
+- **Agrégation (comme le NDVI) :** pixel → maille SIM par son centre ; maille valide si au moins 25 % de ses pixels sont valides ; maille → département avec les poids du **masque maïs** RPG 2015-2017, renormalisés sur les mailles valides ; valeur départementale manquante si moins de 50 % du poids est valide.
+- **Variable annuelle :** `lst_ja` = moyenne des composites départementaux valides de l'été ; manquante si moins de 6 composites valides.
+- **Analyses (lecture descriptive, aucune règle de décision) :**
+  - (a) corrélations brute et intra-département de `lst_ja` avec `dd_32_ja` (17 départements) ;
+  - (b) A1 avec `lst_ja` à la place de `dd_32_ja` (β par °C de LST ; WCR unilatéral à droite) ;
+  - (c) refroidissement, sur les 38 départements de la population : `lst_ja` ~ `dd_32_ja` + `dd_32_ja` × (part irriguée − moyenne) + `swi_ja` | département + année, poids `surface_ref_ha` ; WCR bilatéral sur l'interaction. Une interaction négative est attendue si les surfaces irriguées réchauffent moins la surface par degré-jour d'air (Zhu et Burney 2022). La LST mêle parcelles irriguées et non irriguées dans un même pixel de 1 km, et la mesure est faite vers 10 h 30 (passage de Terra), pas au maximum de température.
+- Scripts prévus : `scripts/31_lst_aggregate.py` ; analyses dans `R/23_q1_lst.R` ; tables `reports/tables/phase7_lst_*.csv`.
+
+## Mémoire : intégration des ajouts réorganisée (2026-10-12)
+
+Relecture de l'intégration des vérifications ajoutées dans un second temps. Aucun chiffre ni aucune affirmation ne change ; seule l'organisation du texte change.
+- Chapitre 7 réorganisé par question au lieu de l'ordre chronologique des ajouts : résultat principal et précision ; force de l'inférence (nouvelle sous-section, tableau des trois inférences) ; réplication ; robustesses, dont le contrôle d'humidité et le DML ; mesure de la chaleur, dont E-OBS et les départements de relief ; hétérogénéité ; composition des surfaces et ensilage ; valorisation. La convention « added later » et le renvoi à l'annexe C remplacent les mentions de date dispersées ; le tableau récapitulatif des analyses complémentaires est supprimé.
+- Éolien déplacé dans la discussion (§ 10.2, « Other changes in the departments ») ; refroidissement par l'irrigation relié à la littérature au § 10.1 ; leçon sur la pluralité des inférences ajoutée au § 10.5.
+- Cohérence des chiffres de levier : la part de 2003 (26 % sans pondération au chapitre 4, 41 % dans le modèle pondéré) est expliquée aux deux endroits ; renvois ajoutés aux chapitres 4 et 6.
+- Introduction : le jackknife a désormais sa propre puce (« Six checks ») ; résumé reformulé.
+
+## README : diagramme de la chaîne de données (2026-10-12)
+
+Le schéma texte de la section « Architecture et flux de données » du README est remplacé par un diagramme SVG (variantes claire et sombre, choisies par GitHub selon le thème du lecteur), généré par `scripts/32_diagrammes_readme.py`. Mise en page : type « Medallion » de diagram-design (Cathryn Lavery, MIT), retenu parmi les 45 types proposés parce qu'il représente des étages de données de qualité croissante avec leur outil, leur format et leur auteur, ce qui correspond à `raw` → `interim` → `processed` → `reports/tables` → mémoire. Palette par défaut du système (accent mandarine pour l'étage focal, les résultats ; vert olive « publication » pour le mémoire). Adaptations pour GitHub : texte sans `foreignObject`, polices système, étages raccourcis. Aucun fichier du projet diagram-design n'est copié ; attribution dans `NOTICE.md`.
+
+- **Ajout (même jour) :** deux autres diagrammes du même système, générés par le même script (renommé `scripts/32_diagrammes_readme.py`) : un logigramme (type « Flowchart ») de la règle de décision de la phase 4 bis, avec deux exemples réels lus dans `reports/tables/` (maïs H1 : p = 0,007, taille 3,7 % ; blé 1959-2025 : p = 0,125), et une frise (type « Timeline ») des étapes du projet. La frise suit l'échelle réelle par jour (10, 11 et 12 octobre 2026, d'après ce journal) ; dans une journée, seul l'ordre est représenté, ce que dit la légende, pour ne pas espacer également des étapes de durées différentes.

@@ -90,7 +90,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 - **Convention de calcul :** la formule s'applique au rendement non irrigué, ce qui est prudent. Appliquée au rendement irrigué, Y_I × (1 − exp(−βΔ)), elle donnerait environ 29 % de plus en 2003 (`\ValAltPct` du mémoire, script 26).
 - **Euros courants :** 2022 vaut plus que 2019 malgré moins de quintaux, parce que le prix passe de 21 à 41 €/q. Ce n'est **pas** la valeur totale de l'irrigation, qui inclut aussi l'avantage moyen de l'irrigué, ni un gain causal.
 - **Pourquoi 2022 pèse peu :** sa sécheresse est mal captée par la seule chaleur au-dessus de 32 °C dans ces départements.
-- **Fourchette :** depuis la v1.1, elle repose sur l'intervalle à 90 % de β obtenu par inversion du WCR (analyse E1) ; la version 1.0.0 utilisait l'IC du cluster par année (CR1) prévu par la spécification (8 à 98 M€ en 2003), dont la taille n'était pas vérifiée. C'est une indication seulement.
+- **Fourchette :** elle repose sur l'intervalle à 90 % de β obtenu par inversion du WCR (analyse E1) ; un premier calcul utilisait l'IC du cluster par année (CR1) prévu par la spécification (8 à 98 M€ en 2003), dont la taille n'était pas vérifiée. C'est une indication seulement.
 - **Extrapolation :** la formule applique à tout l'excès de chaleur de l'été, part nationale comprise, une pente identifiée par les écarts entre départements une même année ; dans la régression, la part nationale est absorbée par les effets année.
 
 ---
@@ -190,9 +190,9 @@ Cette robustesse a été déclarée dans `docs/decisions.md` avant estimation, a
 - **Ruptures de source :** en 1989 et 2010, absorbées en niveau mais pas en pente.
 - **VigiEau :** indicateur grossier.
 
-## Diagnostics ajoutés après la v1.0.0 : puissance et taille de Q1 (2026-10-12)
+## Diagnostics ajoutés dans un second temps : puissance et taille de Q1 (2026-10-12)
 
-Demandés par une relecture externe ; non pré-spécifiés, mais déclarés dans `docs/decisions.md` avec leur règle de lecture avant calcul (commit a2d1d85). Script `R/19_q1_power_size.R`, table `reports/tables/phase4bis_q1_puissance.csv`. Placebo de `R/14` (champ réel `dd_32_ja` à années permutées), WCR unilatéral à droite, 5 %, R = 300, B = 399.
+Demandés par une relecture externe ; non pré-spécifiés, mais déclarés dans `docs/decisions.md` avec leur règle de lecture avant calcul. Script `R/19_q1_power_size.R`, table `reports/tables/phase4bis_q1_puissance.csv`. Placebo de `R/14` (champ réel `dd_32_ja` à années permutées), WCR unilatéral à droite, 5 %, R = 300, B = 399.
 
 | Diagnostic | Vrai effet ajouté | Rejets à 5 % | Erreur Monte-Carlo |
 |---|---|---|---|
@@ -208,9 +208,9 @@ Demandés par une relecture externe ; non pré-spécifiés, mais déclarés dans
 - D2 : la taille (5,7 %) est au plus de 10 %, donc la p de la réplication (0,049) est rapportée avec cette taille. Sa puissance est très faible (11 %) : un résultat « significatif » avec une telle puissance est peu informatif et peut surestimer l'effet. La réplication reste lue comme « de même signe », sans confirmation de l'ampleur.
 
 
-## Vérification ajoutée après la v1.0.0 : chaleur E-OBS au lieu de SIM (Q1-E, 2026-10-12)
+## Vérification ajoutée dans un second temps : chaleur E-OBS au lieu de SIM (Q1-E, 2026-10-12)
 
-Demandée par une relecture externe ; non pré-spécifiée. Déclarée dans `docs/decisions.md` avec sa règle de lecture avant calcul, mais **sans commit préalable** (empreinte locale consignée dans le journal). Scripts `scripts/27_eobs_heat.py` et `R/20_q1_eobs.R` ; tables `reports/tables/phase4bis_q1_eobs.csv` et `phase4bis_q1_eobs_departement.csv`.
+Demandée par une relecture externe ; non pré-spécifiée. Déclarée dans `docs/decisions.md` avec sa règle de lecture avant calcul (empreinte du journal consignée, sans horodatage externe). Scripts `scripts/27_eobs_heat.py` et `R/20_q1_eobs.R` ; tables `reports/tables/phase4bis_q1_eobs.csv` et `phase4bis_q1_eobs_departement.csv`.
 
 | | SIM (A1) | E-OBS (Q1-E) |
 |---|---|---|
@@ -225,12 +225,12 @@ Corrélation des deux mesures : 0,952 (0,953 en intra-département). Moyennes d�
 
 ## Analyses ajoutées après une relecture simulée (E1-E4, 2026-10-12)
 
-Déclarées dans `docs/decisions.md` avec leurs règles de lecture avant calcul, **sans commit préalable** (empreinte locale du journal : `598cfc5f…`). Script `R/21_q1_revue.R` ; tables `reports/tables/phase4bis_q1_revue_*.csv`. WCR par année, 9 999 tirages.
+Déclarées dans `docs/decisions.md` avec leurs règles de lecture avant calcul, sans horodatage externe (empreinte du journal : `598cfc5f…`). Script `R/21_q1_revue.R` ; tables `reports/tables/phase4bis_q1_revue_*.csv`. WCR par année, 9 999 tirages.
 
 | Analyse | Résultat | Lecture |
 |---|---|---|
 | E1, intervalle de β (A1, inversion du WCR) | 90 % : [0,0055 ; 0,0438] ; 95 % : [0,0045 ; 0,0490] (β = 0,0158) | Descriptive : signe soutenu, ampleur imprécise (facteur 8) |
-| E1, blé phase 4 (M1, H1) | β = −0,0149 ; 95 % : [−0,0795 ; +0,0241] (première version erronée, sur les 85 départements de R4 : [−0,0801 ; +0,0239]) | Intervalle prévu par la spécification de la phase 4, enfin calculé |
+| E1, blé phase 4 (M1, H1) | β = −0,0149 ; 95 % : [−0,0795 ; +0,0241] (un premier calcul, erroné, portait sur les 85 départements de R4 : [−0,0801 ; +0,0239]) | Intervalle prévu par la spécification de la phase 4, enfin calculé |
 | E2 (a), sans chaque département | β de 0,0117 à 0,0185 ; p < 0,05 dans 17 cas sur 17 | Descriptive |
 | E2 (b), sans les six départements de relief (01, 26, 38, 39, 63, 69) | β = 0,0098, p unilatérale = 0,146, 11 départements | **Règle fixée : H1 est déclarée dépendante de ces départements** |
 | E3 (a), sans SWI | β = 0,0173, p = 0,001 | — |

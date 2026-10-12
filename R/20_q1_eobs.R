@@ -1,7 +1,7 @@
 # Étape 20 (R) : vérification Q1-E, A1 avec les degrés-jours > 32 °C de juillet-août recalculés avec E-OBS.
 # Usage : Rscript R/20_q1_eobs.R   (après scripts/27_eobs_heat.py)
 # Déclarée avant calcul dans docs/decisions.md (« Vérification de la mesure de chaleur de Q1 avec E-OBS ») ;
-# non pré-spécifiée en phase 4 bis, exploratoire (v1.1).
+# non pré-spécifiée en phase 4 bis, exploratoire.
 # Sorties : reports/tables/phase4bis_q1_eobs.csv, phase4bis_q1_eobs_departement.csv
 
 source("R/common.R")

@@ -1,7 +1,7 @@
 \section{Reproduction}
 \label[appendix]{app:reproduction}
 
-Everything in this monograph can be rebuilt from public sources with the project's code. The code is available at \url{https://github.com/maxime2476/Atlas}; version 1.0.0 is archived on Zenodo (\href{https://doi.org/10.5281/zenodo.23305096}{doi:10.5281/zenodo.23305096}). This appendix says how, and what is needed.
+Everything in this monograph can be rebuilt from public sources with the project's code. The code is available at \url{https://github.com/maxime2476/Atlas} and archived on Zenodo (\href{https://doi.org/10.5281/zenodo.23305095}{doi:10.5281/zenodo.23305095}). This appendix says how, and what is needed.
 
 \paragraph{Environments.} Python~3.12 is managed with \texttt{uv}. Its lock file fixes every package, resolved with no release later than \VerUvDate{} (for instance pandas~\VerPandas, scikit-learn~\VerSklearn, DuckDB~\VerDuckdb, GeoPandas~\VerGeopandas). R~\VerR{} is managed with \texttt{renv}, from a dated snapshot of the Posit package repository (\VerRepoDate), with \texttt{fixest}~\VerFixest. The two languages exchange data through Parquet files with documented schemas.
 
@@ -18,7 +18,7 @@ Everything in this monograph can be rebuilt from public sources with the project
 \end{enumerate}
 The longest steps are the NDVI processing (orders depend on the NASA queue, then about 15 minutes of aggregation and 30 minutes of forecasting) and the daily weather (about 20 minutes). The NDVI requires a free NASA Earthdata account; all other sources are open without registration.
 
-\paragraph{A clean rebuild.} On 12 October 2026, the whole chain was run again on a fresh copy of the repository at commit \texttt{9f65cb4}, from the raw files and without downloading anything. It gave the same intermediate data, the same result tables byte for byte (except the forecast tables, which differ by at most $5\times 10^{-15}$, floating-point rounding) and the same numbers as the text of that commit. The analyses added afterwards (the power diagnostics, the E-OBS check and the four checks that followed the simulated review) were run in the working repository, not on a fresh copy.
+\paragraph{A clean rebuild.} On 12 October 2026, before the checks added later, the whole chain was run again on a fresh copy of the repository, from the raw files and without downloading anything. It gave the same intermediate data, the same result tables byte for byte (except the forecast tables, which differ by at most $5\times 10^{-15}$, floating-point rounding) and the same numbers as the text at that point. The analyses added afterwards (all those marked as added later in \cref{sec:maize,sec:forecasting}) were run in the working repository, not on a fresh copy.
 
 \paragraph{The numbers in this text.} Every estimate, $p$-value, test size and table in this monograph is generated: a script reads the result tables of the project and writes them as \LaTeX{} macros and tables. A few numbers are written in the text by hand: counts that define the design (17 and 83 departments, the numbers of years and clusters, the 300 placebo repetitions) and a few historical figures from the decision log, which are cited as such. The script also checks that the specifications still match their recorded hashes and that the valuation of 2003 is reproduced exactly; it stops otherwise.
 

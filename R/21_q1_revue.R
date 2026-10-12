@@ -57,7 +57,7 @@ b_maize <- coef(fit(d, RHS, y = "ecart_log"))[["dd_32_ja"]]
 ci_maize <- cbind(modele = "A1 maïs 2000-2025", terme = "dd_32_ja", estimation = b_maize,
                   invert(d, "ecart_log", "dd_32_ja", "swi_ja", b_maize, half_width = 0.04))
 
-# Échantillon de M1 en phase 4 (R/10) : 83 départements de statut 1, 1 328 observations. Une première version
+# Échantillon de M1 en phase 4 (R/10) : 83 départements de statut 1, 1 328 observations. Un premier état
 # de ce script prenait les 85 départements (robustesse R4) ; corrigé le 2026-10-12 (docs/decisions.md).
 wheat <- subset(load_panel(), echantillon_principal)
 stopifnot(nrow(wheat) == 1328)

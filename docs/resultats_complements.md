@@ -1,6 +1,6 @@
-# Analyses complémentaires (v1.2) : résultats
+# Analyses complémentaires : résultats
 
-Déclarées avant calcul dans `docs/decisions.md` (« Analyses complémentaires (v1.2) ») ; **non pré-spécifiées, exploratoires**. Aucune ne change le statut des hypothèses de la phase 4 bis. Scripts : `scripts/28_complements_python.py`, `scripts/29_eolien.py`, `R/22_q1_complements.R` ; tables : `reports/tables/phase7_*.csv` (le préfixe `phase7_` désigne ce lot d'analyses, pas une phase du plan initial).
+Déclarées avant calcul dans `docs/decisions.md` (« Analyses complémentaires ») ; **non pré-spécifiées, exploratoires**. Aucune ne change le statut des hypothèses de la phase 4 bis. Scripts : `scripts/28_complements_python.py`, `scripts/29_eolien.py`, `R/22_q1_complements.R` ; tables : `reports/tables/phase7_*.csv` (le préfixe `phase7_` désigne ce lot d'analyses, pas une phase du plan initial).
 
 Modèle de base : A1 (écart log irrigué − non irrigué ~ `dd_32_ja` + `swi_ja` | département + année, poids `surface_ref_ha`, 17 départements, 435 paires, β = 0,0158).
 

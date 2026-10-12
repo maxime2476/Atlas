@@ -91,7 +91,7 @@ VIGIEAU_FILES = {  # nom publié -> chemin daté sur data.gouv (relevé le 2026-
     "arretes-cadre.csv": "20260915-040104/arretes-cadre.csv",
 }
 # E-OBS v33.0e (ECA&D / Copernicus), Tmin et Tmax journalières, grille 0,1°, moyenne d'ensemble.
-# Usage non commercial (recherche, enseignement) ; vérification de la mesure de chaleur de Q1 (v1.1).
+# Usage non commercial (recherche, enseignement) ; vérification de la mesure de chaleur de Q1.
 EOBS_BASE = "https://knmi-ecad-assets-prd.s3.amazonaws.com/ensembles/data/Grid_0.1deg_reg_ensemble/"
 EOBS_FILES = [f"{v}_ens_mean_0.1deg_reg_{p}_v33.0e.nc" for v in ["tn", "tx"] for p in ["1995-2010", "2011-2025"]]
 # Registre national des installations de production et de stockage d'électricité (RTE, ODRÉ), Licence Ouverte 2.0.

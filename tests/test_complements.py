@@ -1,4 +1,4 @@
-"""Tests des analyses complémentaires v1.2 (scripts/28_complements_python.py, scripts/29_eolien.py)."""
+"""Tests des analyses complémentaires (scripts/28_complements_python.py, scripts/29_eolien.py)."""
 
 import importlib.util
 

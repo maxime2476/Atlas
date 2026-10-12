@@ -138,7 +138,7 @@
 | Licence | Données de mission NASA sous Creative Commons Zero (CC0), citation demandée (consignes d'usage de NASA Earthdata, vérifiées le 2026-10-11). Citation : Didan, K. (2021), MOD13Q1 MODIS/Terra Vegetation Indices 16-Day L3 Global 250m SIN Grid V061, DOI 10.5067/MODIS/MOD13Q1.061 |
 | Limites | Terra/MODIS en fin de mission (continuité après 2025 incertaine) ; NDVI de maille, et non de parcelle |
 
-## 8 bis. E-OBS v33.0e (ECA&D, Copernicus) : vérification de la mesure de chaleur de Q1 (v1.1)
+## 8 bis. E-OBS v33.0e (ECA&D, Copernicus) : vérification de la mesure de chaleur de Q1
 
 | Champ | Valeur |
 |---|---|
@@ -150,7 +150,7 @@
 | Correspondance avec SIM | Point E-OBS le plus proche du centre de chaque maille SIM (au plus 0,07°). 106 mailles littorales du masque maïs tombent sur un point en mer (manquant toutes les années) ; aucune dans les 17 départements de l'échantillon principal |
 | Limites | Interpolation de stations, de niveau différent de SAFRAN : sur le masque maïs, E-OBS donne plus de degrés-jours > 32 °C en juillet-août que SIM (corrélation 0,95, `docs/decisions.md`) ; les fenêtres horaires de Tmin et Tmax suivent les conventions des fournisseurs nationaux et n'ont pas été vérifiées pour la France (SIM : `TINF_H` sur ]18-18 UTC], `TSUP_H` sur ]06-06 UTC]) ; une partie des stations françaises est commune à SAFRAN : ce n'est pas une mesure entièrement indépendante |
 
-## 8 ter. Registre national des installations de production et de stockage d'électricité (RTE, ODRÉ) : analyse G10 (v1.2)
+## 8 ter. Registre national des installations de production et de stockage d'électricité (RTE, ODRÉ) : analyse G10
 
 | Champ | Valeur |
 |---|---|
@@ -161,7 +161,7 @@
 | Variables utilisées | `filiere` = « Eolien », `technologie` = « Terrestre », `codedepartement`, `datemiseenservice_date`, `puismaxinstallee` (kW) |
 | Limites | Installations **en service** à la date de l'instantané seulement (les parcs démantelés manquent ; un parc renouvelé peut porter une date récente) ; 34 installations terrestres sans date ou sans département retirées ; puissance installée, pas production |
 
-## 8 quater. SAA, feuilles FOU et TER (même fichier que le § 1) : variables v1.2
+## 8 quater. SAA, feuilles FOU et TER (même fichier que le § 1) : variables des analyses complémentaires
 
 - **FOU :** maïs fourrage et ensilage (plante entière) irrigué (ligne 04) et non irrigué (ligne 05), surfaces 2010-2025 par département ; utilisé pour la part du maïs non irrigué récolté en fourrage (analyse G2).
 - **TER :** SAU du département (ligne 33), moyenne 2010-2012 ; dénominateur de la densité éolienne (G10).

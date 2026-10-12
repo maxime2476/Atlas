@@ -1,4 +1,4 @@
-"""Étape 27 : degrés-jours au-dessus de 32 °C en juillet-août recalculés avec E-OBS (vérification de Q1, v1.1).
+"""Étape 27 : degrés-jours au-dessus de 32 °C en juillet-août recalculés avec E-OBS (vérification de Q1).
 
 Usage : uv run python scripts/27_eobs_heat.py
 Entrées :

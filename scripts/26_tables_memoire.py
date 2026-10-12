@@ -551,7 +551,7 @@ def main() -> None:
     n["PowerCheckSize"] = f"{100 * rate('D1', 0):.1f}"
     n["PowerHalf"], n["PowerFull"] = f"{100 * rate('D1', 0.008):.0f}", f"{100 * rate('D1', 0.016):.0f}"
     n["ReplSize"], n["ReplPower"] = f"{100 * rate('D2', 0):.1f}", f"{100 * rate('D2', 0.011):.0f}"
-    # Analyses E1-E4 issues de la relecture simulée (R/21_q1_revue.R), déclarées avant calcul (v1.1).
+    # Analyses E1-E4 issues de la relecture simulée (R/21_q1_revue.R), déclarées avant calcul.
     ci = pd.read_csv(TAB / "phase4bis_q1_revue_intervalles.csv")
     def bound(model, level, side):
         b = ci[ci.modele.str.startswith(model) & (ci.niveau == level)][side].iloc[0]
@@ -575,11 +575,11 @@ def main() -> None:
     dec = pd.read_csv(TAB / "phase4bis_q1_revue_decennies.csv")
     n["DecDiff"], n["DecDiffP"] = f"{dec.estimation.iloc[0]:.4f}", f"{dec.p_wcb_annee.iloc[0]:.2f}"
     n["DecDiffNoThree"], n["DecDiffNoThreeP"] = f"{dec.estimation.iloc[1]:.4f}", f"{dec.p_wcb_annee.iloc[1]:.2f}"
-    # Vérification Q1-E : chaleur recalculée avec E-OBS, déclarée avant calcul (v1.1), hors du tableau des robustesses.
+    # Vérification Q1-E : chaleur recalculée avec E-OBS, déclarée avant calcul, hors du tableau des robustesses.
     qe = pd.read_csv(TAB / "phase4bis_q1_eobs.csv").iloc[0]
     n["EobsPct"], n["EobsP"] = pct(qe["effet_pct_par_unite"]), pv(qe["p_wcb_annee_unilateral_droite"])
     n["EobsCorr"] = f"{qe['correlation_eobs_sim']:.2f}"
-    # Analyses complémentaires v1.2 (R/22, scripts/28-29), déclarées avant calcul, exploratoires.
+    # Analyses complémentaires (R/22, scripts/28-29), déclarées avant calcul, exploratoires.
     it = pd.read_csv(TAB / "phase7_interactions.csv")
     n["RelInter"], n["RelInterP"] = f"{it.estimation.iloc[0]:.4f}", pv(it.p_wcb_annee.iloc[0])
     n["IrrInterP"] = pv(it.p_wcb_annee.iloc[2])

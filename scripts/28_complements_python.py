@@ -1,8 +1,8 @@
-"""Étape 28 : analyses complémentaires v1.2 côté Python (préparation des variables, G2, G8, G12).
+"""Étape 28 : analyses complémentaires côté Python (préparation des variables, G2, G8, G12).
 
 Usage : uv run python scripts/28_complements_python.py preparer     (avant R/22_q1_complements.R)
         uv run python scripts/28_complements_python.py prevision    (G12, indépendant)
-Déclaration : docs/decisions.md (« Analyses complémentaires (v1.2) »), avant calcul. Exploratoire.
+Déclaration : docs/decisions.md (« Analyses complémentaires »), avant calcul. Exploratoire.
 
 Sorties :
   data/processed/phase7_covariables_dep.parquet   un département par ligne (38 départements de la population maïs) :

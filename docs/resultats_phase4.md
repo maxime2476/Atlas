@@ -48,7 +48,7 @@ Forme de la relation SWI (description) : le sommet est à SWI ≈ 0,41. Seuls 16
 
 **p-valeur unilatérale pour H1** (WCR, P(t* ≤ t)) : 0,19 dans M1, 0,16 dans M2.
 
-*Écart non déclaré à l'origine (consigné le 2026-10-12) : la spécification prévoyait de rapporter H1 « avec l'intervalle à 95 % bilatéral ». Cet intervalle n'a pas été calculé. La seule forme cohérente avec l'inférence retenue serait un intervalle obtenu en inversant le WCR par année. **Calculé le 2026-10-12** (`R/21_q1_revue.R`, analyse E1) : β = −0,0149, intervalle à 95 % [−0,0795 ; +0,0241], soit −7,6 % à +2,4 % par °C·jour (corrigé le même jour : une première version portait par erreur sur les 85 départements de R4, [−0,0801 ; +0,0239]) (`reports/tables/phase4bis_q1_revue_intervalles.csv`).*
+*Écart non déclaré à l'origine (consigné le 2026-10-12) : la spécification prévoyait de rapporter H1 « avec l'intervalle à 95 % bilatéral ». Cet intervalle n'a pas été calculé. La seule forme cohérente avec l'inférence retenue serait un intervalle obtenu en inversant le WCR par année. **Calculé le 2026-10-12** (`R/21_q1_revue.R`, analyse E1) : β = −0,0149, intervalle à 95 % [−0,0795 ; +0,0241], soit −7,6 % à +2,4 % par °C·jour (corrigé le même jour : un premier calcul portait par erreur sur les 85 départements de R4, [−0,0801 ; +0,0239]) (`reports/tables/phase4bis_q1_revue_intervalles.csv`).*
 
 **Placebo** (chaleur extrême de *t*+1, récoltes 2010-2024, 1 245 observations, 15 grappes année) : −0,0018, p = 0,72 / 0,78 / 0,91. L'échantillon diffère de M1, et un placebo nul ne valide pas l'identification.
 
