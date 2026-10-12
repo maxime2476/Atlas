@@ -24,7 +24,7 @@ In the main sample (\MaizeMainDeps{} departments, \MaizeMainPairs{} department-y
 \end{threeparttable}
 \end{table}
 
-\paragraph{H1 is established under the pre-specified rule.} Each degree-day above 32\,$^{\circ}$C in July--August is associated with a \QonePct\,\% wider yield gap in favour of irrigated maize ($p = \QoneP$). The measured size of this test on the same data is \QoneSizeWCR\,\%, below the 10\,\% limit. ``Established'' is meant in the sense of this rule only. \ExploPairs{} of the \MaizeMainPairs{} department-years (\ExploSharePct\,\%) belong to 2010--2025, the period whose exploratory analysis suggested the hypothesis; the only new evidence is the decade 2000--2009, examined next.
+\paragraph{H1 is established under the pre-specified rule.} Each degree-day above 32\,$^{\circ}$C in July--August is associated with a \QonePct\,\% wider yield gap in favour of irrigated maize ($p = \QoneP$). The measured size of this test on the same data is \QoneSizeWCR\,\%, below the 10\,\% limit. ``Established'' is meant in the sense of this rule only. \ExploPairs{} of the \MaizeMainPairs{} department-years (\ExploSharePct\,\%) belong to 2010--2025, the period whose exploratory analysis suggested the hypothesis; the only new evidence is the decade 2000--2009, examined next. A diagnostic added after publication of the first version, declared in the log before it was computed (\cref{app:deviations}), measures the power of this test with the same placebo: it detects a true effect of the estimated size (0.016) in \PowerFull\,\% of cases and half of it in \PowerHalf\,\% (size under the null in this run: \PowerCheckSize\,\%).
 
 \paragraph{Both modes lose, rainfed maize much more.} Each degree-day is associated with about \QoneRainfedPct\,\% lower rainfed yields and about \QoneIrrigatedPct\,\% lower irrigated yields; both are significant after the Holm correction. Rainfed maize is about \QoneRatio{} times more sensitive to heat. Irrigation is therefore associated with a smaller sensitivity, not with its disappearance. Wetter soils are associated with a narrower gap ($\hat\delta = \QoneSwi$ per unit of the soil wetness index), as expected if the advantage of irrigated maize comes from water.
 
@@ -34,7 +34,7 @@ In the main sample (\MaizeMainDeps{} departments, \MaizeMainPairs{} department-y
 
 The exploratory analysis that motivated this question had used 2010--2025. On 2000--2009 alone, a decade that no earlier analysis had touched, the estimate keeps its sign: \QoneReplPct\,\% per degree-day, with a one-sided $p = \QoneReplP$. The same mask gives \QoneRecentPct\,\% on 2010--2025, so the estimate for the earlier decade is about half as large. On 2000--2009 without 2003, the point estimate is larger than on 2010--2025 (\cref{tab:maize-measure}): the smaller estimate over the decade comes from 2003, which raises a question about linearity, taken up below.
 
-Three cautions apply. The two-sided $p$-value is \QoneReplPtwo; the test rests on 10 years, a number of clusters for which I did not measure the size of the bootstrap; and, as shown below, the replication holds with the maize mask but not with department-wide weather. I read it as consistent in sign, not as a confirmation of magnitude.
+Three cautions apply. The two-sided $p$-value is \QoneReplPtwo; the test rests on 10 years: measured afterwards with the same placebo, the size of the bootstrap with 10 clusters is \ReplSize\,\%, but its power against a true effect of the estimated size is only \ReplPower\,\%, so a $p$-value near 0.05 is weak evidence; and, as shown below, the replication holds with the maize mask but not with department-wide weather. I read it as consistent in sign, not as a confirmation of magnitude.
 
 \subsection{Robustness}
 
@@ -76,6 +76,7 @@ What we know about the two measures is the following.
   \item \textbf{The age of the mask is not the cause.} A mask drawn from 2008 blocks gives almost the same exposure as the 2015--2017 mask and the same estimate.
   \item \textbf{The department-area measure misses the heat where maize grows in departments with uplands.} In \ReliefCount{} such departments, maize fields lie \ReliefAltDiffMin{} to \ReliefAltDiffMax{}~m below the department's average altitude, and department-wide weather understates their 2003 heat by up to \ReliefGapMax{} degree-days (\cref{tab:relief}).
   \item \textbf{The maize mask was the measure designated in advance} as the main one, before any estimate on 2000--2009 was computed.
+  \item \textbf{The choice did not favour the result already known.} When the specification was written, the only known estimate (phase 6, 2010--2025) used department-wide weather and was significant. On those same years the maize mask gives a smaller estimate (\MaskRecent{} against \AreaRecent).
 \end{itemize}
 These points favour the maize mask. They do not explain why department-wide weather gives a stronger association over 2010--2025, and the altitude explanation was sought after the results were known. The honest summary is that the result holds when heat is measured where maize is grown, and that it is sensitive to that choice in the earlier decade.
 

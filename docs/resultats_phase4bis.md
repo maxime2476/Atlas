@@ -39,7 +39,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 - Chaque degré-jour au-dessus de 32 °C en juillet-août est associé à un écart de rendement plus large d'environ 1,6 % en faveur du maïs irrigué.
 - Sur les dix années 2000-2009, que l'analyse exploratoire de la phase 6 n'avait pas vues, l'estimation garde **le même signe avec le masque maïs, pour un effet environ deux fois plus faible** (+1,1 % contre +2,4 % sur 2010-2025 avec le même masque).
 - **Cette réplication dépend de la mesure de la chaleur.** Avec la pondération surfacique utilisée en phase 6, l'estimation sur 2000-2009 est nulle (−0,0009 ; § « Diagnostics exploratoires »). Elle n'est donc pas convergente avec la mesure de la phase 6.
-- Avec 10 grappes, la taille du WCR n'a pas été vérifiée ; la p bilatérale vaut 0,10.
+- Avec 10 grappes, la taille du WCR, mesurée ensuite (diagnostic D2, déclaré avant calcul), est de 5,7 % ; mais sa puissance contre un vrai effet de 0,011 n'est que de 11 % : une p de 0,049 est une preuve faible. La p bilatérale vaut 0,10.
 
 **Interprétation :** une association significative selon la règle pré-spécifiée, mais **sensible à la mesure de la chaleur**. Ce n'est pas un effet causal de l'irrigation. Les parcelles irriguées diffèrent des autres (sols, exploitations, variétés). Les effets fixes département et année absorbent ces différences seulement si elles sont stables, et non si elles varient avec la chaleur de l'année.
 
@@ -188,3 +188,21 @@ Cette robustesse a été déclarée dans `docs/decisions.md` avant estimation, a
 - **Masques :** le masque maïs est fixe (2015-2017) ; le masque blé est appliqué à 1959, ce qui est anachronique.
 - **Ruptures de source :** en 1989 et 2010, absorbées en niveau mais pas en pente.
 - **VigiEau :** indicateur grossier.
+
+## Diagnostics ajoutés après la v1.0.0 : puissance et taille de Q1 (2026-10-12)
+
+Demandés par une relecture externe ; non pré-spécifiés, mais déclarés dans `docs/decisions.md` avec leur règle de lecture avant calcul (commit a2d1d85). Script `R/19_q1_power_size.R`, table `reports/tables/phase4bis_q1_puissance.csv`. Placebo de `R/14` (champ réel `dd_32_ja` à années permutées), WCR unilatéral à droite, 5 %, R = 300, B = 399.
+
+| Diagnostic | Vrai effet ajouté | Rejets à 5 % | Erreur Monte-Carlo |
+|---|---|---|---|
+| D1 : H1, 2000-2025 (26 grappes) | 0 (contrôle de la taille) | 5,3 % | 1,3 point |
+| | 0,008 (moitié de l'estimation) | 24,3 % | 2,5 points |
+| | 0,016 (environ l'estimation) | 65,7 % | 2,7 points |
+| D2 : réplication 2000-2009 (10 grappes) | 0 (taille) | 5,7 % | 1,3 point |
+| | 0,011 (environ l'estimation) | 11,3 % | 1,8 point |
+
+**Lecture, selon la règle fixée avant calcul :**
+
+- D1 est descriptif. Le test de H1 avait environ deux chances sur trois de détecter un effet de la taille estimée, et une sur quatre pour un effet moitié moindre. Le contrôle sous H0 (5,3 %) diffère des 3,7 % de `R/14` parce que les permutations sont tirées autrement ; l'écart reste dans l'erreur de Monte-Carlo.
+- D2 : la taille (5,7 %) est au plus de 10 %, donc la p de la réplication (0,049) est rapportée avec cette taille. Sa puissance est très faible (11 %) : un résultat « significatif » avec une telle puissance est peu informatif et peut surestimer l'effet. La réplication reste lue comme « de même signe », sans confirmation de l'ampleur.
+

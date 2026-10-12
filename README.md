@@ -5,6 +5,7 @@
 > **En bref.**
 > - **Maïs grain, 17 départements, 2000-2025 (résultat principal, pré-spécifié).** Chaque degré-jour au-delà de 32 °C en juillet-août est **associé** à un écart de rendement plus large d'environ **1,6 %** en faveur du maïs irrigué (p = 0,007 avec un bootstrap par année dont la taille empirique est de 3,7 %).
 >   - Le maïs non irrigué y est associé à −2,5 % par °C·jour, l'irrigué à −1,0 %.
+>   - Puissance du test (diagnostic ajouté après la v1.0.0, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
 >   - **Réserve :** le résultat dépend de la mesure de la chaleur. Il n'est pas significatif si la météo est moyennée sur tout le département au lieu des parcelles de maïs, et la réplication sur 2000-2009 n'existe qu'avec la mesure sur les parcelles.
 >   - C'est une association, pas un effet causal de l'irrigation.
 > - **Blé tendre, 83 départements, 1959-2025.** La chaleur en fin de cycle est associée à −1,1 % de rendement par °C·jour, mais ce n'est **pas distinguable de zéro** (p = 0,125). Malgré 67 récoltes, l'information se réduit à quelques étés très chauds. Aucune évolution de la sensibilité depuis 1959 n'est détectable (puissance faible).
@@ -115,7 +116,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
 | | Estimation | p WCR par année (unilatérale) |
 |---|---|---|
 | **H1 : écart irrigué − non irrigué, °C·jour > 32 °C** | **+1,6 % par °C·jour** | **0,007** (taille du test : 3,7 %) |
-| Réplication sur 2000-2009 seulement (10 années) | +1,1 % (environ deux fois moins que sur 2010-2025) | 0,049 (bilatérale 0,10 ; taille non vérifiée à 10 grappes) |
+| Réplication sur 2000-2009 seulement (10 années) | +1,1 % (environ deux fois moins que sur 2010-2025) | 0,049 (bilatérale 0,10 ; taille 5,7 % à 10 grappes, mais puissance de 11 % seulement) |
 | H2b : maïs non irrigué | −2,5 % | < 0,001 (Holm) |
 | H2c : maïs irrigué | −1,0 % | 0,005 (Holm) |
 | H2a : un sol plus humide est associé à un écart plus faible | −0,35 par unité de SWI | 0,024 (Holm) |
@@ -228,6 +229,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
   - Au 2026-10-12, 564 tests passent : 457 vérifications d'empreintes des fichiers bruts (une par fichier) et 107 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
+- **Reproduction vérifiée (2026-10-12) :** sur un clone vierge, toute la chaîne relancée depuis les fichiers bruts redonne les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`).
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).
 - **Graines :** fixées (20261010 et suivantes).
 

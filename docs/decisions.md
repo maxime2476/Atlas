@@ -282,3 +282,13 @@ Demandés par une relecture externe après la publication de la v1.0.0 ; **non p
 - **Règle de lecture, fixée avant calcul :**
   - D1 est descriptif : il dit quelle chance le test avait de détecter un effet de cet ordre ; il ne change pas le statut de H1 ;
   - D2 : si la taille dépasse 10 % (le seuil de la règle de décision de la phase 4 bis), la p-valeur de la réplication (0,049) est déclarée non interprétable comme test ; si elle est au plus de 10 %, elle est rapportée avec sa taille. La réplication n'a jamais été une hypothèse principale ; son statut de « même signe » ne change pas.
+
+## Reproduction propre depuis les fichiers bruts (2026-10-12)
+
+- **Procédure :** clone vierge du commit 9f65cb4 dans un autre dossier ; fichiers bruts reliés par liens symboliques (aucun téléchargement) ; environnements recréés par `uv sync --frozen` et `renv::restore()` ; toute la chaîne de `data/README.md` exécutée dans l'ordre (extraction RPG comprise, sans les étapes 01 et 17 de téléchargement), soit environ 1 h 30.
+- **Résultat :**
+  - les 24 fichiers intermédiaires et finaux de `data/interim/` et `data/processed/` sont identiques à ceux du dépôt de travail, dont le panel maïs (435 paires de l'échantillon principal) ;
+  - toutes les tables de `reports/tables/` sont identiques à l'octet, sauf 7 tables de prévision (phases 5 et 6), qui diffèrent d'au plus 5 × 10⁻¹⁵ (arrondis de calcul en virgule flottante) ;
+  - `memoire/tables/numbers.tex` et les autres tables du mémoire sont identiques ; les trois figures régénérées donnent un rendu identique (seule la date de création du PDF change) ;
+  - 564 tests passent dans le clone, dont les 457 contrôles d'empreinte : les fichiers bruts n'ont pas changé.
+- **Limite :** la reproduction utilise les fichiers bruts téléchargés les 10 et 11 octobre 2026 ; un nouveau téléchargement peut donner des fichiers révisés par les producteurs (`data/README.md`).

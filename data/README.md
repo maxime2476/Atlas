@@ -50,6 +50,7 @@ uv run python scripts/01_download_raw.py --rpg1 2008              # phase 0 ter 
 uv run python scripts/25_build_maize_mask_2008.py                 # masque maïs 2008 + météo (Q1-R9)
 Rscript R/17_q1_mask2008.R                                        # robustesse Q1-R9
 Rscript R/18_residual_autocorr.R                                  # diagnostic : autocorrélation des résidus
+Rscript R/19_q1_power_size.R                                      # diagnostics D1-D2 : puissance de H1, taille de la réplication
 Rscript R/wcr/exemple.R                                           # exemple simulé du module wcr (Monte-Carlo)
 # 7. Figures, mémoire et tests
 uv run python scripts/20_figures_rapport.py                       # figures du README (PNG) et du mémoire (PDF)

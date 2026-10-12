@@ -541,6 +541,13 @@ def main() -> None:
     n["QoneN"] = str(int(h.loc["H1", "n"]))
     n["QoneReplPct"] = pct(h.loc["réplication", "effet_pct_par_unite"])
     n["QoneReplP"] = pv(h.loc["réplication", "p_unilaterale"])
+    # Diagnostics D1 (puissance de H1) et D2 (taille et puissance de la réplication), déclarés avant calcul.
+    pw = pd.read_csv(TAB / "phase4bis_q1_puissance.csv")
+    def rate(diag, beta):
+        return pw[pw.diagnostic.str.startswith(diag) & (pw.beta_vrai.round(3) == beta)].taux_rejet_5pct.iloc[0]
+    n["PowerCheckSize"] = f"{100 * rate('D1', 0):.1f}"
+    n["PowerHalf"], n["PowerFull"] = f"{100 * rate('D1', 0.008):.0f}", f"{100 * rate('D1', 0.016):.0f}"
+    n["ReplSize"], n["ReplPower"] = f"{100 * rate('D2', 0):.1f}", f"{100 * rate('D2', 0.011):.0f}"
     n["QoneReplPtwo"] = f"{h.loc['réplication', 'p_wcb_annee']:.2f}"
     n["QoneRainfedPct"] = pct(-h.loc["H2b", "effet_pct_par_unite"])
     n["QoneIrrigatedPct"] = pct(-h.loc["H2c", "effet_pct_par_unite"])
