@@ -626,10 +626,10 @@ def main() -> None:
         "decision log, published with the code. In 17 departments, each degree-day above 32 C in July-August is "
         f"associated with a {n['QonePct']}% wider yield gap in favour of irrigated maize (one-sided wild cluster bootstrap "
         f"by year, p = {n['QoneP']}; empirical size {n['QoneSizeWCR']}%). Rainfed yields are about {n['QoneRatio']} "
-        "times more sensitive to heat than irrigated yields. On 2000-2009, years never used before, the estimate keeps "
+        "times more sensitive to heat than irrigated yields. On 2000-2009, years not used in the exploratory analysis, the estimate keeps "
         f"its sign with the maize mask ({n['QoneReplPct']}% against {n['QoneRecentPct']}% on 2010-2025). It is not "
         "significant when heat is averaged over whole departments; I suggest, after the fact, that this measure "
-        "understates the heat experienced by maize in mountainous departments. It is an association, not the causal "
+        "understates the heat experienced by maize in departments with uplands. It is an association, not the causal "
         "effect of irrigation. Methodologically, standard errors clustered by department or Conley reject a true null in "
         f"{n['UsualSizeMin']}% to {n['UsualSizeMax']}% of placebo simulations on these panels. Wheat yields over "
         "1959-2025 and out-of-sample yield forecasts give null results.")

@@ -9,7 +9,7 @@
 >   - C'est une association, pas un effet causal de l'irrigation.
 > - **Blé tendre, 83 départements, 1959-2025.** La chaleur en fin de cycle est associée à −1,1 % de rendement par °C·jour, mais ce n'est **pas distinguable de zéro** (p = 0,125). Malgré 67 récoltes, l'information se réduit à quelques étés très chauds. Aucune évolution de la sensibilité depuis 1959 n'est détectable (puissance faible).
 > - **Prévision :** ni la météo ni le NDVI satellitaire ne battent de façon démontrée la **moyenne historique du département**.
-> - **Leçon transversale :** sur ces panels, les erreurs-types usuelles (cluster par département, Conley) concluent à tort dans **16 à 56 %** des cas sans effet réel, au seuil nominal de 5 %. Seul le bootstrap par année respecte son niveau.
+> - **Leçon transversale :** sur ces panels, les erreurs-types usuelles (cluster par département, Conley) concluent à tort dans **16 à 56 %** des cas sans effet réel, au seuil nominal de 5 %. Seul le bootstrap par année reste proche de son niveau (3,5 à 7,0 % de rejets à tort selon le jeu de données).
 
 ![Maïs : écart irrigué − non irrigué selon la spécification](docs/figures/fig4_mais_robustesse.png)
 
@@ -48,7 +48,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 
 **Reproductibilité des données :**
 
-- les données brutes (≈ 22 Go) ne sont **pas versionnées** ;
+- les données brutes (≈ 24 Go, NDVI compris) ne sont **pas versionnées** ;
 - leurs URL, dates d'accès et **SHA-256** sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie ;
 - les points d'attention de chaque source sont détaillés dans `docs/sources.md` et `docs/phase0bis_cadrage.md`. La SAA 2000-2009 a été localisée par exploration du site Agreste (navigation automatisée en lecture seule), puis contrôlée : sur 2010-2020, 95 % des rendements concordent à 0,5 q/ha près avec les séries actuelles (1 674 paires comparées).
 
@@ -65,7 +65,7 @@ data/interim/  SAA longue ; météo maille × mois (8 984 mailles, 1958-2025)
    ▼
 data/processed/ panel_mais_long (38 départements × 2000-2025 × 2 modalités), panel_ble (2010-2025),
                 panel_ble_long (1990-2025), panel_ble_1959 (1959-2025), forecast_features, NDVI, prix
-   │  R/10-13 : modèles blé et maïs des phases 4-6 ; R/14-16 : phase 4 bis (Q1, Q2, diagnostics)
+   │  R/10-13 : modèles blé et maïs des phases 4-6 ; R/14-18 : phase 4 bis (Q1, Q2, analyses exploratoires, masque 2008, diagnostics)
    │  scripts/14-15, 19 (scikit-learn) : prévision chronologique, NDVI ; scripts/16, 24 : valorisation
    ▼
 reports/tables/ (versionné)   docs/resultats_phase*.md   docs/figures/
@@ -91,7 +91,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
   - poids : surface de maïs 2010-2012 (fixe) ;
   - échantillon principal : 17 départements de statut qualité 1. Le statut de 2025 est appliqué à 2000-2009, faute de statut publié avant 2010 ;
   - une hypothèse principale (test unilatéral), quatre hypothèses secondaires corrigées par Holm, 8 robustesses ;
-  - les années 2000-2009, jamais utilisées auparavant, servent de réplication.
+  - les années 2000-2009, que l'analyse exploratoire n'avait pas utilisées, servent de réplication.
 - **Q2, blé 1959-2025 :**
   - spécification M1 de la phase 4, avec des effets fixes **département × période de source** (1959-1988, 1989-2009, 2010-2025) pour absorber les ruptures de série ;
   - pentes de chaleur par période de 22-23 ans pour la question de l'adaptation.
@@ -152,7 +152,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
 | M1 : degrés-jours > 32 °C, mai-juin | −0,0149 (≈ −1,5 % / °C·jour) | 0,004 | 0,047 | **0,374** |
 | M2 : idem, à humidité du sol égale | −0,0152 | 0,007 | 0,111 | **0,327** |
 
-Le signe est négatif dans 12 des spécifications alternatives R1 à R13 et dans les 16 estimations *leave-one-year-out*. Mais sans aucun effet réel, le cluster par département conclut à tort dans **56 %** des cas et Conley dans **39 %**. Le bootstrap par année a la bonne taille (4 %), mais il ne détecte un vrai effet de −1,5 % que dans 12 % des cas.
+Le signe est négatif dans 12 des spécifications alternatives R1 à R13 et dans les 16 estimations *leave-one-year-out*. Mais sans aucun effet réel, le cluster par département conclut à tort dans **56 %** des cas et Conley dans **39 %**. Le bootstrap par année a la bonne taille (4,3 %), mais il ne détecte un vrai effet de −1,5 % que dans 12 % des cas.
 
 ![Taille des tests, blé (phase 4) et maïs (phase 6)](docs/figures/fig2_taille_inference.png)
 
@@ -189,7 +189,7 @@ Le signe est négatif dans 12 des spécifications alternatives R1 à R13 et dans
   - fenêtres phénologiques fixes sur 67 ans, alors que les dates de semis et les variétés ont changé.
 - **Rendements SAA :** synthèse multi-sources ; 86,6 % des rendements de blé 2010-2025 sont arrondis au quintal près (95,6 % sur 1990-2009) ; 2025 provisoire.
 - **Météo :** SIM est une réanalyse (8 km) qui lisse probablement les extrêmes locaux.
-- **Prévision :** test non réalisé en temps réel (séries rétropolées) ; seulement 10 années test.
+- **Prévision :** test en pseudo-temps réel (séries rétropolées, réanalyse météo, échantillon choisi avec le statut qualité de 2025) ; seulement 10 années test.
 - **Absences :** pas de modèle de maladies (fusariose en 2016).
 
 **Pistes :**
