@@ -128,3 +128,32 @@ def test_water_value_identities():
     ok = w.plausible
     assert (ok == w.dose_m3_ha.between(500, 3000)).all() and w.eur_par_m3[~ok].isna().all()
     assert np.allclose(w.eur_par_m3[ok], w.kg_par_m3[ok] / 100 * w.prix_eur_q[ok])
+
+
+def _drias():
+    spec = importlib.util.spec_from_file_location("drias", ROOT / "scripts" / "38_drias_indicateurs.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_pressure_and_vapour_pressure():
+    d = _drias()
+    assert np.isclose(d.pressure_kpa(0.0), 101.3) and np.isclose(d.pressure_kpa(1000.0), 90.0, atol=0.1)   # FAO-56
+    # q = 0,622 e / (p − 0,378 e) inversée : e retrouvé à partir de q
+    e, p = 1.8, 98.0
+    q = 0.622 * e / (p - 0.378 * e)
+    assert np.isclose(d.vapour_pressure(q, p), e)
+
+
+@pytest.mark.skipif(not (PROC / "drias_dep_annee.parquet").exists(), reason="DRIAS absent")
+def test_drias_panel():
+    v = pd.read_parquet(PROC / "drias_dep_annee.parquet")
+    assert v.modele.nunique() == 17 and sorted(v.dep_code.unique()) == DEP17
+    assert not v.duplicated(["modele", "periode", "dep_code", "annee"]).any()
+    assert v[["dd_32_ja", "vpd_ja"]].notna().all().all() and (v.dd_32_ja >= 0).all() and v.vpd_ja.between(0.1, 6).all()
+    hist = v[v.periode == "historique"]
+    assert hist.annee.between(1976, 2005).all() and len(hist) == 17 * 17 * 30
+    syn = pd.read_csv(ROOT / "reports" / "tables" / "phase7_d1_synthese.csv")
+    assert list(syn.horizon) == ["1976-2005", "France +2.0", "France +2.7", "France +4.0"]
+    assert syn.dd_32_ja_mediane.is_monotonic_increasing

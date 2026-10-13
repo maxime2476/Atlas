@@ -176,6 +176,7 @@ Déclarées avant calcul dans `docs/decisions.md`, non pré-spécifiées, explor
 | Réserve utile des sols (INRAE, 90 m) × chaleur | Signe attendu, non détectée (p = 0,65) ; RU de 87 à 134 mm seulement ; variante VPD × RU p = 0,006, à confirmer | Peu : trop peu de variation entre 17 départements |
 | Volumes prélevés pour l'irrigation (BNPE, 2012-2023) | Suivent la sécheresse du sol (p < 0,001), pas la chaleur (p = 0,28) | **Oui** : l'eau utilisée suit les sols secs |
 | Valeur apparente du m³ (6 départements où le maïs domine l'irrigation) | Dose médiane 1 524 m³/ha ; 2,2 kg et 0,55 € bruts par m³ (0,17 à 0,96) | Oui, comme ordre de grandeur descriptif (marge de 0,20-0,28 €/m³ selon la DRAAF Occitanie) |
+| Projections DRIAS (17 simulations Explore2, masque maïs) | Degrés-jours > 32 °C de juillet-août : 1,3 (1976-2005) → 3,8 / 7,2 / 17,9 à +2,0 / +2,7 / +4,0 °C ; écart irrigué − non irrigué impliqué par β : +4 / +10 / +30 % | Ordre de grandeur descriptif : les étés qui portent le résultat deviendraient ordinaires ; à +4 °C, hors du support de β |
 
 ![Taille des tests, phase 4 bis](docs/figures/fig5_taille_phase4bis.png)
 
@@ -272,7 +273,7 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
   - prévision : 10 min ;
   - NDVI : de 1 à plusieurs heures côté NASA, puis environ 15 min d'agrégation et 30 min de prévision (`data/README.md`).
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
-  - Au 2026-10-13, 1 093 tests passent : 973 vérifications d'empreintes des fichiers bruts (une par fichier) et 120 tests de logique et de données.
+  - Au 2026-10-13, 1 129 tests passent : 1 007 vérifications d'empreintes des fichiers bruts (une par fichier) et 122 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
 - **Reproduction vérifiée (2026-10-12) :** sur un clone vierge du dépôt, avant l'ajout des vérifications complémentaires, toute la chaîne relancée depuis les fichiers bruts a redonné les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`). Les vérifications ajoutées ensuite (puissance D1-D2, E-OBS, analyses E1-E4 de la relecture simulée, analyses complémentaires) n'ont pas été reconstruites sur un clone vierge.
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).

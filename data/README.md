@@ -73,6 +73,11 @@ uv run python scripts/01_download_raw.py --ru --ra2020 --bnpe     # RU INRAE (~0
 uv run python scripts/35_reserve_utile.py                         # RU sous les parcelles de maïs grain (~4 min)
 uv run python scripts/36_volumes_irrigation.py                    # volumes BNPE, parts irriguées du RA, prix du maïs
 Rscript R/27_q1_sol_eau.R                                         # R1, W1, W2 : réserve utile, volumes, valeur du m³
+# D1 : projections DRIAS (compte personnel ; DRIAS_LOGIN et DRIAS_PASSWORD dans .env ; Chromium : playwright install chromium)
+uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py commander     # 34 commandes (~1 h 15)
+uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py fenetres      # fenêtres TRACC par modèle
+uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py telecharger   # 34 archives, 21 Go (~1 h 15)
+uv run python scripts/38_drias_indicateurs.py                     # degrés-jours et VPD par horizon (~15 min)
 uv run python scripts/32_diagrammes_readme.py                   # diagrammes du README (chaîne de données, règle de décision, frise ; SVG)
 uv run python scripts/26_tables_memoire.py                        # chiffres et tableaux du mémoire (memoire/tables/)
 (cd memoire && latexmk -pdf main.tex)                             # compilation du mémoire

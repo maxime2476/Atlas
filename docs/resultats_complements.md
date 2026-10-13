@@ -146,6 +146,19 @@ Déclarés avant calcul. Données : RU INRAE à 90 m (Román Dobarco et al. 2019
 
 Lecture : la valeur par m³ est **descriptive**. L'écart de rendement observé mêle l'effet de l'eau et les différences entre parcelles irriguées et non irriguées ; la dose repose sur une clé de surface (part du maïs dans la surface irriguée en 2020), ce qui suppose que le maïs reçoit autant d'eau par hectare que les autres cultures irriguées du département ; s'il en reçoit plus, la dose est sous-estimée et la valeur par m³ surestimée. Elle ne compte ni l'énergie, ni le matériel, ni la main-d'œuvre.
 
+## Projections DRIAS (D1)
+
+Déclarées avant calcul. 17 simulations Explore2-Climat 2022 corrigées par ADAMONT (historique et RCP 8.5), 1 582 mailles du masque maïs des 17 départements ; scripts `scripts/37_drias_telechargement.py`, `scripts/38_drias_indicateurs.py` ; tables `reports/tables/phase7_d1_*.csv`. Moyennes des 17 départements pondérées comme A1 ; médiane des modèles [étendue].
+
+| Horizon | Degrés-jours > 32 °C (juillet-août) | VPD (kPa) | Écart irrigué − non irrigué impliqué par β × Δ (IC 90 % de β) |
+|---|---|---|---|
+| 1976-2005 (modèles ; SIM2 : 1,02) | 1,28 [1,00 ; 1,51] | 1,55 | référence |
+| France +2,0 °C | 3,8 [0,8 ; 10,5] | 1,78 | +4 % (1-12 %) |
+| France +2,7 °C | 7,2 [1,5 ; 12,1] | 1,94 | +10 % (3-29 %) |
+| France +4,0 °C | 17,9 [8,9 ; 31,0] | 2,35 | +30 % (9-106 %) |
+
+Repères observés : moyenne 2000-2025 1,9 ; 2019 et 2022 environ 4 ; 2003 14,7. **Lecture :** descriptive ; pratiques, variétés et règles d'eau tenues fixes ; à +4 °C, l'été moyen dépasse 2003 et l'extrapolation sort du support de β. Les fenêtres +2,0 °C de plusieurs modèles sont raccourcies au début (2021).
+
 ## Non fait
 
 - **Méthode SAA (partage irrigué / non irrigué) :** les sources publiques consultées décrivent la SAA comme une synthèse des services régionaux, combinant enquêtes (structure, Terres, vergers) et données administratives (ASP, PAC). Elles ne définissent pas « irrigué » : surface irriguée l'année, ou équipée pour l'irrigation. Les PDF méthodologiques d'Agreste demandent désormais une session. La question reste à poser directement au SSP ou à un SRISE. L'enquête Pratiques culturales grandes cultures (2017, 2021, 2025) relève l'irrigation et le rendement à la parcelle : ce serait une source de validation possible, au niveau régional.

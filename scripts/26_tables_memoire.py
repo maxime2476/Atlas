@@ -7,6 +7,7 @@ Règle : aucun chiffre de résultat n'est saisi à la main dans le mémoire ; le
 
 import math
 
+import numpy as np
 import pandas as pd
 
 from atlas.download import ROOT
@@ -687,6 +688,24 @@ def main() -> None:
     ws = pd.read_csv(TAB / "phase7_w2_pentes.csv")
     n["WatDoseSlope"], n["WatDoseSlopeP"] = f"{ws.estimation.iloc[1]:.0f}", pv(ws.p_wcb_annee.iloc[1])
     n["WatGainSlope"], n["WatGainSlopeP"] = f"{ws.estimation.iloc[0]:.2f}", pv(ws.p_wcb_annee.iloc[0])
+    # D1 (scripts/38) : projections DRIAS, descriptives.
+    syn = pd.read_csv(TAB / "phase7_d1_synthese.csv").set_index("horizon")
+    ctl = pd.read_csv(TAB / "phase7_d1_controle.csv")
+    n["DriasModels"] = str(int(syn.loc["1976-2005", "modeles"]))
+    n["DriasCtlSim"], n["DriasCtlMin"], n["DriasCtlMax"] = (f"{ctl.dd_32_ja_sim2.iloc[0]:.2f}", f"{ctl.dd_32_ja.min():.2f}",
+                                                         f"{ctl.dd_32_ja.max():.2f}")
+    n["DriasObsMean"] = f"{syn.dd_32_ja_sim2_2000_2025.iloc[0]:.1f}"
+    for key, horizon in [("Ref", "1976-2005"), ("Two", "France +2.0"), ("TwoSeven", "France +2.7"), ("Four", "France +4.0")]:
+        r = syn.loc[horizon]
+        n[f"DriasDd{key}"] = f"{r.dd_32_ja_mediane:.1f}"
+        n[f"DriasDd{key}Min"], n[f"DriasDd{key}Max"] = f"{r.dd_32_ja_min:.1f}", f"{r.dd_32_ja_max:.1f}"
+        if key != "Ref":
+            n[f"DriasGap{key}"] = pct(r.ecart_pct_beta, 0)
+            n[f"DriasGap{key}Low"], n[f"DriasGap{key}High"] = pct(r.ecart_pct_beta_ic90_bas, 0), pct(r.ecart_pct_beta_ic90_haut, 0)
+            n[f"DriasVpd{key}"] = f"{r.delta_vpd_ja_mediane:.2f}"
+    pm = pd.read_parquet(ROOT / "data" / "processed" / "panel_mais_long.parquet")
+    pm = pm[pm.echantillon_principal & (pm.modalite == "irrigue") & (pm.annee == 2003)]
+    n["DriasObsThree"] = f"{np.average(pm.dd_32_ja, weights=pm.surface_ref_ha):.1f}"
     # G11 : température de surface MODIS (R/23), protocole fixé avant réception des données.
     ls = pd.read_csv(TAB / "phase7_lst.csv")
     gb, g0, g1 = ls.iloc[0], ls.iloc[1], ls.iloc[2]
