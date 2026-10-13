@@ -68,6 +68,7 @@ uv run python scripts/33_mais_fourrage.py                         # panel maïs 
 Rscript R/24_q1_tests_t1_t3.R                                     # tests T1-T3 (fourrage, calendrier, IV ; ~5 min)
 uv run python scripts/34_vpd.py                                   # déficit de pression de vapeur de juillet-août (~3 min)
 Rscript R/25_q1_tests_n1_n3.R                                     # tests N1-N3 (forme, sol sec, VPD)
+Rscript R/26_q1_tests_s1_s4.R                                     # tests S1-S4 (VPD fourrage, années, corrélation sérielle, multivers ; ~2 min)
 uv run python scripts/32_diagrammes_readme.py                   # diagrammes du README (chaîne de données, règle de décision, frise ; SVG)
 uv run python scripts/26_tables_memoire.py                        # chiffres et tableaux du mémoire (memoire/tables/)
 (cd memoire && latexmk -pdf main.tex)                             # compilation du mémoire

@@ -462,3 +462,21 @@ Scripts prévus : `scripts/34_vpd.py` (VPD), `R/25_q1_tests_n1_n3.R` ; tables `r
 - N3 : VPD seul +60 % par kPa (p unilatérale = 0,001) ; avec la chaleur : VPD +64 % (p = 0,002), chaleur −0,2 % (p = 0,76) ; corrélation intra-département 0,76. Selon la règle déclarée, chaleur et VPD **ne peuvent être séparés** ; constat descriptif ajouté au texte : dans le modèle commun, l'association passe au VPD (Lobell et al. 2013). Le résumé, l'introduction, le § 7.7, la discussion et la conclusion lisent désormais le résultat comme portant sur les étés chauds et secs.
 - P : `docs/specification_recoltes_futures.md` écrite et empreinte consignée ; dépôt horodaté par un tiers à faire par l'auteur.
 - Exécution : champs `month` des notices Crossref retirés de `references.bib` (non reconnus par biber).
+
+## Tests S1-S4, déclarés avant calcul (2026-10-13)
+
+Demandés par l'auteur ; **non pré-spécifiés**, exploratoires, rapportés quel que soit leur résultat ; ils ne changent pas le statut de H1.
+
+- **S1, le VPD sur le maïs fourrage.** VPD de juillet-août (définition de N3) agrégé sur le masque `MIE` ; panel de T1 (28 départements, 2010-2025). Modèles : (a) écart fourrage ~ `vpd_ja` + `swi_ja` ; (b) ~ `dd_32_ja` + `vpd_ja` + `swi_ja`. WCR par année, unilatéral à droite pour (a), bilatéral pour (b). **Lecture fixée d'avance :** si, dans (b), le VPD garde p < 0,05 et les degrés-jours non, la lecture « étés chauds et secs » est confirmée sur une seconde culture ; sinon, elle reste propre au maïs grain.
+- **S2, influence de chaque année (maïs grain, A1).** A1 réestimé en retirant chaque année tour à tour (26 estimations, WCR unilatéral à droite) ; rapportés : étendue des β, nombre de p < 0,05, et l'année dont le retrait change le plus β. Descriptif.
+- **S3, taille du bootstrap sous corrélation sérielle.** Simulation sur la structure réelle (435 paires, `dd_32_ja` et `swi_ja` réels, mêmes poids et effets fixes) avec un vrai β = 0 : y = facteur commun de l'année × poids départemental tiré N(1 ; 0,5²) + composante propre AR(1) au sein du département, de coefficient ρ ∈ {0 ; 0,3 ; 0,6}, variances égales des deux composantes. R = 300 panels par valeur de ρ, WCR par année unilatéral à droite (B = 399), graines fixées. **Lecture :** si la taille dépasse 10 % pour ρ = 0,3, la règle de décision est déclarée fragile face à une autocorrélation de cet ordre (l'autocorrélation estimée des résidus est 0,08, cf. chapitre 6) ; sinon, confortée.
+- **S4, analyse multivers (Simonsohn, Simmons et Nelson 2020).** Toutes les combinaisons disponibles de : mesure (masque maïs 2015-2017, pondération surfacique) × seuil (30, 32 °C) × fenêtre (juillet-août, juillet) × pondération (oui, non) × échantillon (17, 38 départements) × 2003 (inclus, exclu) = 64 spécifications ; plus, pour 32 °C et juillet-août, le masque 2008 (17 départements) et E-OBS × pondération × échantillon × 2003, soit 12 de plus (76 en tout). Le SWI suit chaque fois la mesure et la fenêtre (le masque 2015-2017 pour E-OBS). WCR unilatéral à droite. Rapportés : part des β positifs, part des p < 0,05, médiane des β, et une courbe des spécifications (figure). Descriptif ; aucune spécification n'est substituée à A1.
+
+Scripts prévus : `scripts/34_vpd.py` étendu au masque fourrage, `R/26_q1_tests_s1_s4.R` ; tables `reports/tables/phase7_s1_*.csv` à `phase7_s4_*.csv`, figure `memoire/figures/fig6_multivers.pdf`.
+
+**Résultats de S1-S4 (2026-10-13).** Empreinte du journal juste avant le premier calcul : `d82f70facdfce4ec64ddfc9a8c23ec16d93df61315ac4585957bacb9c97571bb`.
+- S1 : fourrage, VPD seul +0,215 par kPa (p unilatérale = 0,012) ; ensemble, chaleur p = 0,30 et VPD p = 0,12 (corrélation 0,77) : **selon la règle fixée, la lecture « étés chauds et secs » n'est pas confirmée sur le maïs fourrage** ; elle reste propre au maïs grain.
+- S2 : sans chaque année, β de 0,0134 à 0,0243 ; 26 p < 0,05 sur 26 ; la plus forte variation vient du retrait de 2003 (+0,0085).
+- S3 : taille 6,3 % (ρ = 0), 3,7 % (ρ = 0,3), 9,3 % (ρ = 0,6) : selon la règle, confortée pour ρ = 0,3 ; proche de la limite pour ρ = 0,6.
+- S4 : 76 spécifications, 76 β > 0, 68 p < 0,05, médiane 0,0242 ; les 8 non significatives utilisent toutes la pondération surfacique (24 significatives sur 32).
+- Exécution : axe vertical de la figure étendu jusqu'à zéro après un premier rendu (résultats inchangés, graines fixées).

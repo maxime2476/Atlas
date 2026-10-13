@@ -649,6 +649,22 @@ def main() -> None:
     n["VpdJointPct"], n["VpdJointP"] = pct(n3.effet_pct_par_unite.iloc[2], 0), pv(n3.p_wcb_annee.iloc[2])
     n["VpdCorr"], n["VpdSd"] = f"{n3.correlation_intra_dd32_vpd.iloc[0]:.2f}", f"{n3.ecart_type_vpd_intra.iloc[0]:.2f}"
     n["VpdSdEffect"] = pct(100 * (math.exp(n3.estimation.iloc[0] * n3.ecart_type_vpd_intra.iloc[0]) - 1))
+    # S1-S4 (R/26), déclarés avant calcul.
+    s1 = pd.read_csv(TAB / "phase7_s1_vpd_fourrage.csv")
+    n["FodderVpdP"] = pv(s1.p_wcb_annee_unilateral_droite.iloc[0])
+    n["FodderHeatJointP"], n["FodderVpdJointP"] = pv(s1.p_wcb_annee.iloc[1]), pv(s1.p_wcb_annee.iloc[2])
+    s2 = pd.read_csv(TAB / "phase7_s2_influence_annees.csv")
+    n["LoyoYearMinPct"], n["LoyoYearMaxPct"] = pct(s2.effet_pct_par_unite.min()), pct(s2.effet_pct_par_unite.max())
+    n["LoyoYearSig"] = str(int((s2.p_wcb_annee_unilateral_droite < 0.05).sum()))
+    n["LoyoYearN"] = str(len(s2))
+    s3 = pd.read_csv(TAB / "phase7_s3_correlation_serielle.csv").set_index("rho").taille_5pct * 100
+    n["SerialSizeZero"], n["SerialSizeLow"], n["SerialSizeHigh"] = pct(s3.loc[0.0]), pct(s3.loc[0.3]), pct(s3.loc[0.6])
+    s4 = pd.read_csv(TAB / "phase7_s4_multivers.csv")
+    n["MultiN"], n["MultiPos"] = str(len(s4)), str(int((s4.estimation > 0).sum()))
+    n["MultiSig"] = str(int((s4.p_wcb_annee_unilateral_droite < 0.05).sum()))
+    n["MultiMedPct"] = pct(s4.effet_pct_par_unite.median())
+    surf = s4[s4.mesure == "surface"]
+    n["MultiSurfSig"], n["MultiSurfN"] = str(int((surf.p_wcb_annee_unilateral_droite < 0.05).sum())), str(len(surf))
     # G11 : température de surface MODIS (R/23), protocole fixé avant réception des données.
     ls = pd.read_csv(TAB / "phase7_lst.csv")
     gb, g0, g1 = ls.iloc[0], ls.iloc[1], ls.iloc[2]

@@ -121,6 +121,17 @@ Déclarés avant calcul. Tables `reports/tables/phase7_n1_forme.csv`, `phase7_n1
 | N3 : VPD et degrés-jours ensemble | VPD +64 % par kPa (p = 0,002) ; degrés-jours −0,2 % (p = 0,76) ; corrélation 0,76 | **Oui** : l'association porte sur la sécheresse de l'air plutôt que sur la chaleur seule (Lobell et al. 2013) ; non séparables selon la règle |
 | P : spécification figée pour les récoltes 2026 et suivantes | `docs/specification_recoltes_futures.md` | À déposer sur OSF ou Zenodo pour un horodatage externe |
 
+## Tests S1-S4 : VPD sur le fourrage, influence des années, corrélation sérielle, multivers
+
+Déclarés avant calcul. Tables `reports/tables/phase7_s1_vpd_fourrage.csv` à `phase7_s4_multivers.csv` ; figure `memoire/figures/fig6_multivers.pdf`.
+
+| Test | Résultat | Intéressant ? |
+|---|---|---|
+| S1 : VPD sur le maïs fourrage | Seul : p = 0,012 ; avec les degrés-jours, ni l'un ni l'autre significatif (p = 0,12 et 0,30) | Oui, comme limite : la lecture « air sec » n'est pas confirmée sur une seconde culture |
+| S2 : retrait de chaque année | β de 0,0134 à 0,0243, significatif 26 fois sur 26 ; 2003 est l'année la plus influente (son retrait augmente β) | Oui : aucune année ne porte seule la significativité |
+| S3 : corrélation sérielle simulée | Taille 6,3 %, 3,7 % et 9,3 % pour ρ = 0, 0,3 et 0,6 | Oui : la règle de décision tient, à la limite pour une forte autocorrélation |
+| S4 : 76 spécifications (multivers) | Toutes positives, 68 significatives ; les 8 autres utilisent la pondération surfacique | **Oui** : seule la mesure de la chaleur compte vraiment |
+
 ## Non fait
 
 - **Méthode SAA (partage irrigué / non irrigué) :** les sources publiques consultées décrivent la SAA comme une synthèse des services régionaux, combinant enquêtes (structure, Terres, vergers) et données administratives (ASP, PAC). Elles ne définissent pas « irrigué » : surface irriguée l'année, ou équipée pour l'irrigation. Les PDF méthodologiques d'Agreste demandent désormais une session. La question reste à poser directement au SSP ou à un SRISE. L'enquête Pratiques culturales grandes cultures (2017, 2021, 2025) relève l'irrigation et le rendement à la parcelle : ce serait une source de validation possible, au niveau régional.

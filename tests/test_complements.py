@@ -83,3 +83,9 @@ def test_vpd_panel():
     v = pd.read_parquet(PROC / "vpd_dep_ja.parquet")
     assert not v.duplicated(["dep_code", "annee"]).any() and v.annee.between(2000, 2025).all()
     assert v.vpd_ja.between(0.1, 5).all()      # kPa, ordre de grandeur estival
+
+
+@pytest.mark.skipif(not (PROC / "vpd_dep_ja_fourrage.parquet").exists(), reason="VPD fourrage absent")
+def test_vpd_fodder_panel():
+    v = pd.read_parquet(PROC / "vpd_dep_ja_fourrage.parquet")
+    assert not v.duplicated(["dep_code", "annee"]).any() and v.vpd_ja.between(0.1, 5).all()
