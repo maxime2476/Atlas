@@ -177,23 +177,25 @@
 | Format | GeoTIFF EPSG:4326 ; LST en kelvins × 0,02, valeur manquante 0 ; bits de qualité dans `QC_Day` |
 | Limites | Passage de Terra vers 10 h 30 (pas le maximum journalier) ; pixel de 1 km mêlant parcelles irriguées et non irriguées ; ciel clair seulement (composites de 8 jours) ; un composite de 2001 (jour 177) n'a pas de fichier LST, hors fenêtre |
 
-## 8 sexies. Sources auditées le 2026-10-13 pour les trois pistes restantes (non téléchargées)
+## 8 sexies. Sources auditées le 2026-10-13 pour les trois pistes restantes
+
+*Mise à jour du même jour : la RU, le RA2020 et les volumes BNPE ont été téléchargés (`scripts/01_download_raw.py --ru --ra2020 --bnpe`) et utilisés pour R1, W1 et W2 (`docs/decisions.md`). Les volumes Hub'Eau proviennent d'une API vivante : une extraction ultérieure peut différer ; les fichiers du 2026-10-13 font foi (manifeste). DRIAS n'est pas téléchargé.*
 
 | Source | Accès testé | Licence | Couverture et format | Intérêt pour ATLAS | Statut |
 |---|---|---|---|---|---|
-| INRAE, Román Dobarco et al., « Réservoir utile des sols de la France métropolitaine », Recherche Data Gouv, doi:10.15454/9IRARJ (Geoderma 344, 2019) | API Dataverse interrogée : 34 fichiers, dont `AWCr_mm_0_200.tif` (RU 0-200 cm, mm, ≈ 0,64 Go), écart-type et couches par profondeur | Etalab 2.0 (version 2 du 2026-07-27) | 90 m, Lambert 93, valeurs continues avec incertitude | RU moyenne sous le masque maïs, puis hétérogénéité de β selon la RU (17 départements : puissance faible) | **Validée**, prête à télécharger |
+| INRAE, Román Dobarco et al., « Réservoir utile des sols de la France métropolitaine », Recherche Data Gouv, doi:10.15454/9IRARJ (Geoderma 344, 2019) | API Dataverse interrogée : 34 fichiers, dont `AWCr_mm_0_200.tif` (RU 0-200 cm, mm, ≈ 0,64 Go), écart-type et couches par profondeur | Etalab 2.0 (version 2 du 2026-07-27) | 90 m, Lambert 93, valeurs continues avec incertitude | RU moyenne sous le masque maïs, puis hétérogénéité de β selon la RU (17 départements : puissance faible) | **Validée, téléchargée et utilisée (R1, W1)** |
 | INRAE, Le Bas, carte RU de la BDGSF, doi:10.15454/JPB9RB | API Dataverse : `bdgsf_classe_ru.zip` (1,1 Mo) | Etalab 2.0 | 1/1 000 000, 5 classes | Repli grossier | Écartée au profit de la précédente |
 | ISRIC SoilGrids (250 m) ; ESDAC (TAWC, 1 km) | Fiches lues | ODbL ou CC BY selon la version ; ESDAC sur formulaire, téléchargements expirés | Mondial ou européen | Moins précis et moins ouverts | Écartées |
 | DRIAS, EXPLORE2-Climat 2022 corrigé ADAMONT (17 modèles), TRACC-2023 | Pages d'aide DRIAS et AgroClim lues ; **compte gratuit requis** | « Libres d'utilisation et de diffusion », non altérées, mention « Drias, données Météo-France, CERFACS, IPSL » | Quotidien, **même grille SAFRAN de 8 km que SIM2**, 1971-2100 ; `tasmax`, `tasmin`, `tas`, `hr` (humidité relative recalculée), `huss`, `prtot`, `evspsblpot` ; RCP 2.6, 4.5, 8.5 ; niveaux de réchauffement TRACC | Degrés-jours > 32 °C et VPD futurs calculés exactement comme les observés, sur les mêmes masques | **Validée sous réserve du compte** (action de l'auteur) |
-| Hub'Eau, API « Prélèvements en eau » (BNPE) | API interrogée sans compte : volumes annuels par ouvrage, usage `IRR`, 2008-2024 (2012-2023 commun ; agence Rhône-Méditerranée-Corse sans 2008-2011 ni 2024) | Licence Ouverte Etalab, citation de l'auteur des données | Ouvrage (point), commune, année ; toutes cultures ; prélèvements < 10 000 m³ non déclarés | Volumes d'irrigation par département et par an ; valeur descriptive par m³ dans les départements où le maïs domine l'irrigation | **Validée**, prête à télécharger |
-| Agreste, RA2020_0052 « Surfaces irriguées par culture, OTEX et département » (2010 et 2020) | Téléchargé en test (hors dépôt) : part du maïs grain dans les surfaces irriguées en 2020 de 17 % (28) à 73 % (68) | Comme la SAA (réutilisation libre, source citée) | Département, 2010 et 2020, 18 cultures | Clé de répartition des volumes BNPE entre cultures | **Validée** |
-| Agreste, enquêtes Pratiques culturales grandes cultures 2017 et 2021 | Publications régionales lues (ex. Occitanie : 1 410 m³/ha, 5 tours d'eau pour le maïs grain en 2021) | Comme la SAA | Région, deux années | Dose d'irrigation du maïs, contrôle de la répartition | À extraire à la main des PDF régionaux |
+| Hub'Eau, API « Prélèvements en eau » (BNPE) | API interrogée sans compte : volumes annuels par ouvrage, usage `IRR`, 2008-2024 (2012-2023 commun ; agence Rhône-Méditerranée-Corse sans 2008-2011 ni 2024) | Licence Ouverte Etalab, citation de l'auteur des données | Ouvrage (point), commune, année ; toutes cultures ; prélèvements < 10 000 m³ non déclarés | Volumes d'irrigation par département et par an ; valeur descriptive par m³ dans les départements où le maïs domine l'irrigation | **Validée, téléchargée et utilisée (W1, W2)** |
+| Agreste, RA2020_0052 « Surfaces irriguées par culture, OTEX et département » (2010 et 2020) | Téléchargé en test (hors dépôt) : part du maïs grain dans les surfaces irriguées en 2020 de 17 % (28) à 73 % (68) | Comme la SAA (réutilisation libre, source citée) | Département, 2010 et 2020, 18 cultures | Clé de répartition des volumes BNPE entre cultures | **Validée, téléchargée et utilisée (W2)** |
+| Agreste, enquêtes Pratiques culturales grandes cultures 2017 et 2021 | Publications régionales lues (ex. Occitanie : 1 410 m³/ha, 5 tours d'eau pour le maïs grain en 2021) | Comme la SAA | Région, deux années | Dose d'irrigation du maïs, contrôle de la répartition | Utilisée comme repère (1 410 m³/ha, Occitanie 2021), sans extraction systématique |
 
 ## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |
 |---|---|---|
-| BNPE, volumes prélevés pour l'irrigation (OFB / agences de l'eau) | Auditée en phase 0 ter, échantillons non conservés | Volumes annuels toutes cultures confondues, ruptures de déclaration ; voir `docs/phase0ter_audit.md` |
+| BNPE, volumes prélevés pour l'irrigation (OFB / agences de l'eau) | Auditée en phase 0 ter, échantillons non conservés | Volumes annuels toutes cultures confondues, ruptures de déclaration ; voir `docs/phase0ter_audit.md` ; *reprise le 2026-10-13 via Hub'Eau pour des vérifications descriptives (W1, W2), voir § 8 sexies* |
 | MIRCA-OS (surfaces irriguées et pluviales par culture, 5′, 2000-2020) | Repérée le 2026-10-12, non téléchargée | Licence CC BY-NC-ND ; la part irriguée de la SAA, complète pour l'échantillon, suffit (G5) |
 | Assurance récolte, aides PAC couplées, dates de semis | Recherchées le 2026-10-12 | Pas de série départementale publique trouvée |
 | Open-Meteo, API d'archives (ERA5, ERA5-Land) | Auditée le 2026-10-12 (documentation et conditions) | Limite gratuite de 10 000 appels par jour, chaque appel couvrant deux semaines pour un point : environ 200 000 appels pour les 1 784 mailles du masque, juillet-août 2000-2025 |
@@ -204,17 +206,19 @@
 
 ## 10. Empreintes SHA-256 (générées depuis le manifeste le 2026-10-12)
 
-Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 474 fichiers MOD11A2 (température de surface) ne sont pas listés non plus. Les 108 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS et le registre RTE ajoutés le 2026-10-12).
+Les 354 fichiers AppEEARS (5.02 Go) ne sont pas listés un par un : leurs empreintes sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie. Les 474 fichiers MOD11A2 (température de surface) ne sont pas listés non plus, ni les 34 extractions Hub'Eau (`data/raw/hubeau_bnpe/`). Les 110 autres fichiers sont listés ci-dessous (les 4 fichiers E-OBS et le registre RTE ajoutés le 2026-10-12, la RU et le RA2020 le 2026-10-13).
 
 | Fichier (`data/raw/…`) | Taille | Accès | SHA-256 |
 |---|---|---|---|
 | `agreste_saa/SAA-SeriesLongues-2010-2025_DonneesProvisoires-DepartementalesRegionales.zip` | 7.08 Mo | 2026-10-10 | `46e2ea9493ae34fac5d343e6cef51ac08a455d970ce78611c5d3b2365650d76f` |
+| `agreste_ra2020/FDS_RA2020_0052.zip` | 2.84 Mo | 2026-10-13 | `d5bf42559ebe6c365da6e975e039c3c634803418b989080f8dbd49a02e30995b` |
 | `agreste_saa_ancienne/FDS_DEVELOPPE_2.zip` | 8.81 Mo | 2026-10-11 | `b7bbb133fd96335312bfe6613d39bd3f5faacc927d90c6fc9182b66e03911efa` |
 | `rte_registre/registre_installations_2026-06-30.csv` | 44.60 Mo | 2026-10-12 | `eb25840ffb6693614e9a2867bafba0b2bd9383a0ab0a6eab04ea9a33d220d18c` |
 | `eobs/tn_ens_mean_0.1deg_reg_1995-2010_v33.0e.nc` | 1061.73 Mo | 2026-10-12 | `66735f11fe61b98a76acc24d66ceda078579801dba13f8eabaeec2cfc0b95d31` |
 | `eobs/tn_ens_mean_0.1deg_reg_2011-2025_v33.0e.nc` | 922.88 Mo | 2026-10-12 | `10c44bf93e2b090a0c7cbaad07eedfa54aca0b92ece8a909067ef6d160ede2d4` |
 | `eobs/tx_ens_mean_0.1deg_reg_1995-2010_v33.0e.nc` | 1067.57 Mo | 2026-10-12 | `8a770f8a8c9d7d967d7241ec36e90d027b043d39b658a813d938c2c92834dfc7` |
 | `eobs/tx_ens_mean_0.1deg_reg_2011-2025_v33.0e.nc` | 928.09 Mo | 2026-10-12 | `489c26736c57ce73ea4d112a9cc2706bd59c694d5212a15a8d7252db920be22e` |
+| `inrae_ru/AWCr_mm_0_200.tif` | 644.10 Mo | 2026-10-13 | `0f3c2c5fa17ba90d897ef9fae59bfe0711e428454f976d010ebb9da5d3d5bb2f` |
 | `ign_admin_express/ADMIN-EXPRESS-COG-CARTO_4-0_2026-01-01_departement.parquet` | 12.92 Mo | 2026-10-10 | `ba44a327aaeb9df43b1f9fd52f13ca0ec67fe748c845131fedd6b3e6c1061bce` |
 | `ign_altimetrie/sim_cells_subgrid_altitude.parquet` | 3.50 Mo | 2026-10-10 | `602ea33845e95950ed3332f9e6eeb599f67c36c3b3525e2e62b6b47e942dcfbf` |
 | `ign_rpg/RPG_1-0__SHP_LAMB93_R24_2008-01-01.7z` | 81.32 Mo | 2026-10-11 | `4997835caeba8a86b63c044f81770652529dce241f820b20df1de9914940de4a` |

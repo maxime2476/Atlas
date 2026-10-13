@@ -665,6 +665,28 @@ def main() -> None:
     n["MultiMedPct"] = pct(s4.effet_pct_par_unite.median())
     surf = s4[s4.mesure == "surface"]
     n["MultiSurfSig"], n["MultiSurfN"] = str(int((surf.p_wcb_annee_unilateral_droite < 0.05).sum())), str(len(surf))
+    # R1, W1, W2 (R/27), déclarés avant calcul : réserve utile des sols et eau d'irrigation.
+    r1 = pd.read_csv(TAB / "phase7_r1_reserve_utile.csv")
+    n["RuMin"], n["RuMax"] = f"{r1.ru_min_17.iloc[0]:.0f}", f"{r1.ru_max_17.iloc[0]:.0f}"
+    n["RuInterP"], n["RuInterBothP"] = pv(r1.p_wcb_annee.iloc[0]), pv(r1.p_wcb_annee.iloc[2])
+    n["RuInterAllP"], n["RuVpdP"] = pv(r1.p_wcb_annee.iloc[5]), pv(r1.p_wcb_annee.iloc[4])
+    n["RuCorIrr"] = f"{r1.correlation_ru_part_irriguee_17.iloc[0]:.2f}"
+    n["RuVpdLow"], n["RuVpdHigh"] = pct(r1.effet_vpd_pct_ru_min.iloc[4], 0), pct(r1.effet_vpd_pct_ru_max.iloc[4], 0)
+    w1 = pd.read_csv(TAB / "phase7_w1_volumes.csv")
+    n["VolHeatPct"], n["VolHeatP"] = pct(w1.effet_pct_par_unite.iloc[0]), pv(w1.p_wcb_annee_unilateral_droite.iloc[0])
+    n["VolVpdP"], n["VolSwiP"] = pv(w1.p_wcb_annee_unilateral_droite.iloc[1]), pv(w1.p_wcb_annee.iloc[2])
+    n["VolSwi"], n["VolN"] = f"{w1.estimation.iloc[2]:.2f}", str(int(w1.n.iloc[0]))
+    w2 = pd.read_csv(TAB / "phase7_w2_valeur_m3.csv").set_index("dep_code")
+    tot = w2.loc["ensemble"]
+    n["WatDose"], n["WatGain"] = f"{tot.dose_mediane_m3_ha:,.0f}".replace(",", "\\,"), f"{tot.gain_median_q_ha:.0f}"
+    n["WatKg"], n["WatEur"] = f"{tot.kg_par_m3_median:.1f}", f"{tot.eur_par_m3_median:.2f}"
+    n["WatEurTen"] = f"{tot.eur_par_m3_median_part_2010:.2f}"
+    deps = w2.drop(index="ensemble")
+    n["WatEurMin"], n["WatEurMax"] = f"{deps.eur_par_m3_median.min():.2f}", f"{deps.eur_par_m3_median.max():.2f}"
+    n["WatExcl"], n["WatN"] = str(int(tot.exclues)), str(int(tot.annees))
+    ws = pd.read_csv(TAB / "phase7_w2_pentes.csv")
+    n["WatDoseSlope"], n["WatDoseSlopeP"] = f"{ws.estimation.iloc[1]:.0f}", pv(ws.p_wcb_annee.iloc[1])
+    n["WatGainSlope"], n["WatGainSlopeP"] = f"{ws.estimation.iloc[0]:.2f}", pv(ws.p_wcb_annee.iloc[0])
     # G11 : température de surface MODIS (R/23), protocole fixé avant réception des données.
     ls = pd.read_csv(TAB / "phase7_lst.csv")
     gb, g0, g1 = ls.iloc[0], ls.iloc[1], ls.iloc[2]

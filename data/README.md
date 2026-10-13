@@ -69,6 +69,10 @@ Rscript R/24_q1_tests_t1_t3.R                                     # tests T1-T3 
 uv run python scripts/34_vpd.py                                   # déficit de pression de vapeur de juillet-août (~3 min)
 Rscript R/25_q1_tests_n1_n3.R                                     # tests N1-N3 (forme, sol sec, VPD)
 Rscript R/26_q1_tests_s1_s4.R                                     # tests S1-S4 (VPD fourrage, années, corrélation sérielle, multivers ; ~2 min)
+uv run python scripts/01_download_raw.py --ru --ra2020 --bnpe     # RU INRAE (~0,64 Go), RA2020, volumes Hub'Eau (34 extractions)
+uv run python scripts/35_reserve_utile.py                         # RU sous les parcelles de maïs grain (~4 min)
+uv run python scripts/36_volumes_irrigation.py                    # volumes BNPE, parts irriguées du RA, prix du maïs
+Rscript R/27_q1_sol_eau.R                                         # R1, W1, W2 : réserve utile, volumes, valeur du m³
 uv run python scripts/32_diagrammes_readme.py                   # diagrammes du README (chaîne de données, règle de décision, frise ; SVG)
 uv run python scripts/26_tables_memoire.py                        # chiffres et tableaux du mémoire (memoire/tables/)
 (cd memoire && latexmk -pdf main.tex)                             # compilation du mémoire

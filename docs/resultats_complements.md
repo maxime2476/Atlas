@@ -132,6 +132,20 @@ Déclarés avant calcul. Tables `reports/tables/phase7_s1_vpd_fourrage.csv` à `
 | S3 : corrélation sérielle simulée | Taille 6,3 %, 3,7 % et 9,3 % pour ρ = 0, 0,3 et 0,6 | Oui : la règle de décision tient, à la limite pour une forte autocorrélation |
 | S4 : 76 spécifications (multivers) | Toutes positives, 68 significatives ; les 8 autres utilisent la pondération surfacique | **Oui** : seule la mesure de la chaleur compte vraiment |
 
+## Réserve utile des sols et eau d'irrigation (R1, W1, W2)
+
+Déclarés avant calcul. Données : RU INRAE à 90 m (Román Dobarco et al. 2019), volumes BNPE (Hub'Eau), RA2020_0052 (Agreste). Scripts `scripts/35_reserve_utile.py`, `scripts/36_volumes_irrigation.py`, `R/27_q1_sol_eau.R` ; tables `reports/tables/phase7_r1_*.csv`, `phase7_w1_*.csv`, `phase7_w2_*.csv`.
+
+| Test | Résultat | Intéressant ? |
+|---|---|---|
+| R1 : chaleur × RU (17 départements, RU de 87 à 134 mm) | −0,00008 par mm, p = 0,65 ; avec la part irriguée, p = 0,53 ; 38 départements, p = 0,41 | Non : signe attendu mais rien de détecté, la RU varie peu entre ces départements |
+| R1, variante VPD × RU | −0,0026 par mm et par kPa, p = 0,006 : pente du VPD de +66 % par kPa à 87 mm, +47 % à 134 mm | À confirmer : test secondaire, 17 valeurs de RU |
+| W1 : log volume prélevé ~ chaleur (202 département-années, 2012-2023) | +0,4 % par degré-jour, p unilatérale = 0,28 ; VPD p = 0,11 ; SWI −1,60, p = 0,0007 | **Oui** : les volumes suivent la sécheresse du sol, pas la chaleur extrême |
+| W2 : valeur apparente du m³ (01, 03, 18, 63, 67, 68) | Dose médiane 1 524 m³/ha ; 2,2 kg de grain et 0,55 € bruts par m³ (0,17 à 0,96 selon le département) ; 8 département-années sur 72 exclus par la règle de dose | Oui, comme ordre de grandeur : au-dessus de la marge de 0,20-0,28 €/m³ estimée par la DRAAF Occitanie sur 2012-2014 (Analyses & Études n° 3, 2017, hors amortissement du matériel ; la même étude donne 1 900 m³/ha et 1,4 kg de maïs par m³), ce qui est attendu pour une valeur brute |
+| W2, étés chauds | Dose +74 m³/ha par degré-jour (p = 0,04) ; écart +0,36 q/ha (p = 0,86) | Non : le m³ supplémentaire des étés chauds n'est pas mesurable ainsi |
+
+Lecture : la valeur par m³ est **descriptive**. L'écart de rendement observé mêle l'effet de l'eau et les différences entre parcelles irriguées et non irriguées ; la dose repose sur une clé de surface (part du maïs dans la surface irriguée en 2020), ce qui suppose que le maïs reçoit autant d'eau par hectare que les autres cultures irriguées du département ; s'il en reçoit plus, la dose est sous-estimée et la valeur par m³ surestimée. Elle ne compte ni l'énergie, ni le matériel, ni la main-d'œuvre.
+
 ## Non fait
 
 - **Méthode SAA (partage irrigué / non irrigué) :** les sources publiques consultées décrivent la SAA comme une synthèse des services régionaux, combinant enquêtes (structure, Terres, vergers) et données administratives (ASP, PAC). Elles ne définissent pas « irrigué » : surface irriguée l'année, ou équipée pour l'irrigation. Les PDF méthodologiques d'Agreste demandent désormais une session. La question reste à poser directement au SSP ou à un SRISE. L'enquête Pratiques culturales grandes cultures (2017, 2021, 2025) relève l'irrigation et le rendement à la parcelle : ce serait une source de validation possible, au niveau régional.

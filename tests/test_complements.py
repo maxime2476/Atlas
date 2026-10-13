@@ -89,3 +89,42 @@ def test_vpd_panel():
 def test_vpd_fodder_panel():
     v = pd.read_parquet(PROC / "vpd_dep_ja_fourrage.parquet")
     assert not v.duplicated(["dep_code", "annee"]).any() and v.vpd_ja.between(0.1, 5).all()
+
+
+DEP17 = ["01", "03", "18", "26", "28", "36", "37", "38", "39", "41", "45", "58", "63", "67", "68", "69", "89"]
+
+
+@pytest.mark.skipif(not (PROC / "ru_dep_mais.parquet").exists(), reason="RU absente")
+def test_ru_panel():
+    ru = pd.read_parquet(PROC / "ru_dep_mais.parquet")
+    assert not ru.dep_code.duplicated().any() and set(DEP17) <= set(ru.dep_code)
+    assert ru.ru_mm.between(0, 300).all()                    # mm sur 0-200 cm
+    assert (ru.part_sans_donnee < 0.01).all() and (ru.pixels_mais > 0).all()
+
+
+@pytest.mark.skipif(not (PROC / "bnpe_irr_dep_annee.parquet").exists(), reason="BNPE absente")
+def test_bnpe_panel_matches_raw_total():
+    v = pd.read_parquet(PROC / "bnpe_irr_dep_annee.parquet")
+    assert sorted(v.dep_code.unique()) == DEP17 and len(v) == 17 * 12
+    assert not v.duplicated(["dep_code", "annee"]).any() and (v.volume_m3 > 0).all()
+    raw = pd.concat(pd.read_csv(f, sep=";", usecols=["volume"]) for f in (ROOT / "data" / "raw" / "hubeau_bnpe").glob("*.csv"))
+    assert np.isclose(v.volume_m3.sum(), raw.volume.sum())   # l'agrégation ne perd ni ne double aucun volume
+
+
+@pytest.mark.skipif(not (PROC / "ra_irrigation_dep.parquet").exists(), reason="RA2020 absent")
+def test_ra2020_shares():
+    ra = pd.read_parquet(PROC / "ra_irrigation_dep.parquet")
+    assert set(ra.annee_ra) == {2010, 2020} and not ra.duplicated(["dep_code", "annee_ra"]).any()
+    assert ra.part_mais_grain_irrigue.dropna().between(0, 1).all()
+    r68 = ra[(ra.dep_code == "68") & (ra.annee_ra == 2020)].iloc[0]   # valeurs lues dans le fichier brut
+    assert r68.mais_grain_irrigue_ha == 30584 and r68.sau_irriguee_ha == 41994
+
+
+@pytest.mark.skipif(not (ROOT / "reports" / "tables" / "phase7_w2_departement_annee.csv").exists(), reason="W2 absent")
+def test_water_value_identities():
+    w = pd.read_csv(ROOT / "reports" / "tables" / "phase7_w2_departement_annee.csv", dtype={"dep_code": str})
+    assert sorted(w.dep_code.unique()) == ["01", "03", "18", "63", "67", "68"]
+    assert np.allclose(w.dose_m3_ha, w.volume_m3 * w.part_2020 / w.surface_ha)
+    ok = w.plausible
+    assert (ok == w.dose_m3_ha.between(500, 3000)).all() and w.eur_par_m3[~ok].isna().all()
+    assert np.allclose(w.eur_par_m3[ok], w.kg_par_m3[ok] / 100 * w.prix_eur_q[ok])

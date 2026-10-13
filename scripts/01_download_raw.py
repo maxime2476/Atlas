@@ -10,9 +10,12 @@ docs/manifest_raw.csv (versionné) conserve URL, date d'accès, taille et SHA-25
 
 import argparse
 import csv
+import hashlib
+import json
+import urllib.request
 from datetime import date
 
-from atlas.download import ROOT, download, tls_context
+from atlas.download import ROOT, USER_AGENT, download, tls_context
 
 RAW = ROOT / "data" / "raw"
 MANIFEST = ROOT / "docs" / "manifest_raw.csv"
@@ -99,6 +102,27 @@ EOBS_FILES = [f"{v}_ens_mean_0.1deg_reg_{p}_v33.0e.nc" for v in ["tn", "tx"] for
 REGISTRE_URL = ("https://odre.opendatasoft.com/api/explore/v2.1/catalog/datasets/"
                 "registre-national-installation-production-stockage-electricite-agrege/exports/csv")
 
+# Réserve utile des sols (INRAE, Román Dobarco et al. 2019), doi:10.15454/9IRARJ, Etalab 2.0 ; fichier n° 121589
+# de la version 2 (2026-07-27) et sa somme MD5 publiée par l'API Dataverse (relevée le 2026-10-13).
+RU_URL = "https://entrepot.recherche.data.gouv.fr/api/access/datafile/121589"
+RU_MD5 = "d3c9ef312fb66a208a63f275c1623900"
+# Recensement agricole 2020, surfaces irriguées par culture et département (2010 et 2020).
+RA2020_URL = ("https://agreste.agriculture.gouv.fr/agreste-web/download/publication/publie/"
+              "RA2020_0052/FDS_RA2020_0052.zip")
+# Hub'Eau, prélèvements en eau (BNPE), usage irrigation, 2012-2023, Licence Ouverte Etalab.
+# Deux périodes par département : une requête est limitée à 20 000 lignes (le Loiret en compte 31 925).
+BNPE_API = "https://hubeau.eaufrance.fr/api/v1/prelevements/chroniques"
+BNPE_PERIODS = {"2012-2017": range(2012, 2018), "2018-2023": range(2018, 2024)}
+BNPE_DEPS = ["01", "03", "18", "26", "28", "36", "37", "38", "39", "41", "45", "58", "63", "67", "68", "69", "89"]
+
+
+def bnpe_count(dep: str, years: range) -> int:
+    """Nombre de lignes annoncé par l'API, pour vérifier qu'aucune page ne manque."""
+    url = f"{BNPE_API}?code_departement={dep}&code_usage=IRR&annee={','.join(map(str, years))}&size=1"
+    request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+    with urllib.request.urlopen(request, context=tls_context(), timeout=300) as r:   # comptage lent côté serveur
+        return json.load(r)["count"]
+
 
 def parse_years(text: str) -> list[int]:
     if "-" in text:
@@ -146,6 +170,9 @@ def main() -> None:
     parser.add_argument("--schauberger", action="store_true",
                         help="rendements départementaux longs (robustesse 1990-2009)")
     parser.add_argument("--eobs", action="store_true", help="E-OBS Tmin/Tmax 0,1° 1995-2025 (environ 4 Go)")
+    parser.add_argument("--ru", action="store_true", help="réserve utile des sols, INRAE 90 m (environ 0,64 Go)")
+    parser.add_argument("--ra2020", action="store_true", help="recensement agricole : surfaces irriguées par culture")
+    parser.add_argument("--bnpe", action="store_true", help="volumes prélevés pour l'irrigation (Hub'Eau), 17 départements")
     parser.add_argument("--eolien", action="store_true", help="registre national des installations électriques (RTE, ODRÉ)")
     args = parser.parse_args()
 
@@ -190,6 +217,25 @@ def main() -> None:
 
     if args.eolien:
         get("rte_registre", REGISTRE_URL, RAW / "rte_registre" / "registre_installations_2026-06-30.csv")
+
+    if args.ru:
+        get("inrae_ru", RU_URL, RAW / "inrae_ru" / "AWCr_mm_0_200.tif")
+        md5 = hashlib.md5((RAW / "inrae_ru" / "AWCr_mm_0_200.tif").read_bytes()).hexdigest()
+        if md5 != RU_MD5:
+            raise RuntimeError(f"somme MD5 inattendue pour la réserve utile : {md5}")
+    if args.ra2020:
+        get("agreste_ra2020", RA2020_URL, RAW / "agreste_ra2020" / "FDS_RA2020_0052.zip",
+            context=tls_context(extra_intermediate=True))
+    if args.bnpe:
+        for dep in BNPE_DEPS:
+            for period, years in BNPE_PERIODS.items():
+                dest = RAW / "hubeau_bnpe" / f"irr_{dep}_{period}.csv"
+                get("hubeau_bnpe", f"{BNPE_API}.csv?code_departement={dep}&code_usage=IRR"
+                                   f"&annee={','.join(map(str, years))}&size=20000", dest)
+                with open(dest, encoding="utf-8", newline="") as f:
+                    n = sum(1 for _ in csv.reader(f, delimiter=";")) - 1
+                if n != bnpe_count(dep, years):
+                    raise RuntimeError(f"{dest.name} : {n} lignes, l'API en annonce davantage")
 
     update_manifest(rows, source_of)
     print(f"manifeste mis à jour : {MANIFEST.relative_to(ROOT)}")
