@@ -177,6 +177,18 @@
 | Format | GeoTIFF EPSG:4326 ; LST en kelvins × 0,02, valeur manquante 0 ; bits de qualité dans `QC_Day` |
 | Limites | Passage de Terra vers 10 h 30 (pas le maximum journalier) ; pixel de 1 km mêlant parcelles irriguées et non irriguées ; ciel clair seulement (composites de 8 jours) ; un composite de 2001 (jour 177) n'a pas de fichier LST, hors fenêtre |
 
+## 8 sexies. Sources auditées le 2026-10-13 pour les trois pistes restantes (non téléchargées)
+
+| Source | Accès testé | Licence | Couverture et format | Intérêt pour ATLAS | Statut |
+|---|---|---|---|---|---|
+| INRAE, Román Dobarco et al., « Réservoir utile des sols de la France métropolitaine », Recherche Data Gouv, doi:10.15454/9IRARJ (Geoderma 344, 2019) | API Dataverse interrogée : 34 fichiers, dont `AWCr_mm_0_200.tif` (RU 0-200 cm, mm, ≈ 0,64 Go), écart-type et couches par profondeur | Etalab 2.0 (version 2 du 2026-07-27) | 90 m, Lambert 93, valeurs continues avec incertitude | RU moyenne sous le masque maïs, puis hétérogénéité de β selon la RU (17 départements : puissance faible) | **Validée**, prête à télécharger |
+| INRAE, Le Bas, carte RU de la BDGSF, doi:10.15454/JPB9RB | API Dataverse : `bdgsf_classe_ru.zip` (1,1 Mo) | Etalab 2.0 | 1/1 000 000, 5 classes | Repli grossier | Écartée au profit de la précédente |
+| ISRIC SoilGrids (250 m) ; ESDAC (TAWC, 1 km) | Fiches lues | ODbL ou CC BY selon la version ; ESDAC sur formulaire, téléchargements expirés | Mondial ou européen | Moins précis et moins ouverts | Écartées |
+| DRIAS, EXPLORE2-Climat 2022 corrigé ADAMONT (17 modèles), TRACC-2023 | Pages d'aide DRIAS et AgroClim lues ; **compte gratuit requis** | « Libres d'utilisation et de diffusion », non altérées, mention « Drias, données Météo-France, CERFACS, IPSL » | Quotidien, **même grille SAFRAN de 8 km que SIM2**, 1971-2100 ; `tasmax`, `tasmin`, `tas`, `hr` (humidité relative recalculée), `huss`, `prtot`, `evspsblpot` ; RCP 2.6, 4.5, 8.5 ; niveaux de réchauffement TRACC | Degrés-jours > 32 °C et VPD futurs calculés exactement comme les observés, sur les mêmes masques | **Validée sous réserve du compte** (action de l'auteur) |
+| Hub'Eau, API « Prélèvements en eau » (BNPE) | API interrogée sans compte : volumes annuels par ouvrage, usage `IRR`, 2008-2024 (2012-2023 commun ; agence Rhône-Méditerranée-Corse sans 2008-2011 ni 2024) | Licence Ouverte Etalab, citation de l'auteur des données | Ouvrage (point), commune, année ; toutes cultures ; prélèvements < 10 000 m³ non déclarés | Volumes d'irrigation par département et par an ; valeur descriptive par m³ dans les départements où le maïs domine l'irrigation | **Validée**, prête à télécharger |
+| Agreste, RA2020_0052 « Surfaces irriguées par culture, OTEX et département » (2010 et 2020) | Téléchargé en test (hors dépôt) : part du maïs grain dans les surfaces irriguées en 2020 de 17 % (28) à 73 % (68) | Comme la SAA (réutilisation libre, source citée) | Département, 2010 et 2020, 18 cultures | Clé de répartition des volumes BNPE entre cultures | **Validée** |
+| Agreste, enquêtes Pratiques culturales grandes cultures 2017 et 2021 | Publications régionales lues (ex. Occitanie : 1 410 m³/ha, 5 tours d'eau pour le maïs grain en 2021) | Comme la SAA | Région, deux années | Dose d'irrigation du maïs, contrôle de la répartition | À extraire à la main des PDF régionaux |
+
 ## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |
