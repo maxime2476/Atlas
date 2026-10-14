@@ -157,3 +157,34 @@ def test_drias_panel():
     syn = pd.read_csv(ROOT / "reports" / "tables" / "phase7_d1_synthese.csv")
     assert list(syn.horizon) == ["1976-2005", "France +2.0", "France +2.7", "France +4.0"]
     assert syn.dd_32_ja_mediane.is_monotonic_increasing
+
+
+TAB = ROOT / "reports" / "tables"
+
+
+@pytest.mark.skipif(not (TAB / "phase7_v2_signatures.csv").exists(), reason="V2 absent")
+def test_v2_signatures_recomputed_from_panel():
+    # S1 et S2 de R/28 recalculés indépendamment depuis le panel (échantillon principal).
+    m = pd.read_parquet(PROC / "panel_mais_long.parquet").query("echantillon_principal")
+    w = m.pivot_table(index=["dep_code", "annee"], columns="modalite", values="rendement_q_ha").dropna().reset_index()
+    w = w.sort_values(["dep_code", "annee"])
+    r = (w.irrigue / w.non_irrigue).round(2)
+    prev, prev_year = r.groupby(w.dep_code).shift(), w.groupby("dep_code").annee.shift()
+    repet = ((r == prev) & (w.annee - prev_year == 1))[prev.notna()]   # première année de chaque département exclue
+    v2 = pd.read_csv(TAB / "phase7_v2_signatures.csv").iloc[0]
+    assert len(w) == v2.n_paires == 435 and len(repet) == 418
+    assert np.isclose(repet.mean(), v2.s2_repetition)
+    old = w.annee <= 2009
+    assert np.isclose((w.non_irrigue[old] % 1 == 0).mean(), v2.s1_entiers_pluvial_2000_2009)
+    assert np.isclose((w.irrigue[~old] % 1 == 0).mean(), v2.s1_entiers_irrigue_2010_2025)
+    assert v2.s2_ref_mediane < v2.s2_ref_p95 < v2.s2_repetition   # la signature retenue dépasse la référence
+
+
+@pytest.mark.skipif(not (TAB / "phase7_v1_cv3.csv").exists(), reason="V1 absent")
+def test_v1_cv3_table():
+    v1 = pd.read_csv(TAB / "phase7_v1_cv3.csv")
+    obs = v1[v1.diagnostic == "V1 p CV3 observé"].cv3.iloc[0]
+    g9 = pd.read_csv(TAB / "phase7_inferences.csv")
+    assert np.isclose(obs, g9.p_unilateral_droite[g9.specification.str.contains("CV3")].iloc[0])
+    pw = v1[v1.diagnostic.str.startswith("V1 puissance")]
+    assert pw.cv3.is_monotonic_increasing and v1[["cv3", "wcr"]].dropna().apply(lambda c: c.between(0, 1)).all().all()

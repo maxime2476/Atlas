@@ -37,11 +37,11 @@ L'écart d'altitude et l'indicatrice de relief dépassent le seuil déclaré de 
 | Méthode | p unilatérale | Remarque |
 |---|---|---|
 | WCR par année (référence, règle de décision) | 0,007 | — |
-| G9a : jackknife par année (CV3), t à 25 ddl | **0,074** | Plus conservateur ; recommandé par MacKinnon, Nielsen et Webb (2023) avec peu de grappes |
+| G9a : jackknife par année (CV3), t à 25 ddl | **0,074** | Recommandé par MacKinnon, Nielsen et Webb (2023) avec peu de grappes ; taille mesurée ensuite (V1) : 7,3 %, donc pas plus conservateur que le WCR sur ces données |
 | G9b : randomisation (5 000 dérangements des années, statistique β̂) | 0,001 | L'effet réel éventuel reste dans l'erreur du placebo |
 | G8 : DML (forêts aléatoires sur SWI, P, ETP, GDD ; 5 plis par blocs d'années) + WCR | 0,016 (β = 0,0155) | Contrôles météo non linéaires : β inchangé |
 
-**Lecture :** le statut de H1 reste fixé par le WCR (règle de la phase 4 bis). Mais la significativité au seuil de 5 % **dépend de la méthode d'inférence** : le jackknife par grappes, plus conservateur, donne p = 0,074. C'est une réserve à citer.
+**Lecture :** le statut de H1 reste fixé par le WCR (règle de la phase 4 bis). Mais la significativité au seuil de 5 % **dépend de la méthode d'inférence** : le jackknife par grappes donne p = 0,074, et sa taille (7,3 %, V1) montre qu'il n'est pas plus conservateur sur ces données. C'est une réserve à citer.
 
 ## Taille et levier (relecture W4, W5, W8)
 
@@ -162,3 +162,9 @@ Repères observés : moyenne 2000-2025 1,9 ; 2019 et 2022 environ 4 ; 2003 14,7.
 ## Non fait
 
 - **Méthode SAA (partage irrigué / non irrigué) :** les sources publiques consultées décrivent la SAA comme une synthèse des services régionaux, combinant enquêtes (structure, Terres, vergers) et données administratives (ASP, PAC). Elles ne définissent pas « irrigué » : surface irriguée l'année, ou équipée pour l'irrigation. Les PDF méthodologiques d'Agreste demandent désormais une session. La question reste à poser directement au SSP ou à un SRISE. L'enquête Pratiques culturales grandes cultures (2017, 2021, 2025) relève l'irrigation et le rendement à la parcelle : ce serait une source de validation possible, au niveau régional.
+
+## Revues simulées du 2026-10-14 (V1, V2 ; déclarées avant calcul)
+
+- **V1, taille du CV3** : 7,3 % (300 placebos, erreur de Monte-Carlo 1,5 point), contre 3,7 % pour le WCR sur les mêmes permutations ; puissance 32 % et 66 % (β = 0,008 et 0,016), contre 24 % et 66 %. Lecture selon la règle : à peu près calibré ; le désaccord avec le WCR reste une réserve.
+- **V2, ventilation SAA** : rapport Y_I/Y_R identique à celui de l'année précédente dans 4,3 % des transitions (référence par permutation : 1,0 %, 95ᵉ centile 1,9 %), dont 15 sur 18 dans l'ancienne série (2000-2009) et 2 en 2003 ; pas d'excès de rapports ronds (p = 0,50), pas de rupture en 2010, pas de lien avec la chaleur (p = 0,18). Signature retenue ; sans les 7 départements signalés par la règle, β = 1,0 % par degré-jour, p = 0,063 : menace « active » selon la règle déclarée.
+- Détail et règles de lecture : `docs/decisions.md` ; tables `reports/tables/phase7_v1_cv3.csv`, `phase7_v2_signatures.csv` ; script `R/28_q1_revues.R`.
