@@ -7,7 +7,7 @@ This section states what each model estimates, under which assumptions, and what
 
 All estimands are short-run associations between a weather shock and yields, within a department and relative to the national conditions of the same year.
 \begin{itemize}
-  \item \textbf{Maize (main question).} The change in the log yield gap between irrigated and rainfed maize associated with one more degree-day above 32\,$^{\circ}$C in July--August, holding soil moisture fixed.
+  \item \textbf{Maize (main question).} The change in the log yield gap between irrigated and rainfed maize associated with one more degree-day above 32\,$^{\circ}$C in July--August, holding the soil wetness index (SWI) fixed.
   \item \textbf{Wheat.} The change in log yield associated with one more degree-day above 32\,$^{\circ}$C in May--June.
 \end{itemize}
 Neither is the effect of a warmer climate, which would include adaptation, nor, for maize, the causal effect of irrigation (\cref{subsec:not-identified}).
@@ -19,20 +19,20 @@ For department $d$ and year $t$, let $Y^{I}_{dt}$ and $Y^{R}_{dt}$ be the irriga
 \label{eq:a1}
 \ln Y^{I}_{dt} - \ln Y^{R}_{dt} = \alpha_d + \gamma_t + \beta\, \mathrm{DD}_{>32,dt} + \delta\, \mathrm{SWI}_{dt} + \varepsilon_{dt},
 \end{equation}
-estimated by weighted least squares, with weights equal to each department's grain maize area in 2010--2012. Heat and soil moisture are measured over July--August with the maize mask.
+estimated by weighted least squares, with weights equal to each department's grain maize area in 2010--2012. Heat and the soil wetness index are measured over July--August with the maize mask.
 
 \paragraph{What the gap removes.} Any factor that shifts both yields by the same proportion in a given department and year drops out of the left-hand side, for instance a disease outbreak or a late frost that hits both modes alike. The department effects $\alpha_d$ absorb stable differences in the gap, such as soils that favour one mode or the typical intensity of irrigation. The year effects $\gamma_t$ absorb anything that moves the gap everywhere at once.
 
 \paragraph{What identifies $\beta$.} After these effects, $\beta$ is identified by how much hotter or cooler a department's July--August was than its own average, relative to other departments the same year. Equation~\eqref{eq:a1} is equivalent to estimating separate heat and moisture slopes for each mode in a stacked model with fully interacted fixed effects; $\beta$ is then the difference between the irrigated and the rainfed heat slopes, $\beta = \beta^{I} - \beta^{R}$. The two slopes are also estimated separately, with the same right-hand side, as secondary hypotheses.
 
-\paragraph{The identifying assumption.} Conditional on the fixed effects and on soil moisture, the year-to-year deviations of a department's summer heat must be unrelated to other determinants of the gap. This would fail if, for instance, the composition of irrigated and rainfed land changed in hot years, an issue discussed in \cref{sec:discussion}.
+\paragraph{The identifying assumption.} Conditional on the fixed effects and on the soil wetness index, the year-to-year deviations of a department's summer heat must be unrelated to other determinants of the gap. This would fail if, for instance, the composition of irrigated and rainfed land changed in hot years, an issue discussed in \cref{sec:discussion}.
 
-\paragraph{The soil wetness index.} The SWI comes from a land-surface model driven by observed weather. I treat it as a weather variable. Part of it is a consequence of the heat itself (a hot summer dries the soil), so $\beta$ is a partial association, with heat at a given level of soil moisture, and the coefficient on the SWI is read as an association too. The SIM2 documentation does not mention irrigation: the SWI is best read as the moisture of rainfed soil in the grid cell, not of irrigated fields.
+\paragraph{The soil wetness index.} The SWI comes from a land-surface model driven by observed weather. I treat it as a weather variable. Part of it is a consequence of the heat itself (a hot summer dries the soil), so $\beta$ is a partial association, with heat at a given level of soil wetness, and the coefficient on the SWI is read as an association too. The SIM2 documentation does not mention irrigation: the SWI is best read as the moisture of rainfed soil in the grid cell, not of irrigated fields.
 
 \paragraph{Water restrictions (H3).} On 2016--2025, the years with usable severity levels, model~\eqref{eq:a1} is extended with $C_{dt}$, the number of July--August days with at least one zone of the department at crisis level, and its interaction with heat:
 \begin{equation}
 \label{eq:h3}
-\ln Y^{I}_{dt} - \ln Y^{R}_{dt} = \alpha_d + \gamma_t + \beta\, \mathrm{DD}_{>32,dt} + \theta\, C_{dt} + \lambda\, \mathrm{DD}_{>32,dt} \times C_{dt} + \delta\, \mathrm{SWI}_{dt} + \varepsilon_{dt}.
+\ln Y^{I}_{dt} - \ln Y^{R}_{dt} = \alpha_d + \gamma_t + \beta\, \mathrm{DD}_{>32,dt} + \kappa\, C_{dt} + \lambda\, \mathrm{DD}_{>32,dt} \times C_{dt} + \delta\, \mathrm{SWI}_{dt} + \varepsilon_{dt}.
 \end{equation}
 H3 is $\lambda < 0$: restrictions reduce the protection that irrigation gives against heat. The specification fixed in advance that this test would be read descriptively, since restrictions are decided in response to drought.
 
@@ -41,7 +41,7 @@ H3 is $\lambda < 0$: restrictions reduce the protection that irrigation gives ag
 The wheat model of phase 4 (M1, 2010--2025) is
 \begin{equation}
 \label{eq:m1}
-\ln Y_{dt} = \alpha_d + \gamma_t + \beta_1 \mathrm{GDD}_{dt} + \beta_2\, \mathrm{DD}_{>32,dt} + \theta_1 P^{\mathrm{spring}}_{dt} + \theta_2 \mathrm{DD}^{\mathrm{autumn}}_{0,dt} + \theta_3 P^{\mathrm{autumn}}_{dt} + \varepsilon_{dt},
+\ln Y_{dt} = \alpha_d + \gamma_t + \beta_1 \mathrm{GDD}_{dt} + \beta_2\, \mathrm{DD}_{>32,dt} + \phi_1 P^{\mathrm{spring}}_{dt} + \phi_2 \mathrm{DD}^{\mathrm{autumn}}_{0,dt} + \phi_3 P^{\mathrm{autumn}}_{dt} + \varepsilon_{dt},
 \end{equation}
 where GDD are growing degree-days between 0 and 32\,$^{\circ}$C in May--June, $P$ is precipitation and $\mathrm{DD}^{\mathrm{autumn}}_{0}$ the warmth of the sowing period. Growing degree-days are measured over the same months as extreme heat; the rainfall and autumn controls precede May--June, so they are not consequences of the heat being studied. A variant (M2) adds the May--June SWI and its square.
 

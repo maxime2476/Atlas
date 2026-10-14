@@ -62,7 +62,7 @@ For wheat, the threshold of 32\,$^{\circ}$C came with a fallback rule fixed in a
 Each cell-day value is first computed on the grid, then averaged over each department. The weights decide where in the department the heat is measured.
 \begin{itemize}
   \item \textbf{Crop mask (main measure).} Each parcel of the RPG is attached to the cell and the department that contain its centroid. The weight of a cell in a department is its share of the department's maize (or wheat) area, averaged over 2015--2017 and kept fixed over the whole period, so that weights cannot respond to the weather.
-  \item \textbf{Department area (alternative).} The weight of a cell is the share of the department's surface that it covers, whatever is grown there.
+  \item \textbf{Department area (alternative).} The weight of a cell is the share of the department's surface that it covers, whatever is grown there. The resulting measure is called department-wide weather below.
 \end{itemize}
 For maize, a third measure uses the 2008 blocks of RPG version 1.0 with the same rule, to check whether the 2015--2017 mask is too recent for the 2000s.
 
@@ -76,7 +76,7 @@ N_{\mathrm{eff}} = \frac{1}{\sum_t s_t^2}.
 \end{equation}
 $N_{\mathrm{eff}}$ equals the number of years if they contribute equally and 1 if a single year carries everything. It is a description of the design, computed before the estimates of each phase.
 
-The numbers are small. For wheat over 2010--2025, $N_{\mathrm{eff}} = \NeffWheat$ years out of 16; extending the series to 1959--2025 only raises it to \NeffWheatLong{} out of 67, because very hot early summers remain rare. For maize over 2000--2025, $N_{\mathrm{eff}} = \NeffMaize$ out of 26, and 2003 alone carries \NeffMaizeShareTwoThousandThree\,\% of the residual variance. In the estimated model, with the area weights and soil moisture, the concentration is stronger: 2003 carries \LevThree\,\% of the residual variation of heat ($N_{\mathrm{eff}} = \NeffLevAll$), and \LevThreeEarly\,\% within 2000--2009 (\cref{subsec:maize-inference}). These figures set expectations: whatever the method, the information on heat comes from a handful of summers. They are also why the choice of inference matters so much (\cref{sec:inference}).
+The numbers are small. For wheat over 2010--2025, $N_{\mathrm{eff}} = \NeffWheat$ years out of 16; extending the series to 1959--2025 only raises it to \NeffWheatLong{} out of 67, because very hot early summers remain rare. For maize over 2000--2025, $N_{\mathrm{eff}} = \NeffMaize$ out of 26, and 2003 alone carries \NeffMaizeShareTwoThousandThree\,\% of the residual variance. In the estimated model, with the area weights and soil moisture, the concentration is stronger: 2003 carries \LevThree\,\% of the residual variation of heat ($N_{\mathrm{eff}} = \NeffLevAll$), and \LevThreeEarly\,\% within 2000--2009 (\cref{subsec:maize-inference}). \Cref{fig:projections} shows how far 2003 stands above the other summers since 1976. These figures set expectations: whatever the method, the information on heat comes from a handful of summers. They are also why the choice of inference matters so much (\cref{sec:inference}).
 
 \subsection{Why the mask matters in departments with uplands}
 
@@ -87,11 +87,16 @@ The numbers are small. For wheat over 2010--2025, $N_{\mathrm{eff}} = \NeffWheat
 \small
 \caption{Degree-days above 32\,$^{\circ}$C in July--August 2003, by measure (main maize sample)}
 \label{tab:relief}
+\begin{threeparttable}
 {\footnotesize\setlength{\tabcolsep}{4pt}\input{tables/relief}}
+\begin{tablenotes}\footnotesize
+\item Degree-days above 32\,$^{\circ}$C by double sine, summed over July--August 2003, averaged over each department with weights from the 2015--2017 maize parcels (mask 2015--17), the 2008 maize blocks (mask 2008) or the surface of the department (dept.\ area). ``Area $-$ mask'': department area minus the 2015--2017 mask; negative values mean that department-wide weather understates the heat of maize fields. Mean altitude of the grid cells, from the IGN altimetry service, with the same weights. Sorted by ``Area $-$ mask''.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
-The two maize masks, drawn about eight years apart, agree closely, except in the Rhône, where the 2008 mask gives \ReliefRhoneMaskGap{} fewer degree-days in 2003. The department-area measure departs from them mainly in \ReliefCount{} departments: Puy-de-Dôme, Isère, Drôme, Jura, Rhône and Ain. In 2003 it shows up to \ReliefGapMax{} fewer degree-days than the maize mask.
+The two maize masks, drawn about eight years apart, agree closely, except in the Rhône, where the 2008 mask gives \ReliefRhoneMaskGap{} fewer degree-days in 2003. The department-wide measure departs from them mainly in \ReliefCount{} departments: Puy-de-Dôme, Isère, Drôme, Jura, Rhône and Ain. In 2003 it shows up to \ReliefGapMax{} fewer degree-days than the maize mask.
 
 The altitude columns explain why. In these \ReliefCount{} departments, the average maize field lies \ReliefAltDiffMin{} to \ReliefAltDiffMax{}~m below the average altitude of the department: maize is grown in the plains and valleys, while much of the department is upland where no maize grows. A department-wide average then measures largely the heat of the uplands. Across the 17 departments, the gap in measured heat and the gap in altitude, both computed as department area minus maize mask, have a correlation of $\ReliefAltCorr$. I looked for this explanation after seeing the results, so it is a description, not a test; but it is checked on the data rather than assumed.
 
-Elsewhere the measures are close, with one exception in the other direction: in the Yonne, the department-area measure is \ReliefYonneGap{} degree-days higher than the maize mask. The consequences for the main result are reported in \cref{sec:maize}.
+Elsewhere the measures are close, with one exception in the other direction: in the Yonne, the department-wide measure is \ReliefYonneGap{} degree-days higher than the maize mask. The consequences for the main result are reported in \cref{sec:maize}.

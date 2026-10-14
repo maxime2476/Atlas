@@ -166,7 +166,7 @@ def exposure_numbers(n: dict) -> None:
     n["ReliefCount"] = words.get(len(big), str(len(big)))                          # écart > 3 °C·jour
     large = mes[mes.ecart_surface_moins_masque_2003 < -5]
     n["ReliefCountLarge"] = words.get(len(large), str(len(large)))                 # écart > 5 °C·jour
-    n["ReliefGapSmallMin"] = f"{-big.ecart_surface_moins_masque_2003.max():.0f}"
+    n["ReliefGapSmallMin"] = f"{-big.ecart_surface_moins_masque_2003.max():.1f}"
     # Seul désaccord notable entre les deux masques maïs (2015-2017 contre 2008), été 2003 : le Rhône.
     rh = mes.set_index("dep_code").loc["69"]
     n["ReliefRhoneMaskGap"] = f"{rh.masque_2015_2017_2003 - rh.masque_2008_2003:.1f}"
@@ -353,8 +353,13 @@ def maize_tables(n: dict) -> None:
     w = m.pivot_table(index=["dep_code", "annee"], columns="modalite", values="rendement_q_ha").dropna()
     n["YieldIrr"], n["YieldRain"] = f"{w.irrigue.mean():.0f}", f"{w.non_irrigue.mean():.0f}"
     n["GapMedianPct"] = f"{100 * ((w.irrigue / w.non_irrigue).median() - 1):.0f}"
+    # Lecture de l'unité de H1 : un écart médian (rapport irrigué / pluvial) multiplié par exp(beta) par degré-jour.
+    ratio_med = (w.irrigue / w.non_irrigue).median()
+    n["GapMedianAfterPct"] = f"{100 * (ratio_med * np.exp(h.loc['H1', 'estimation']) - 1):.0f}"
     n["GapNotAboveCount"] = str(int((w.irrigue <= w.non_irrigue).sum()))     # paires où l'irrigué ne dépasse pas
     n["GapBelowCount"] = str(int((w.irrigue < w.non_irrigue).sum()))
+    n["GapAboveCount"] = str(int((w.irrigue > w.non_irrigue).sum()))
+    n["GapEqualCount"] = str(int((w.irrigue == w.non_irrigue).sum()))
     # Part des paires de l'échantillon principal issues des années exploratoires (2010-2025, phase 6).
     years = w.index.get_level_values(1)
     n["ExploPairs"], n["ExploSharePct"] = str(int((years >= 2010).sum())), f"{100 * (years >= 2010).mean():.0f}"
@@ -483,7 +488,10 @@ def appendix_tables(n: dict) -> None:
     # Les contrôles d'empreinte (un test par fichier brut) gonflent le total : on les compte à part.
     n["TestIntegrity"] = str(out.count("test_manifest.py::test_raw_file_matches_manifest"))
     n["TestLogic"] = str(int(n["TestCount"]) - int(n["TestIntegrity"]))
-    n["ManifestFiles"] = f"{len(pd.read_csv(ROOT / 'docs' / 'manifest_raw.csv')):,}"
+    manifest = pd.read_csv(ROOT / "docs" / "manifest_raw.csv")
+    n["ManifestFiles"] = f"{len(manifest):,}"
+    n["RawSizeGb"] = f"{manifest.size_bytes.sum() / 1e9:.0f}"                      # Go décimaux, comme du -h --si
+    n["DriasSizeGb"] = f"{manifest.loc[manifest.source == 'drias', 'size_bytes'].sum() / 1e9:.0f}"
 
     # Degrés-jours : formule fermée contre intégration numérique sur une grille aléatoire de cas.
     rng = np.random.default_rng(20261010)
@@ -505,6 +513,11 @@ def appendix_tables(n: dict) -> None:
            "R10": "Window May--July", "R11": "Window shifted $-2$ weeks", "R12": "Window shifted $+2$ weeks",
            "R13": "Without mountain departments", "R14": "Temperature bins"}
     rob = pd.read_csv(TAB / "phase4_robustesse.csv")
+    # Libellés anglais des variables du code (le tableau est dans un texte en anglais).
+    terms_en = {"dd_32_remplissage": "DD$_{>32}$, May--June", "dd_30_remplissage": "DD$_{>30}$, May--June",
+                "dd_32_mjj": "DD$_{>32}$, May--July", "dd_32_m2s": "DD$_{>32}$, window $-2$ weeks",
+                "dd_32_p2s": "DD$_{>32}$, window $+2$ weeks", "bin_30_33": "Days 30--33\\,$^{\\circ}$C",
+                "bin_ge33": "Days $\\geq 33$\\,$^{\\circ}$C"}
 
     def fmt(x):
         return "---" if pd.isna(x) else pv(x)
@@ -512,8 +525,8 @@ def appendix_tables(n: dict) -> None:
     for r in rob.itertuples():
         code = r.specification.split(" ", 1)[0]
         label = en4.get(code, r.specification)
-        term = r.terme.replace("_", "\\_")
-        rows.append(f"{code if code.startswith('R') else ''} & {label} & \\texttt{{{term}}} & ${r.estimation:+.4f}$ & "
+        term = terms_en.get(r.terme, r.terme.replace("_", "\\_"))
+        rows.append(f"{code if code.startswith('R') else ''} & {label} & {term} & ${r.estimation:+.4f}$ & "
                     f"{fmt(r.p_cluster_dep)} & {fmt(r.p_conley)} & {fmt(r.p_wcb_annee)} \\\\")
     (OUT / "rob_wheat_full.tex").write_text(
         "% GÉNÉRÉ par scripts/26_tables_memoire.py (phase4_robustesse.csv)\n\\begin{tabular}{llllrrr}\n\\toprule\n"
@@ -590,6 +603,33 @@ def main() -> None:
     n["DmlBeta"] = f"{inf.loc[inf.index.str.startswith('G8')].estimation.iloc[0]:.4f}"
     n["DmlP"] = pv(inf.loc[inf.index.str.startswith("G8")].p_wcb_annee_unilateral_droite.iloc[0])
     n["CvThreeP"] = pv(inf.loc[inf.index.str.startswith("G9a")].p_unilateral_droite.iloc[0])
+    # V1 (revues simulées du 2026-10-14) : taille et puissance du CV3 avec le placebo des années.
+    v1 = pd.read_csv(TAB / "phase7_v1_cv3.csv")
+    sz = v1[v1.diagnostic.str.startswith("V1 taille")].iloc[0]
+    pw = v1[v1.diagnostic.str.startswith("V1 puissance")].set_index("beta_vrai")
+    n["CvThreeSize"] = f"{100 * sz.cv3:.1f}"
+    n["CvThreeSizeMc"] = f"{100 * sz.erreur_monte_carlo_cv3:.1f}"
+    n["CvThreePowHalf"], n["CvThreePowFull"] = f"{100 * pw.loc[0.008, 'cv3']:.0f}", f"{100 * pw.loc[0.016, 'cv3']:.0f}"
+    assert sz.lecture == "calibré", "le texte suit la lecture « à peu près calibré » de la règle V1"
+    # V2 : signatures d'imputation de la ventilation irrigué / pluvial (échantillon principal).
+    v2 = pd.read_csv(TAB / "phase7_v2_signatures.csv").iloc[0]
+    assert bool(v2.signature_retenue), "le texte suit le cas « signature retenue » de la règle V2"
+    n["SaaRepPct"], n["SaaRepRefPct"] = f"{100 * v2.s2_repetition:.1f}", f"{100 * v2.s2_ref_mediane:.1f}"
+    n["SaaRepPnf"] = f"{100 * v2.s2_ref_p95:.1f}"
+    n["SaaRoundP"] = f"{v2.s3_p_permutation:.2f}"
+    n["SaaHeatP"] = pv(v2.s5_p_wcr_bilateral)
+    n["SaaSixDeps"] = str(len(str(v2.s6_departements_signales).split()))
+    n["SaaSixPct"], n["SaaSixP"] = pct(100 * (np.exp(v2.s6_beta_sans) - 1)), pv(v2.s6_p_unilateral)
+    # Répartition des répétitions entre les deux éditions de la SAA (même définition que R/28).
+    mm = pd.read_parquet(ROOT / "data" / "processed" / "panel_mais_long.parquet").query("echantillon_principal")
+    ww = mm.pivot_table(index=["dep_code", "annee"], columns="modalite", values="rendement_q_ha").dropna().reset_index()
+    ww = ww.sort_values(["dep_code", "annee"])
+    ww["r"] = (ww.irrigue / ww.non_irrigue).round(2)
+    ww["rep"] = (ww.r == ww.groupby("dep_code").r.shift()) & (ww.groupby("dep_code").annee.diff() == 1)
+    # Dénominateur de R/28 : toutes les paires successives d'un département (première année exclue).
+    assert abs(ww.rep.sum() / (len(ww) - ww.dep_code.nunique()) - v2.s2_repetition) < 1e-12
+    n["SaaRepTot"], n["SaaRepOld"] = str(int(ww.rep.sum())), str(int(ww.rep[ww.annee <= 2009].sum()))
+    n["SaaRepTwoThousandThree"] = str(int(ww.rep[ww.annee == 2003].sum()))
     n["RiP"] = pv(inf.loc[inf.index.str.startswith("G9b")].p_unilateral_droite.iloc[0])
     sz = pd.read_csv(TAB / "phase7_tailles.csv").set_index("diagnostic").taux * 100
     n["WithinYearSize"] = pct(sz[sz.index.str.startswith("G3a")].iloc[0])
@@ -685,6 +725,12 @@ def main() -> None:
     deps = w2.drop(index="ensemble")
     n["WatEurMin"], n["WatEurMax"] = f"{deps.eur_par_m3_median.min():.2f}", f"{deps.eur_par_m3_median.max():.2f}"
     n["WatExcl"], n["WatN"] = str(int(tot.exclues)), str(int(tot.annees))
+    # Le minimum vient d'un département dont la règle de plausibilité a écarté beaucoup d'années : on le dit.
+    low = deps.loc[deps.eur_par_m3_median.idxmin()]
+    n["WatLowDepExcl"], n["WatLowDepYears"] = str(int(low.exclues)), str(int(low.annees))
+    n["WatLowDepDose"] = f"{low.dose_mediane_m3_ha:,.0f}".replace(",", "\\,")
+    n["WatEurMinOther"] = f"{deps.drop(low.name).eur_par_m3_median.min():.2f}"
+    assert low.name == "63", "le texte nomme le Puy-de-Dôme"
     ws = pd.read_csv(TAB / "phase7_w2_pentes.csv")
     n["WatDoseSlope"], n["WatDoseSlopeP"] = f"{ws.estimation.iloc[1]:.0f}", pv(ws.p_wcb_annee.iloc[1])
     n["WatGainSlope"], n["WatGainSlopeP"] = f"{ws.estimation.iloc[0]:.2f}", pv(ws.p_wcb_annee.iloc[0])
@@ -738,6 +784,19 @@ def main() -> None:
     n["QoneValTwoThousandThree"] = f"{val.loc[2003, 'millions_eur_estimation']:.0f}"
     n["QoneValLow"] = f"{val.loc[2003, 'millions_eur_ic90_bas']:.0f}"
     n["QoneValHigh"] = f"{val.loc[2003, 'millions_eur_ic90_haut']:.0f}"
+    # Repère : valeur de toute la production de maïs grain (irrigué et pluvial) des 17 départements en 2003.
+    pm = pd.read_parquet(ROOT / "data" / "processed" / "panel_mais_long.parquet")
+    pm3 = pm[pm.echantillon_principal & (pm.annee == 2003)]
+    prod_q = (pm3.surface_ha * pm3.rendement_q_ha).sum()
+    n["ProdValTwoThousandThree"] = f"{prod_q * val.loc[2003, 'prix_eur_q'] / 1e6:.0f}"
+    n["ValShareTwoThousandThree"] = f"{100 * val.loc[2003, 'quintaux_estimation'] / prod_q:.0f}"
+    # Sécheresse des étés chauds cités en discussion : SWI de juillet-août, moyenne pondérée des 17 départements.
+    pi = pm[pm.echantillon_principal & (pm.modalite == "irrigue")]
+    swi = pi.groupby("annee").apply(lambda d: np.average(d.swi_ja, weights=d.surface_ref_ha), include_groups=False)
+    n["SwiMean"] = f"{swi.mean():.2f}"
+    n["SwiTwoThousandThree"], n["SwiTwentyNineteen"], n["SwiTwentyTwentyTwo"] = (f"{swi.loc[y]:.2f}" for y in (2003, 2019, 2022))
+    rank = int(swi.rank().loc[[2003, 2019, 2022]].max())                    # rang le plus élevé (1 = le plus sec)
+    n["SwiRankMax"] = {3: "three", 4: "four", 5: "five", 6: "six", 7: "seven", 8: "eight", 9: "nine"}.get(rank, str(rank))
 
     # Été 2003 : exposition moyenne (pondérée par la surface de référence) des 17 départements principaux.
     mz = pd.read_parquet(ROOT / "data" / "processed" / "panel_mais_long.parquet")

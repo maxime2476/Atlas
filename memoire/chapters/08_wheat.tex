@@ -29,7 +29,7 @@ Wheat was the starting point of the project. Its results are null, but they are 
 
 Each degree-day above 32\,$^{\circ}$C during grain filling is associated with about \WheatPct\,\% lower yields. The sign is stable:
 \begin{itemize}
-  \item it is negative in \WheatRobPreNeg{} of the \WheatRobPreTot{} pre-specified robustness checks that change the coefficient (the exception extends the window to July), and in the \WheatRobAddTot{} checks added after the first estimates that estimate the same coefficient (R11--R13; R14 replaces it with temperature bins), defined before being computed;
+  \item it is negative in \WheatRobPreNeg{} of the \WheatRobPreTot{} pre-specified robustness checks that change the coefficient (all of them are in \cref{tab:rob-wheat-full}) (the exception extends the window to July), and in the \WheatRobAddTot{} checks added after the first estimates that estimate the same coefficient (R11--R13; R14 replaces it with temperature bins), defined before being computed;
   \item it is negative in all \LoyoTot{} estimates that leave out one year at a time;
   \item without the provisional year 2025, the association doubles, to about \WheatNoTwentyFivePct\,\% per degree-day.
 \end{itemize}
@@ -47,7 +47,12 @@ The natural answer to too few years is more years. Over 1959--2025, the model M3
 \small
 \caption{Wheat 1959--2025: heat above 32\,$^{\circ}$C in May--June (83 departments, \QtwoN{} observations)}
 \label{tab:wheat-long}
+\begin{threeparttable}
 \input{tables/wheat_long}
+\begin{tablenotes}\footnotesize
+\item Model M3 (\cref{sec:strategy}): log yield on May--June heat and the controls of M1, with department-by-period and year effects, area weights. $p$ boot.: restricted wild cluster bootstrap by year, 9,999 draws; one-sided in the direction $\beta_2 < 0$. ``---'': two-sided $p$-value not computed for the robustness checks.
+\end{tablenotes}
+\end{threeparttable}
 \end{table}
 
 \paragraph{The main hypothesis is not established.} The association is \QtwoPct\,\% lower yield per degree-day, close to the estimate on 2010--2025, but a value this negative is not rare when there is no effect: the one-sided $p$-value is \QtwoP. The size of this test on these data is \QtwoSizeWCR\,\%, close to the nominal level in the placebo diagnostic. The sign is negative in all \QtwoRobTot{} robustness checks, and significant in \QtwoRobSig: the one without 2025 (one-sided $p = \QtwoNoTwentyFiveP$, two-sided $\QtwoNoTwentyFivePtwo$). I do not retain it. The rule was fixed in advance, and choosing the variant that ``works'' after seeing the results is exactly what pre-specification is meant to prevent. This sample also contains the 2010--2025 sample, so the similar estimate is not an independent replication.

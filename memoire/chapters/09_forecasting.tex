@@ -14,7 +14,7 @@ The protocol was fixed in a specification written before any forecast was comput
   \item \textbf{Models.} Each model predicts the residual of B1 from the weather variables: ordinary least squares on the variables of model M1, ridge regression, a random forest and gradient boosting. Their settings were fixed in advance; only the ridge penalty is tuned, by an inner leave-one-year-out loop on the training years.
   \item \textbf{Uncertainty.} The difference in mean squared error between a model and a benchmark is given with a 95\,\% interval from a block bootstrap over the 10 test years.
 \end{itemize}
-Tests check automatically that no variable uses information from after the forecast date. Some leakage cannot be removed: the SAA series were revised after the 2020 census, SIM is a reanalysis, the wheat mask comes from 2015--2017, and the 2025 yields are provisional. The sample itself is chosen with information later than some test years (the quality status published in 2025), so the exercise is a pseudo-real-time test, not a real-time one. Two smaller points: the degree-days of the last day before the forecast date use the next day's minimum temperature, which SIM measures until 18:00 UTC on the forecast day itself; and the inner loop that tunes the ridge penalty leaves out one training year at a time, so it uses training years later than the one left out. The first adds a few hours of weather after the forecast date; neither uses the yields of the test year.
+Tests check automatically that no variable uses information from after the forecast date. Some leakage cannot be removed: the SAA series were revised after the 2020 census, SIM2 is a reanalysis, the wheat mask comes from 2015--2017, and the 2025 yields are provisional. The sample itself is chosen with information later than some test years (the quality status published in 2025), so the exercise is a pseudo-real-time test, not a real-time one. Two smaller points: the degree-days of the last day before the forecast date use the next day's minimum temperature, which SIM2 measures until 18:00 UTC on the forecast day itself; and the inner loop that tunes the ridge penalty leaves out one training year at a time, so it uses training years later than the one left out. The first adds a few hours of weather after the forecast date; neither uses the yields of the test year.
 
 \subsection{The benchmark that matters}
 
@@ -53,7 +53,7 @@ No model, as pre-specified, is significantly better than the department mean.
 
 \subsection{Adding satellite data}
 
-A natural objection is that weather describes the conditions, not the crop. The NDVI, a satellite index of green vegetation, describes the crop itself. I added MODIS NDVI at 250~m (16-day composites from April to June), aggregated to SIM cells and then to departments with the wheat mask. A composite is used only if it ends before the forecast date, a rule checked by an automated test.
+A natural objection is that weather describes the conditions, not the crop. The NDVI, a satellite index of green vegetation, describes the crop itself. I added MODIS NDVI at 250~m (16-day composites from April to June), aggregated to SIM2 cells and then to departments with the wheat mask. A composite is used only if it ends before the forecast date, a rule checked by an automated test.
 
 \begin{table}[H]
 \centering
