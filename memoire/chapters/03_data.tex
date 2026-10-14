@@ -5,7 +5,7 @@ All data are public. \Cref{tab:sources} lists the sources; this section explains
 
 \begin{table}[tp]
 \centering
-\footnotesize
+\scriptsize
 \caption{Data sources}
 \label{tab:sources}
 \begin{tabular}{>{\raggedright}p{4.4cm}>{\raggedright}p{4.3cm}>{\raggedright}p{2.6cm}>{\raggedright\arraybackslash}p{2.6cm}}
@@ -15,7 +15,7 @@ Source & Variables used & Coverage & Licence \\
 Agreste, \emph{Statistique agricole annuelle} (SAA), long series & Area, yield, quality status; wheat, irrigated and rainfed grain maize & Departments, 2010--2025 & Free reuse with attribution; Licence Ouverte 2.0 \\
 Agreste, SAA ``older series'' (\texttt{SAANR\_DEVELOPPE\_2}) & Irrigated and rainfed grain maize & Departments, 2000--2020 & Free reuse with attribution \\
 \textcite{schauberger2021data}, version RAW; data paper \textcite{schauberger2022} & Soft wheat yields & Departments, 1959--2009 & CC BY 4.0 \\
-Météo-France, SIM2 (SAFRAN--ISBA) & Daily Tmin, Tmax, precipitation, evapotranspiration, soil wetness index & 8~km grid, Aug.~1958--2025 & Licence Ouverte 2.0 \\
+Météo-France, SIM2 (SAFRAN--ISBA) & Daily Tmin, Tmax, precipitation, evapotranspiration, soil wetness index & 8~km grid, Aug.~1958--2025 (2026: first look only) & Licence Ouverte 2.0 \\
 IGN / ASP, parcel register (RPG) v2.0 & Grain maize and soft wheat parcels & Parcels, 2015--2017 & Licence Ouverte 2.0 \\
 IGN / ASP, RPG v1.0 (anonymised blocks) & Blocks whose main crop is maize & 4 regions, 2008 & Licence Ouverte 2.0 \\
 IGN, ADMIN EXPRESS COG CARTO & Department boundaries & 2026 edition & Licence Ouverte 2.0 \\
@@ -29,6 +29,8 @@ INRAE, available water capacity of soils \parencite{romandobarco2019} & Availabl
 OFB / water agencies, BNPE water withdrawals (Hub'Eau API) & Volumes declared for irrigation, all crops (check only) & Withdrawal points, 2012--2023 & Licence Ouverte 2.0 \\
 Agreste, 2020 agricultural census (table RA2020\_0052) & Share of grain maize in the irrigated area & Departments, 2010 and 2020 & Free reuse with attribution \\
 DRIAS, Explore2-Climat 2022, bias-corrected (ADAMONT) \parencite{drias2022} & Daily Tmin, Tmax, specific humidity (discussion only) & SAFRAN 8~km grid, 1976--2005 and RCP\,8.5 to 2100 & Licence Etalab (DRIAS terms); free account required \\
+Agreste, early crop estimates (\emph{Infos rapides} 2026-131) & Irrigated and rainfed grain maize, 2026 (first look only) & Departments, estimates at 1 Oct.~2026 & As the SAA \\
+DRIAS-Eau, Explore2 / SIM2 water indicators & Monthly soil wetness index, July--August (discussion only) & SAFRAN grid, warming levels & Licence Etalab; account required \\
 RTE / ODRÉ, register of electricity installations & Onshore wind capacity, commissioning date (one check only) & Installations, snapshot of June 2026 & Licence Ouverte 2.0 \\
 \bottomrule
 \end{tabular}

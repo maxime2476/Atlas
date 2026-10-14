@@ -74,6 +74,12 @@ uv run python scripts/35_reserve_utile.py                         # RU sous les 
 uv run python scripts/36_volumes_irrigation.py                    # volumes BNPE, parts irriguées du RA, prix du maïs
 Rscript R/27_q1_sol_eau.R                                         # R1, W1, W2 : réserve utile, volumes, valeur du m³
 Rscript R/28_q1_revues.R                                          # V1, V2 : taille du CV3, signatures d'imputation SAA
+uv run python scripts/01_download_raw.py --sim-years 2026 --conjoncture-2026   # P4 : météo 2026, estimations Agreste au 1er octobre 2026
+uv run python scripts/40_recolte_2026.py                          # P4 : panel 2026 (provisoire), prévision figée du blé 2026
+Rscript R/29_q1_suggestions.R                                     # P1, P2, P4 : chaleur moyenne, statut, récolte 2026
+uv run --with playwright==1.63.0 python scripts/41_drias_eau.py commander    # P3 : 68 commandes DRIAS-Eau (compte personnel)
+uv run --with playwright==1.63.0 python scripts/41_drias_eau.py telecharger
+uv run python scripts/42_drias_eau_swi.py                         # P3 : SWI projeté et projection de l'écart avec le sol
 # D1 : projections DRIAS (compte personnel ; DRIAS_LOGIN et DRIAS_PASSWORD dans .env ; Chromium : playwright install chromium)
 uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py commander     # 34 commandes (~1 h 15)
 uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py fenetres      # fenêtres TRACC par modèle

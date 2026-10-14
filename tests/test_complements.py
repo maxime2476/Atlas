@@ -188,3 +188,40 @@ def test_v1_cv3_table():
     assert np.isclose(obs, g9.p_unilateral_droite[g9.specification.str.contains("CV3")].iloc[0])
     pw = v1[v1.diagnostic.str.startswith("V1 puissance")]
     assert pw.cv3.is_monotonic_increasing and v1[["cv3", "wcr"]].dropna().apply(lambda c: c.between(0, 1)).all().all()
+
+
+@pytest.mark.skipif(not (PROC / "panel_mais_2026.parquet").exists(), reason="panel 2026 absent")
+def test_panel_2026():
+    # Mêmes départements que le panel 2000-2025, deux modes chacun, météo complète ; rien d'autre n'est modifié.
+    p = pd.read_parquet(PROC / "panel_mais_2026.parquet")
+    old = pd.read_parquet(PROC / "panel_mais_long.parquet")
+    assert set(p.dep_code) == set(old.dep_code) and len(p) == 2 * 38
+    assert not p.duplicated(["dep_code", "modalite"]).any()
+    assert p.rendement_q_ha.between(5, 200).all() and p.dd_32_ja.notna().all() and p.swi_ja.between(-0.5, 2).all()
+    main = p[p.echantillon_principal]
+    assert main.dep_code.nunique() == 17
+    # La surface de référence et le statut viennent du panel existant, sans changement.
+    ref = old.drop_duplicates("dep_code").set_index("dep_code")
+    assert (p.set_index("dep_code").surface_ref_ha == ref.surface_ref_ha.reindex(p.dep_code).to_numpy()).all()
+
+
+@pytest.mark.skipif(not (TAB / "phase7_p4_prevision_ble_2026.csv").exists(), reason="prévision 2026 absente")
+def test_frozen_wheat_forecast_2026_registered():
+    # Le fichier enregistré ne doit plus changer : son empreinte est consignée dans docs/decisions.md.
+    import hashlib
+    f = TAB / "phase7_p4_prevision_ble_2026.csv"
+    digest = hashlib.sha256(f.read_bytes()).hexdigest()
+    assert digest in (ROOT / "docs" / "decisions.md").read_text()
+    pred = pd.read_csv(f, dtype={"dep_code": str})
+    assert len(pred) == 83 and pred.annee.eq(2026).all() and pred[["B0", "RF_B0", "GBM_B0"]].notna().all().all()
+
+
+@pytest.mark.skipif(not (TAB / "phase7_p3_swi_horizons.csv").exists(), reason="P3 absent")
+def test_p3_soil_projection_identities():
+    out = pd.read_csv(TAB / "phase7_p3_swi_horizons.csv")
+    assert len(out) == 17 * 3 and out.modele.nunique() == 17
+    h = pd.read_csv(TAB / "phase4bis_q1_hypotheses.csv").set_index("hypothese")
+    beta, delta = h.loc["H1", "estimation"], h.loc["H2a", "estimation"]
+    assert np.allclose(out.terme_chaleur, beta * out.delta_dd_32_ja)
+    assert np.allclose(out.ecart_pct_total, 100 * (np.exp(beta * out.delta_dd_32_ja + delta * out.delta_swi_ja) - 1))
+    assert out.delta_swi_ja.between(-0.5, 0.5).all()

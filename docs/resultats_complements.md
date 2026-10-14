@@ -168,3 +168,10 @@ Repères observés : moyenne 2000-2025 1,9 ; 2019 et 2022 environ 4 ; 2003 14,7.
 - **V1, taille du CV3** : 7,3 % (300 placebos, erreur de Monte-Carlo 1,5 point), contre 3,7 % pour le WCR sur les mêmes permutations ; puissance 32 % et 66 % (β = 0,008 et 0,016), contre 24 % et 66 %. Lecture selon la règle : à peu près calibré ; le désaccord avec le WCR reste une réserve.
 - **V2, ventilation SAA** : rapport Y_I/Y_R identique à celui de l'année précédente dans 4,3 % des transitions (référence par permutation : 1,0 %, 95ᵉ centile 1,9 %), dont 15 sur 18 dans l'ancienne série (2000-2009) et 2 en 2003 ; pas d'excès de rapports ronds (p = 0,50), pas de rupture en 2010, pas de lien avec la chaleur (p = 0,18). Signature retenue ; sans les 7 départements signalés par la règle, β = 1,0 % par degré-jour, p = 0,063 : menace « active » selon la règle déclarée.
 - Détail et règles de lecture : `docs/decisions.md` ; tables `reports/tables/phase7_v1_cv3.csv`, `phase7_v2_signatures.csv` ; script `R/28_q1_revues.R`.
+
+## Analyses suggérées par les revues (P1-P4 ; déclarées avant calcul, exploratoires)
+
+- **P1, chaleur moyenne SIM2/E-OBS** : 1,6 % par degré-jour, p = 0,004, taille 6,0 % : soutenue avec cette mesure.
+- **P2, statut de qualité** : pente des 21 départements de statut 2 : 2,2 % (p = 0,015) ; écart avec le statut 1 non détectable (p = 0,45).
+- **P3, humidité du sol projetée (DRIAS-Eau)** : ΔSWI de juillet-août −0,04, −0,06, −0,10 ; écart projeté 5 %, 11 %, 34 % avec le sol, contre 4 %, 10 %, 30 % avec la chaleur seule : pas de changement d'ordre de grandeur.
+- **P4, récolte 2026 (estimations au 1er octobre 2026)** : 10,6 degrés-jours, deuxième été le plus chaud après 2003 ; écart médian 150 % ; A1 sur 2000-2026 : 2,4 %, p = 0,001 (« cohérent avec H1 » sur des données provisoires très arrondies). Prévision figée du blé 2026 enregistrée avant comparaison.

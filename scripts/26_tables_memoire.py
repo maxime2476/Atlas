@@ -603,6 +603,32 @@ def main() -> None:
     n["DmlBeta"] = f"{inf.loc[inf.index.str.startswith('G8')].estimation.iloc[0]:.4f}"
     n["DmlP"] = pv(inf.loc[inf.index.str.startswith("G8")].p_wcb_annee_unilateral_droite.iloc[0])
     n["CvThreeP"] = pv(inf.loc[inf.index.str.startswith("G9a")].p_unilateral_droite.iloc[0])
+    # P1, P2, P4 (analyses suggérées par les revues, déclarées avant calcul).
+    p1 = pd.read_csv(TAB / "phase7_p1_chaleur_moyenne.csv").iloc[0]
+    n["AvgHeatPct"], n["AvgHeatP"] = pct(p1.effet_pct_par_unite), pv(p1.p_wcb_annee_unilateral_droite)
+    n["AvgHeatSize"] = pct(100 * p1.taille_placebo)
+    p2 = pd.read_csv(TAB / "phase7_p2_statut.csv")
+    n["StatusInterP"] = pv(p2.p_wcr.iloc[1])
+    n["StatusTwoPct"], n["StatusTwoP"] = pct(p2.effet_pct_par_unite.iloc[2]), pv(p2.p_wcr.iloc[2])
+    p4 = pd.read_csv(TAB / "phase7_p4_recolte_2026.csv")
+    n["TwentySixHeat"], n["TwentySixHeatDev"] = f"{p4.chaleur_2026_moyenne.iloc[0]:.1f}", f"{p4.chaleur_2026_moins_moyenne_dep.iloc[0]:.1f}"
+    n["TwentySixGapMed"] = f"{p4.ecart_median_2026_pct.iloc[0]:.0f}"
+    n["TwentySixGapObs"], n["TwentySixGapPred"] = f"{p4.ecart_2026_moins_moyenne_dep.iloc[0]:.2f}", f"{p4.ecart_predit_par_beta.iloc[0]:.2f}"
+    n["TwentySixSlopePct"] = pct(p4.effet_pct_par_unite.iloc[0])
+    n["TwentySixAllPct"], n["TwentySixAllP"] = pct(p4.effet_pct_par_unite.iloc[1]), pv(p4.p_wcr_unilateral.iloc[1])
+    assert p4.lecture.iloc[1] == "cohérent avec H1"
+    p26 = pd.read_parquet(ROOT / "data" / "processed" / "panel_mais_2026.parquet").query("echantillon_principal")
+    r26 = p26.pivot_table(index="dep_code", columns="modalite", values="rendement_q_ha")
+    n["TwentySixRainMin"] = f"{r26.non_irrigue.min():.0f}"
+    n["TwentySixRainMinN"] = {1: "one", 2: "two", 3: "three", 4: "four", 5: "five"}.get(int((r26.non_irrigue == r26.non_irrigue.min()).sum()), "several")
+    n["TwentySixRatioMin"], n["TwentySixRatioMax"] = f"{(r26.irrigue / r26.non_irrigue).min():.1f}", f"{(r26.irrigue / r26.non_irrigue).max():.1f}"
+    p3 = pd.read_csv(TAB / "phase7_p3_synthese.csv").set_index("horizon")
+    assert not p3.sol_change_ordre_de_grandeur.any(), "le texte suit la lecture « ne change pas l'ordre de grandeur »"
+    for hz, key in [("France +2.0", "Two"), ("France +2.7", "TwoSeven"), ("France +4.0", "Four")]:
+        n[f"SoilDelta{key}"] = f"{p3.loc[hz, 'delta_swi_mediane']:.2f}"
+        n[f"SoilGap{key}"] = f"{p3.loc[hz, 'ecart_pct_total_mediane']:.0f}"
+    n["SoilGapFourMin"], n["SoilGapFourMax"] = f"{p3.loc['France +4.0', 'ecart_pct_total_min']:.0f}", f"{p3.loc['France +4.0', 'ecart_pct_total_max']:.0f}"
+    n["SoilRefSwi"], n["SoilObsSwi"] = f"{p3.swi_ref_mediane.iloc[0]:.2f}", f"{p3.swi_obs_1976_2005.iloc[0]:.2f}"
     # V1 (revues simulées du 2026-10-14) : taille et puissance du CV3 avec le placebo des années.
     v1 = pd.read_csv(TAB / "phase7_v1_cv3.csv")
     sz = v1[v1.diagnostic.str.startswith("V1 taille")].iloc[0]

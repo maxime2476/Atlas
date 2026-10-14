@@ -109,6 +109,10 @@ RU_MD5 = "d3c9ef312fb66a208a63f275c1623900"
 # Recensement agricole 2020, surfaces irriguées par culture et département (2010 et 2020).
 RA2020_URL = ("https://agreste.agriculture.gouv.fr/agreste-web/download/publication/publie/"
               "RA2020_0052/FDS_RA2020_0052.zip")
+# Agreste, conjoncture grandes cultures : estimations précoces 2026 par département, arrêtées au 1er octobre 2026
+# (Infos rapides n° 2026-131 ; maïs grain irrigué et non irrigué). Données provisoires (analyse P4).
+CONJONCTURE_2026_URL = ("https://agreste.agriculture.gouv.fr/agreste-web/download/publication/publie/"
+                        "IraGcu26131/2026_131donnees_grandescultures_departements.xlsx")
 # Hub'Eau, prélèvements en eau (BNPE), usage irrigation, 2012-2023, Licence Ouverte Etalab.
 # Deux périodes par département : une requête est limitée à 20 000 lignes (le Loiret en compte 31 925).
 BNPE_API = "https://hubeau.eaufrance.fr/api/v1/prelevements/chroniques"
@@ -172,6 +176,8 @@ def main() -> None:
     parser.add_argument("--eobs", action="store_true", help="E-OBS Tmin/Tmax 0,1° 1995-2025 (environ 4 Go)")
     parser.add_argument("--ru", action="store_true", help="réserve utile des sols, INRAE 90 m (environ 0,64 Go)")
     parser.add_argument("--ra2020", action="store_true", help="recensement agricole : surfaces irriguées par culture")
+    parser.add_argument("--conjoncture-2026", action="store_true",
+                        help="Agreste, estimations précoces 2026 par département (conjoncture au 1er octobre 2026)")
     parser.add_argument("--bnpe", action="store_true", help="volumes prélevés pour l'irrigation (Hub'Eau), 17 départements")
     parser.add_argument("--eolien", action="store_true", help="registre national des installations électriques (RTE, ODRÉ)")
     args = parser.parse_args()
@@ -226,6 +232,9 @@ def main() -> None:
     if args.ra2020:
         get("agreste_ra2020", RA2020_URL, RAW / "agreste_ra2020" / "FDS_RA2020_0052.zip",
             context=tls_context(extra_intermediate=True))
+    if args.conjoncture_2026:
+        get("agreste_conjoncture", CONJONCTURE_2026_URL,
+            RAW / "agreste_conjoncture" / CONJONCTURE_2026_URL.rsplit("/", 1)[1], context=tls_context(extra_intermediate=True))
     if args.bnpe:
         for dep in BNPE_DEPS:
             for period, years in BNPE_PERIODS.items():

@@ -17,6 +17,6 @@ Ces rapports viennent de quatre skills publics pour Claude Code, appliqués au m
 - textes corrigés : littérature, limites des projections, unité du résultat, notes et libellés de tableaux, renvois, borne basse de la valeur par m³ ;
 - deux analyses déclarées avant calcul : la taille du jackknife CV3 (V1 : 7,3 %, « à peu près calibré ») et les signatures d'imputation de la ventilation irrigué/pluvial de la SAA (V2 : signature retenue dans l'ancienne série ; menace « active » selon la règle).
 
-Les remarques mineures (notation, termes, verbes, notes de tableaux, figures) ont ensuite été traitées. Les analyses nouvelles suggérées (moyenne SAFRAN/E-OBS, hétérogénéité selon le statut de qualité, humidité du sol dans les projections) n'ont pas été faites.
+Les remarques mineures (notation, termes, verbes, notes de tableaux, figures) ont ensuite été traitées. Les analyses nouvelles suggérées ont ensuite été déclarées et faites (P1 à P4 dans `docs/decisions.md`) : moyenne SIM2/E-OBS, hétérogénéité selon le statut de qualité, humidité du sol dans les projections (DRIAS-Eau), première lecture de la récolte 2026 sur des estimations provisoires.
 
 **Erreur connue dans ces rapports.** La revue 2 (section 3, point 6) affirme que l'hypothèse « même dose pour toutes les cultures » gonflerait la dose du maïs. C'est l'inverse : si le maïs reçoit plus d'eau par hectare que les autres cultures, sa dose est sous-estimée et la valeur par m³ surestimée. Le mémoire écrit le sens correct.
