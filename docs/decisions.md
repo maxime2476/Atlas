@@ -604,3 +604,15 @@ Scripts prévus : `scripts/40_recolte_2026.py`, `scripts/41_drias_eau.py`, `R/29
   - ΔSWI de juillet-août (médiane, étendue entre simulations) : −0,036 [−0,102 ; +0,037] à +2,0 °C ; −0,059 [−0,119 ; +0,036] à +2,7 °C ; −0,100 [−0,189 ; −0,026] à +4,0 °C.
   - Écart projeté avec la chaleur seule puis avec la chaleur et le sol (médianes) : 4,2 % puis 5,3 % à +2,0 °C ; 9,7 % puis 11,4 % à +2,7 °C ; 29,7 % puis 34,4 % à +4,0 °C (étendue entre simulations à +4,0 °C : 14 à 71 % ; intervalle de β avec δ̂ fixé : 12 à 117 %).
   - Lecture selon la règle : le terme du sol (médiane 0,013 à 0,035 en log) reste inférieur à la moitié du terme de chaleur à chaque niveau : **l'humidité du sol ne change pas l'ordre de grandeur** ; elle élargit l'écart projeté, dans le sens attendu (δ̂ < 0, sols plus secs).
+
+## Audit des dates (2026-10-15)
+
+Dates du dépôt examinées : journal, spécifications, cadrage et littérature, manifeste, commandes DRIAS et DRIAS-Eau, mémoire, bibliographie, NOTICE, CITATION, métadonnées des fichiers. Elles s'échelonnent du 2026-10-10 au 2026-10-15 ; aucune ne se rapporte à une date antérieure au 2026-10-10, hormis des dates de sources externes (versions de données, dépôts de paquets). Aucune entrée passée du journal n'est modifiée.
+
+Corrections (texte du mémoire et bibliographie, sources : fichiers du dépôt) :
+- § 7.4 : les estimations Agreste ne sont pas « publiées le 1er octobre 2026 » : ce sont des données arrêtées au 1er octobre (note du fichier), téléchargées le 14 octobre ; la date de publication de l'Infos rapides n'a pas été vérifiée.
+- Bibliographie, `drias2022` : « Extraction du 13 octobre 2026 » remplacé par « Commandes du 13 octobre 2026, archives téléchargées les 13 et 14 octobre 2026 » (`data/raw/drias/commandes.csv`, manifeste : 31 archives le 13, 3 le 14).
+- § 3 : ajout de la date de lecture des conditions d'utilisation de DRIAS-Eau et de la conjoncture Agreste (14 octobre 2026, NOTICE).
+- Références ajoutées pour deux sources utilisées sans notice : DRIAS-Eau (`driaseau2024`) et la conjoncture Agreste (`agreste2026conjoncture`).
+
+Non modifié : la spécification figée, qui se dit écrite « avant la publication de toute donnée de la récolte 2026 » (inexactitude déjà consignée le 2026-10-14) ; les dates des commits ; les dates de formalisation des spécifications.

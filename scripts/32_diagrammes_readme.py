@@ -282,7 +282,7 @@ EVENTS = [
     (2, "Vérifications", "E-OBS, puissance, relecture", False),
     (2, "Audit final", "analyses complémentaires", False),
 ]
-DAYS = ["10 OCT. 2026", "11 OCT. 2026", "12 OCT. 2026"]
+DAYS = ["PREMIER TEMPS", "DEUXIÈME TEMPS", "TROISIÈME TEMPS"]
 
 
 def timeline_svg(skin: str) -> str:
@@ -291,7 +291,7 @@ def timeline_svg(skin: str) -> str:
     W3, H3, x0, x1, base = 1200, 372, 60, 1140, 150
     band = (x1 - x0) / len(DAYS)
     out = head(slug, W3, H3, "Étapes du projet ATLAS",
-               "Frise des étapes du projet sur trois jours, du cadrage sur le blé à l'analyse pré-spécifiée du maïs "
+               "Frise des étapes du projet en trois temps, du cadrage sur le blé à l'analyse pré-spécifiée du maïs "
                "irrigué et non irrigué, puis aux vérifications ajoutées ensuite.", c)
     out.append(f'<line x1="{x0}" y1="{base}" x2="{x1}" y2="{base}" stroke="rgba({c["muted_rgb"]},0.45)" stroke-width="1"/>')
     for d, name in enumerate(DAYS):

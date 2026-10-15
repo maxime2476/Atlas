@@ -32,10 +32,10 @@ Le projet s'est déroulé en deux temps.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/figures/frise_projet_dark.svg">
-  <img src="docs/figures/frise_projet.svg" alt="Frise des étapes du projet, du 10 au 12 octobre 2026 : cadrage sur le blé, données et panels, blé 2010-2025 (les tests usuels se révèlent trop permissifs), prévision et maïs exploratoire ; recentrage sur le maïs irrigué et non irrigué, analyse du maïs 2000-2025 spécifiée puis estimée, audit des données ; vérifications et audit final.">
+  <img src="docs/figures/frise_projet.svg" alt="Frise des étapes du projet : cadrage sur le blé, données et panels, blé 2010-2025 (les tests usuels se révèlent trop permissifs), prévision et maïs exploratoire ; recentrage sur le maïs irrigué et non irrigué, analyse du maïs 2000-2025 spécifiée puis estimée, audit des données ; vérifications et audit final.">
 </picture>
 
-*Dates tirées du journal des décisions (`docs/decisions.md`) ; dans une journée, la frise montre l'ordre des étapes, pas leur durée.*
+*Étapes tirées du journal des décisions (`docs/decisions.md`) ; la frise montre l'ordre des étapes, pas leur durée.*
 
 **Premier temps (phases 0-7) : blé tendre d'hiver, 2010-2025.** Quel est l'effet des chocs de chaleur et de déficit hydrique du sol pendant les phases critiques sur le rendement départemental ? La météo, et le NDVI, connus au 1er juin ou au 1er juillet prévoient-ils le rendement mieux qu'une référence naïve ? L'effet de la chaleur sur le blé français est déjà établi sur 1950-2015 (Gammans, Mérel & Ortiz-Bobea 2017) : ATLAS en était une extension ciblée.
 
@@ -53,7 +53,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 
 | Source | Usage | Licence |
 |---|---|---|
-| **Agreste**, Statistique agricole annuelle, séries départementales 2010-2025 | Rendements, surfaces (blé ; maïs irrigué et non irrigué) | Réutilisation libre avec mention « Source : Agreste » (vérifié le 2026-10-11) |
+| **Agreste**, Statistique agricole annuelle, séries départementales 2010-2025 | Rendements, surfaces (blé ; maïs irrigué et non irrigué) | Réutilisation libre avec mention « Source : Agreste » (vérifié sur le site du producteur) |
 | **Agreste**, SAA « anciennes séries » 2000-2020 (`SAANR_DEVELOPPE_2`) | Maïs grain irrigué et non irrigué 2000-2009 | Idem |
 | **Météo-France**, SIM2 quotidienne (SAFRAN-ISBA, 8 km), août 1958-2025 | Température, précipitations, ETP, humidité du sol (SWI) | Licence Ouverte 2.0 |
 | **IGN**, ADMIN EXPRESS COG CARTO 2026 | Contours départementaux | Licence Ouverte 2.0 |
@@ -84,7 +84,7 @@ Résultat : l'association est négative mais non établie, faute d'information (
 | Technologie | Rôle |
 |---|---|
 | **Python** | `src/atlas/` (download, saa, spatial, degree_days, weather, rpg, forecast…) et `scripts/` numérotés |
-| **R** | Économétrie (`fixest`) et un wild cluster bootstrap implémenté dans le projet, sous forme de **module réutilisable** `R/wcr/` (test, test joint, taille par placebo, exemple simulé autonome), `fwildclusterboot` ayant été retiré de CRAN (archivé le 2024-05-29, page CRAN consultée le 2026-10-12). Validation : statistique t comparée à `fixest` et simulations de taille sur chaque jeu de données ; pas de test automatisé du code R |
+| **R** | Économétrie (`fixest`) et un wild cluster bootstrap implémenté dans le projet, sous forme de **module réutilisable** `R/wcr/` (test, test joint, taille par placebo, exemple simulé autonome), `fwildclusterboot` ayant été retiré de CRAN (archivé le 2024-05-29, page CRAN consultée). Validation : statistique t comparée à `fixest` et simulations de taille sur chaque jeu de données ; pas de test automatisé du code R |
 | **DuckDB** | Lecture directe des 68 fichiers csv.gz de SIM |
 | **Interface entre langages** | Parquet, décrit dans `docs/dictionnaire_panel.md` et `docs/phase2bis_donnees.md` |
 
@@ -273,9 +273,9 @@ La chaîne complète, dans l'ordre, est détaillée dans **`data/README.md`**, y
   - prévision : 10 min ;
   - NDVI : de 1 à plusieurs heures côté NASA, puis environ 15 min d'agrégation et 30 min de prévision (`data/README.md`).
 - **Tests :** `uv run pytest`. Ils couvrent les schémas, les clés, les cardinalités, les degrés-jours contre une intégration numérique, l'absence de fuite, la cohérence du masque maïs avec la SAA et l'intégrité des fichiers bruts.
-  - Au 2026-10-13, 1 129 tests passent : 1 007 vérifications d'empreintes des fichiers bruts (une par fichier) et 122 tests de logique et de données.
+  - 1 204 tests passent : 1 076 vérifications d'empreintes des fichiers bruts (une par fichier) et 128 tests de logique et de données.
   - Sans les données, les tests sur fichiers sont ignorés (*skip*).
-- **Reproduction vérifiée (2026-10-12) :** sur un clone vierge du dépôt, avant l'ajout des vérifications complémentaires, toute la chaîne relancée depuis les fichiers bruts a redonné les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`). Les vérifications ajoutées ensuite (puissance D1-D2, E-OBS, analyses E1-E4 de la relecture simulée, analyses complémentaires) n'ont pas été reconstruites sur un clone vierge.
+- **Reproduction vérifiée :** sur un clone vierge du dépôt, avant l'ajout des vérifications complémentaires, toute la chaîne relancée depuis les fichiers bruts a redonné les mêmes données, les mêmes tables (à l'octet, sauf la prévision : écarts ≤ 5 × 10⁻¹⁵) et les mêmes chiffres du mémoire (`docs/decisions.md`). Les vérifications ajoutées ensuite (puissance D1-D2, E-OBS, analyses E1-E4 de la relecture simulée, analyses complémentaires) n'ont pas été reconstruites sur un clone vierge.
 - **Scripts R :** à lancer depuis la racine du dépôt (chemins relatifs ; `.Rprofile` active `renv`).
 - **Graines :** fixées (20261010 et suivantes).
 
