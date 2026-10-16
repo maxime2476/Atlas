@@ -79,7 +79,7 @@ simulate_y <- function(df, rho) {
 R <- 300
 s3 <- do.call(rbind, lapply(c(0, 0.3, 0.6), function(rho) {
   set.seed(20261017 + round(1000 * rho))
-  ys <- replicate(R, simulate_y(d, rho))                     # tirages faits avant les tests (graine du WCR)
+  ys <- replicate(R, simulate_y(d, rho))                     # tirages faits avant les tests
   rej <- vapply(seq_len(R), function(r) {
     sim <- d
     sim$y_sim <- ys[, r]

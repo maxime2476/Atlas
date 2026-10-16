@@ -14,6 +14,7 @@ Chaque entrée indique la date, la décision, qui l'a prise et la justification.
 | 2026-10-10 | **Allongement 1990-2025 retenu en robustesse** (Schauberger RAW 1990-2009 + SAA 2010-2025) | Utilisateur | Critère 1 constaté ; critère 2 satisfait ; N_eff(32) = 5,43 (4,11 sans 2025) |
 | 2026-10-10 | Échantillon principal = **83 départements en statut qualité 1** (colonne `echantillon_principal`) ; 90 et 91 (statut 2) seulement en robustesse | Protocole de la phase 0, validé par l'utilisateur ; correction relevée par l'audit de la phase 3 | Le filtre avait été omis dans le panel construit ; l'exposition est inchangée (N_eff(32) = 4,13 non pondéré, 4,74 pondéré) |
 | 2026-10-10 | Robustesses supplémentaires à prévoir en phase 4 : régression non pondérée, sans 84, 30 et 48, et sans 2025 | Proposé après l'audit de la phase 3 | Sans poids, 84 et 30 (≈ 1 600 ha chacun) portent 17 % et 12 % de la variance résiduelle de `dd_32_remplissage` |
+| 2026-10-16 | Module WCR : tirages sous graine locale (état aléatoire de l'appelant restauré) et démoyennage à la tolérance 1e-12 ; tailles et puissances par placebo recalculées | Utilisateur, sur proposition de Claude après un audit du code R | Section « WCR : graine locale et tolérance du démoyennage (2026-10-16) » |
 
 ## Règle opérationnelle de repli du seuil thermique (fixée le 2026-10-10, AVANT le comptage)
 
@@ -616,3 +617,99 @@ Corrections (texte du mémoire et bibliographie, sources : fichiers du dépôt) 
 - Références ajoutées pour deux sources utilisées sans notice : DRIAS-Eau (`driaseau2024`) et la conjoncture Agreste (`agreste2026conjoncture`).
 
 Non modifié : la spécification figée, qui se dit écrite « avant la publication de toute donnée de la récolte 2026 » (inexactitude déjà consignée le 2026-10-14) ; les dates des commits ; les dates de formalisation des spécifications.
+
+## Pistes d'amélioration (L1-L4, S1-S3), déclarées avant calcul (2026-10-15)
+
+Non pré-spécifiées et exploratoires ; elles ne changent pas le statut de H1.
+
+**L1 — Inférence avec une année dominante.**
+- (a) Levier partiel et influence par année (MacKinnon, Nielsen et Webb 2023) dans A1 : part de chaque année dans Σ w x̃² (x̃ : chaleur résidualisée) et β̂ sans l'année ; comparaison du levier maximal à 1/G (G = 26).
+- (b) Bootstrap sauvage restreint par année dont la statistique t (observée et simulée) utilise l'erreur-type du jackknife par année (CV3), calculée exactement par la formule de suppression de lignes ; poids de Webb, 9 999 tirages, unilatéral à droite. Taille mesurée sur les 300 permutations de R/14 (B = 399). Lecture : si la taille est ≤ 10 %, « le désaccord WCR / CV3 se résout en faveur de H1 » si p < 0,05, sinon « il persiste ».
+- (c) SCPC (Müller et Watson 2022, 2023) : examen de son applicabilité avant tout calcul ; elle n'est calculée que si son hypothèse de corrélation spatiale faible est compatible avec des chocs annuels nationaux.
+- (d) Citation de Barrios, Diamond, Imbens et Kolesár (2012) au § 2.3.
+
+**L2 — Variable expliquée.**
+- (a) A1 sans les 18 département-années dont le rapport irrigué / pluvial est identique à celui de l'année précédente (signalés par S2 de V2) ; WCR unilatéral, 9 999 tirages. Lecture : « H1 ne dépend pas des rapports reconduits » si β > 0 et p < 0,05.
+- (b) Brouillon de courrier au SSP sur la production de la ventilation irrigué / pluvial (`docs/courrier_ssp.md`), à envoyer par l'auteur.
+- (c) Vérification documentaire de l'accès aux microdonnées (enquête Pratiques culturales, RICA) ; aucun calcul.
+
+**L3 — Chaleur des parcelles irriguées (pilote ECOSTRESS).**
+- Données : ECOSTRESS L2T LSTE v002 (70 m), juillet-août 2022, scènes de 11 h à 17 h heure locale ; RPG 2022 (parcelles MIS) ; départements 01 et 38 (relief, parts irriguées intermédiaires) et 67 (plaine).
+- Construction : pour chaque scène, écart de LST de chaque parcelle de maïs (pixels valides) à la médiane des parcelles de maïs du département ; moyenne des écarts par parcelle sur les scènes où elle est observée (au moins 3). Classement en deux groupes par un mélange gaussien à deux composantes ; le groupe frais sert d'indicateur d'irrigation.
+- Contrôles : part de surface classée irriguée comparée à la part irriguée de la SAA 2022 de chaque département.
+- Exposition : `dd_32_ja` de 2003 et de 2022 (mailles SIM2) pondéré par la surface des parcelles de chaque groupe ; différence irrigué − pluvial.
+- Lecture : si la différence est inférieure à 1 degré-jour en 2003 dans chaque département, « l'attribution d'une même chaleur aux deux modes n'est pas contredite dans ce pilote » ; sinon on rapporte son sens et son ampleur. Pilote descriptif, non généralisable.
+
+**L4 — Fenêtre phénologique.**
+- Données : MODIS MCD12Q2 v061 (500 m), tuile h18v04, 2001-2025 ; date du pic d'EVI du premier cycle (`Peak`), pixels de qualité globale bonne.
+- Construction : date du pic par département et année, moyenne des pixels pondérée par la surface de maïs du RPG 2015-2017 dans le pixel ; fenêtre = [pic − 20 jours, pic + 40 jours] (61 jours, comme juillet-août) ; degrés-jours > 32 °C (double sinus, quotidiens) et SWI moyen sur cette fenêtre, masque maïs.
+- Estimation : A1 avec la chaleur et le SWI de la fenêtre phénologique, 2001-2025, échantillon principal ; WCR unilatéral, taille par le placebo habituel. Lecture : « soutenue avec la fenêtre phénologique » si p < 0,05 et taille ≤ 10 %. Rapporté aussi : date moyenne du pic, sa tendance et sa valeur en 2003.
+
+**S1 — Pentes départementales, modèle hiérarchique.** Pentes et erreurs-types de `phase7_pentes_departements.csv` ; modèle normal-normal, μ à prior plat, τ à prior uniforme sur [0 ; 0,05] ; postérieure exacte sur une grille de τ. Sorties : moyenne postérieure et intervalle à 90 % de chaque pente et de τ. Descriptif.
+
+**S2 — NDVI des parcelles de blé.** Pixels NDVI de 250 m dont au moins 50 % de la surface est en blé tendre d'hiver (RPG 2015-2017) ; mêmes variables et mêmes modèles de prévision que la phase 6 (corrections de B0, entraînement depuis 2010, années test 2016-2025, déjà vues) ; comparaison des MSE avec le NDVI actuel. Exploratoire.
+
+**S3 — Intégration continue.** Workflow GitHub Actions exécutant les tests qui ne demandent pas les données (ils sont sautés en l'absence de données) ; vérifié localement sur une copie neuve du dépôt.
+
+Scripts prévus : `R/30_q1_inference.R` (L1, L2a, S1), `scripts/43_ecostress_pilote.py` (L3), `scripts/44_phenologie_mais.py` et `R/31_q1_phenologie.R` (L4), `scripts/45_ndvi_pur.py` (S2), `.github/workflows/tests.yml` (S3).
+
+**Résultats de L1, L2 et S1 (2026-10-15).** Empreinte du journal juste avant le premier calcul : `ec63fef1346432101cd9e50f7f0d3a7e2cc1aea57064e793f740cbff4df34851`. Script `R/30_q1_inference.R` ; contrôle : l'erreur-type CV3 calculée par la formule de suppression de lignes redonne exactement celle de G9a (réestimations).
+- **L1a.** Levier partiel de 2003 : 0,41, soit 10,6 fois 1/G ; puis 2023 (0,17) ; toutes les autres années ≤ 0,06. Sans 2003, β̂ = 0,0243 ; sans 2023, 0,0211.
+- **L1b.** Bootstrap restreint par année avec t du CV3 : t = 1,49, p unilatéral = 0,019 ; taille 4,3 % (300 placebos, erreur de Monte-Carlo 1,2 point). Lecture selon la règle : **le désaccord WCR / CV3 se résout en faveur de H1** : la même statistique t (1,49) donne p = 0,074 rapportée à une loi de Student à 25 degrés de liberté, et p = 0,019 rapportée à sa distribution bootstrap, dont la taille mesurée est correcte.
+- **L1c.** SCPC non calculée : la méthode vise une corrélation spatiale faible en moyenne (ρ̄ → 0) et certains cas de corrélation forte modélisés (transparents de Müller et Watson, 2022) ; ici la dépendance est un choc annuel commun à toute la France, que le regroupement par année traite sans hypothèse sur sa forme.
+- **L2a.** Sans les 18 département-années aux rapports reconduits (417 couples) : β̂ = 0,0179 (1,8 %), p unilatéral = 0,012. Lecture : **H1 ne dépend pas des rapports reconduits**.
+- **L2b.** Brouillon `docs/courrier_ssp.md`, à envoyer par l'auteur.
+- **L2c.** RICA : données individuelles accessibles par le CASD (catalogue CASD consulté le 2026-10-14) ; variables d'irrigation présentes (origine de l'eau, mode d'irrigation), rendement du maïs par mode non confirmé. Enquête Pratiques culturales : aucune fiche CASD trouvée ; accès à demander au SSP (point 3 du courrier).
+- **S1.** τ postérieur : médiane 0,0056, 95e centile 0,0114 ; moyennes postérieures des 17 pentes de 0,0106 à 0,0220, tous les intervalles à 90 % au-dessus de zéro (borne basse minimale 0,0008). Proche de l'estimateur empirique bayésien, avec des intervalles qui intègrent l'incertitude sur τ.
+- **Précision de méthode pour L4, ajoutée avant tout calcul de L4 :** dans un pixel de 500 m mêlant maïs et céréales d'hiver, le premier cycle de MCD12Q2 peut être celui de la céréale (pic en mai). On retient donc, pour chaque pixel et chaque année, le cycle (1 ou 2) dont le pic tombe entre le 1er juin et le 30 septembre, et le pixel est écarté si aucun ne convient ou si les deux conviennent. La qualité retenue est `QA_Overall` ≤ 1 pour ce cycle.
+
+**Résultats de S2 (2026-10-16).** Empreinte du journal juste avant le premier calcul : `ec63fef1346432101cd9e50f7f0d3a7e2cc1aea57064e793f740cbff4df34851`. Script `scripts/45_ndvi_pur.py`.
+- 679 566 pixels de 250 m couverts au moins à moitié par du blé tendre d'hiver (RPG 2015-2017, sous-grille 4 × 4) ; règle des 50 % de poids valide reprise de l'étape 18.
+- Écart de MSE, NDVI pur moins NDVI actuel, intervalle à 95 % par bootstrap des 10 années test (déjà vues) :
+  - modèles de la phase 6 (corrections de B1) : ridge −16 % de MSE au 1er juillet et −7 % au 1er juin, intervalles excluant zéro ; forêt aléatoire −3 % et −2 %, gradient boosting +6 % et 0 %, intervalles incluant zéro ;
+  - corrections de B0 (forêt aléatoire, gradient boosting) : écarts de −1 % à +1 %, intervalles incluant zéro.
+- Lecture : le NDVI des parcelles de blé n'améliore pas les meilleurs modèles ; il stabilise la ridge, déjà sensible au NDVI en phase 6. Le constat de la phase 6 (aucun modèle meilleur que la moyenne du département) n'est pas changé.
+
+**Résultats de L3, pilote ECOSTRESS (2026-10-16).** Empreinte du journal juste avant le premier calcul : `ec63fef1346432101cd9e50f7f0d3a7e2cc1aea57064e793f740cbff4df34851`. Script `scripts/43_ecostress_pilote.py` ; 295 scènes de juillet-août 2022 (814 fichiers, 573 Mo, au manifeste), dont 45, 34 et 96 utilisables pour l'Ain, l'Isère et le Bas-Rhin ; 5 983, 3 573 et 9 124 parcelles de maïs du RPG 2022 classées.
+- Écart de température de surface au maïs du département : groupe frais −2,4, −2,6 et −1,8 K ; groupe chaud +0,7, +1,5 et +1,0 K.
+- Contrôle : le groupe frais couvre 45 %, 50 % et 55 % des surfaces, contre 21 %, 38 % et 28 % de maïs irrigué dans la SAA 2022. **Le classement surestime nettement l'irrigation** : le groupe frais mêle des parcelles irriguées et des parcelles plus fraîches pour d'autres raisons (sols, dates de semis). Il ne vaut pas carte des parcelles irriguées.
+- Chaleur de juillet-août (mailles SIM2), groupe frais moins groupe chaud : 2003 +0,34 (Ain), +1,06 (Isère), +0,15 (Bas-Rhin) ; 2022 +0,25, +1,06, +0,03.
+- Lecture selon la règle : même chaleur non contredite dans l'Ain et le Bas-Rhin ; **chaleur différente dans l'Isère**, où les parcelles fraîches sont un peu plus chaudes, ce qui va dans le sens d'un maïs irrigué de fond de vallée. Pilote de trois départements, sur une année et avec un classement imparfait : il ne se généralise pas.
+
+**Résultats de L4, fenêtre phénologique (2026-10-16).** Empreinte du journal juste avant le premier calcul : `391097ff91cd46826e78d1a09ceae1f964d598ebc4cb854e84a0983bff6d112e` (après la précision sur les cycles). Scripts `scripts/44_phenologie_mais.py` (25 granules MCD12Q2 v061, tuile h18v04, au manifeste) et `R/31_q1_phenologie.R`.
+- Contrôle : la somme quotidienne de juillet-août redonne la chaleur du panel (écart < 1e-6) sur les 425 couples des 17 départements.
+- Couverture : 183 départements-années sur 425 ont une date de pic (règle des 50 % de surface datée) ; très inégale : 21 à 25 années pour l'Ain, l'Isère, le Bas-Rhin et le Haut-Rhin, aucune pour l'Indre et l'Yonne, 1 à 3 pour l'Eure-et-Loir, le Loir-et-Cher, l'Indre-et-Loire, le Loiret et la Nièvre. Les pixels de 500 m des plaines de grande culture mêlent sans doute plusieurs cultures, ce qui empêche de dater un cycle unique.
+- Échantillon principal 2001-2025 : 182 couples (236 sans date retirés).
+- A1 avec la fenêtre [pic − 20 j, pic + 40 j] : β = 0,0344 (3,5 % par degré-jour), p unilatéral WCR = 0,065, taille placebo 1,3 % (300 dérangements). Même échantillon, juillet-août : β = 0,0209 (2,1 %), p = 0,053. Corrélation des deux chaleurs : 0,86.
+- Pic moyen au jour 201 (20 juillet) ; en 2003, jour 181 (30 juin) ; pas de tendance (0,05 jour par an).
+- Lecture selon la règle : **non soutenue avec la fenêtre phénologique** au seuil déclaré. L'estimation est plus forte qu'avec juillet-août sur le même échantillon, mais la perte de la moitié des couples, surtout dans le Centre, rend les deux tests non significatifs ; la fenêtre ne peut donc ni confirmer ni infirmer H1 au-delà de ce que dit juillet-août. Le pic précoce de 2003 rappelle que juillet-août n'y couvre pas la même phase que les autres années.
+
+## WCR : graine locale et tolérance du démoyennage (2026-10-16)
+
+**Origine.** Un audit du code R (WCR, jackknife par année, graines) n'a trouvé aucune erreur algébrique : la re-projection pondérée de `wcr_pvalue` et le CV3 de `R/30` coïncident avec des réestimations complètes (`tests/test_r_inference.R`, nouveau). Il a relevé deux points, corrigés à la demande de l'utilisateur :
+
+- **Tolérance.** `fixest::demean` s'arrête par défaut à 1e-6 : les t* du WCR différaient d'environ 1e-7 d'une réestimation complète. Le module démoyenne désormais à 1e-12 (`DEMEAN_TOL`) ; écart mesuré : 5e-13. Le modèle restreint de `wcr_cv3` (`R/30`) utilise `fixef.tol = 1e-11` (minimum accepté par `feols` : 2,2e-12).
+- **Graine.** `wcr_pvalue`, `wcr_wald_pvalue` et `wcr_cv3` appelaient `set.seed()` sur la graine globale. Dans `R/12` à `R/15` et `exemple.R`, le `set.seed` initial ne fixait donc que la première permutation placebo ; les suivantes dépendaient de la graine du tirage précédent (et étaient communes entre boucles externes). Le module tire désormais sous une graine locale (`with_seed`) et restaure l'état de l'appelant ; `placebo_size` aussi. Les reconstructions des permutations de `R/14` dans `R/22`, `R/28` et `R/30` tirent maintenant les 300 permutations à la suite après `set.seed(20261013)`, comme `R/19`.
+
+**Recalcul.** Tous les scripts `R/10` à `R/31` et `R/wcr/exemple.R` relancés le 2026-10-16, puis `scripts/26_tables_memoire.py`. Contrôles internes passés (dont `R/22` et `R/28` contre les tailles et puissances de `R/14` et `R/19`) ; 22 tests R et 2 120 tests Python passent.
+
+- **Inchangés (à 1e-9 près) :** toutes les estimations et toutes les p-valeurs sur données observées (dont H1 p = 0,007, CV3 p = 0,074, bootstrap du CV3 p = 0,019) ; les diagnostics dont les permutations étaient déjà tirées avant les tests (puissance D1 de `R/19`, `placebo_size` de P1 et L4, S3, placebo intra-année G3a).
+- **Modifiés, dans l'erreur de Monte-Carlo (≈ 1,3 point pour R = 300, 1,5 pour R = 200) :**
+
+| Diagnostic | Avant | Après |
+|---|---|---|
+| Blé 2010-2025 (R/12), taille : cluster département / Conley / WCR | 56,3 / 39,3 / 4,3 % | 63,3 / 50,7 / 2,7 % |
+| Blé 2010-2025, puissance du WCR (β = −0,015 / −0,03) | 12,3 / 29,3 % | 8,7 / 31,3 % |
+| Maïs exploratoire (R/13), écart : cluster / Conley / WCR | 23,0 / 35,5 / 3,5 % | 25,5 / 38,5 / 6,0 % |
+| Maïs exploratoire, non irrigué : cluster / Conley / WCR | 25,0 / 34,0 / 7,0 % | 32,5 / 40,0 / 6,0 % |
+| Q1-H1 (R/14) : cluster / Conley / WCR | 16,3 / 22,0 / 3,7 % | 17,0 / 19,0 / 5,3 % |
+| Q2-H1 (R/15) : cluster / Conley / WCR | 26,3 / 16,3 / 4,3 % | 31,0 / 24,0 / 4,0 % |
+| G4 : tailles de H2b / H2c | 4,0 / 2,3 % | 5,7 / 3,3 % |
+| G9c : matrices de Conley corrigées | 24 % | 20 % |
+| V1 : taille du CV3 | 7,3 % | 8,0 % |
+| L1b : taille du bootstrap du CV3 | 4,3 % | 5,7 % |
+| Exemple simulé : cluster région / CR1 / WCR | 19,7 / 5,0 / 4,0 % | 22,3 / 5,3 / 5,3 % |
+
+- **Lectures selon les règles déclarées : toutes inchangées.** H1 reste établie (taille 5,3 % ≤ 10 %) ; V1 reste « calibré » (8,0 %, à la limite haute de la plage ≤ 8 %) ; L1b : « le désaccord WCR / CV3 se résout en faveur de H1 » (taille 5,7 % ≤ 10 %). G3b (pas de règle chiffrée) : 2009 rejette dans 3 placebos sur 11 et 2017 dans 1 sur 4 ; avec 25 années receveuses et 4 à 21 placebos chacune, un tel maximum est attendu par hasard (probabilité qu'au moins une année atteigne un taux de 3 sur 11 : 0,22, loi binomiale avec les effectifs observés, années supposées indépendantes) : pas d'année anormale.
+- **Lecture qui ne tient plus :** phase 6, « le WCR rejette peut-être un peu trop souvent » pour le rendement non irrigué (7,0 % devenu 6,0 %, comme pour l'écart).
+- Les entrées antérieures de ce journal gardent les valeurs obtenues à leur date ; les documents de résultats, le README et le mémoire sont mis à jour, avec les valeurs précédentes en note.

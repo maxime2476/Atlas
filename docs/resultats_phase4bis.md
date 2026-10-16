@@ -20,9 +20,9 @@
 
 | Inférence | Taille empirique |
 |---|---|
-| Cluster département | 16,3 % |
-| Conley 200 km | 22,0 % |
-| **WCR par année** | **3,7 %** |
+| Cluster département | 17,0 % |
+| Conley 200 km | 19,0 % |
+| **WCR par année** | **5,3 %** |
 
 Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdimensionnés.
 
@@ -35,7 +35,7 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 
 **Résultat observé :**
 
-- **H1 est établie selon la règle pré-spécifiée** (p = 0,007 < 0,05 et taille de 3,7 % ≤ 10 %), au sens de cette règle seulement : 270 des 435 paires (62 %) appartiennent à 2010-2025, la période dont l'analyse exploratoire (phase 6) a suggéré l'hypothèse. La seule preuve nouvelle est la décennie 2000-2009, ci-dessous.
+- **H1 est établie selon la règle pré-spécifiée** (p = 0,007 < 0,05 et taille de 5,3 % ≤ 10 %), au sens de cette règle seulement : 270 des 435 paires (62 %) appartiennent à 2010-2025, la période dont l'analyse exploratoire (phase 6) a suggéré l'hypothèse. La seule preuve nouvelle est la décennie 2000-2009, ci-dessous.
 - Chaque degré-jour au-dessus de 32 °C en juillet-août est associé à un écart de rendement plus large d'environ 1,6 % en faveur du maïs irrigué.
 - Sur les dix années 2000-2009, que l'analyse exploratoire de la phase 6 n'avait pas vues, l'estimation garde **le même signe avec le masque maïs, pour un effet environ deux fois plus faible** (+1,1 % contre +2,5 % sur 2010-2025 avec le même masque).
 - **Cette réplication dépend de la mesure de la chaleur.** Avec la pondération surfacique utilisée en phase 6, l'estimation sur 2000-2009 est nulle (−0,0009 ; § « Diagnostics exploratoires »). Elle n'est donc pas convergente avec la mesure de la phase 6.
@@ -99,7 +99,9 @@ Le test WCR respecte son niveau nominal ; les deux autres sont fortement surdime
 
 **Échantillon :** 83 départements, 5 543 observations, 67 récoltes (18 rendements manquants retirés, tous en 1959-1967).
 
-**Taille de Q2-H1 :** WCR 4,3 % ; cluster département 26,3 % ; Conley 16,3 %.
+**Taille de Q2-H1 :** WCR 4,0 % ; cluster département 31,0 % ; Conley 24,0 %.
+
+*Tailles recalculées le 2026-10-16 (graine locale du WCR, voir `docs/decisions.md`) ; valeurs précédentes : Q1-H1 16,3 / 22,0 / 3,7 % et Q2-H1 26,3 / 16,3 / 4,3 % (cluster département / Conley / WCR).*
 
 | | β₂ (`dd_32_remplissage`) | Effet par °C·jour | p WCR unilatérale | p cluster département (information) |
 |---|---|---|---|---|
@@ -173,8 +175,8 @@ Cette robustesse a été déclarée dans `docs/decisions.md` avant estimation, a
 
 | Question | Conclusion pré-spécifiée | Statut |
 |---|---|---|
-| Q1-H1 : la chaleur creuse l'écart irrigué / non irrigué | p = 0,007, taille 3,7 % ; réplication 2000-2009 de même signe avec le masque maïs seulement ; inchangé avec un masque d'époque (R9 : p = 0,007) | **Établie** selon la règle, sur un échantillon qui inclut à 62 % les années exploratoires (association ; non significative avec la pondération surfacique, qui semble sous-mesurer la chaleur dans les départements de relief, explication a posteriori) |
-| Q2-H1 : la chaleur en fin de cycle réduit le rendement du blé | p = 0,125, taille 4,3 % | **Non établie** |
+| Q1-H1 : la chaleur creuse l'écart irrigué / non irrigué | p = 0,007, taille 5,3 % ; réplication 2000-2009 de même signe avec le masque maïs seulement ; inchangé avec un masque d'époque (R9 : p = 0,007) | **Établie** selon la règle, sur un échantillon qui inclut à 62 % les années exploratoires (association ; non significative avec la pondération surfacique, qui semble sous-mesurer la chaleur dans les départements de relief, explication a posteriori) |
+| Q2-H1 : la chaleur en fin de cycle réduit le rendement du blé | p = 0,125, taille 4,0 % | **Non établie** |
 | Q2-H2 : la sensibilité du blé a changé depuis 1959 | p = 0,49 | Non détectée |
 
 **Limites principales :**
@@ -204,7 +206,7 @@ Demandés par une relecture externe ; non pré-spécifiés, mais déclarés dans
 
 **Lecture, selon la règle fixée avant calcul :**
 
-- D1 est descriptif. Le test de H1 avait environ deux chances sur trois de détecter un effet de la taille estimée, et une sur quatre pour un effet moitié moindre. Le contrôle sous H0 (5,3 %) diffère des 3,7 % de `R/14` parce que les permutations sont tirées autrement ; l'écart reste dans l'erreur de Monte-Carlo.
+- D1 est descriptif. Le test de H1 avait environ deux chances sur trois de détecter un effet de la taille estimée, et une sur quatre pour un effet moitié moindre. Le contrôle sous H0 (5,3 %) est identique à la taille de `R/14` : depuis que le WCR tire sous une graine locale (2026-10-16), les deux scripts utilisent les mêmes permutations.
 - D2 : la taille (5,7 %) est au plus de 10 %, donc la p de la réplication (0,049) est rapportée avec cette taille. Sa puissance est très faible (11 %) : un résultat « significatif » avec une telle puissance est peu informatif et peut surestimer l'effet. La réplication reste lue comme « de même signe », sans confirmation de l'ampleur.
 
 

@@ -80,6 +80,14 @@ Rscript R/29_q1_suggestions.R                                     # P1, P2, P4 :
 uv run --with playwright==1.63.0 python scripts/41_drias_eau.py commander    # P3 : 68 commandes DRIAS-Eau (compte personnel)
 uv run --with playwright==1.63.0 python scripts/41_drias_eau.py telecharger
 uv run python scripts/42_drias_eau_swi.py                         # P3 : SWI projeté et projection de l'écart avec le sol
+Rscript R/30_q1_inference.R                                       # L1, L2a, S1 : levier, bootstrap du CV3, sans rapports reconduits, pentes hiérarchiques (~1 min)
+uv run python scripts/01_download_raw.py --rpg2022                 # L3 : RPG 2022, régions R84 et R44 (~0,5 Go), puis 7z e vers data/interim/rpg/2022_<région>/
+uv run python scripts/43_ecostress_pilote.py telecharger           # L3 : 295 scènes ECOSTRESS (jeton EARTHDATA_TOKEN ; 0,62 Go, lent)
+uv run python scripts/43_ecostress_pilote.py calculer              # L3 : classement des parcelles et chaleur par groupe (~10 min)
+uv run python scripts/44_phenologie_mais.py telecharger            # L4 : MCD12Q2 2001-2025 (jeton EARTHDATA_TOKEN ; 7,2 Go)
+uv run --with pyhdf==0.11.6 python scripts/44_phenologie_mais.py construire   # L4 : date du pic et chaleur de la fenêtre (~10 min)
+Rscript R/31_q1_phenologie.R                                      # L4 : A1 avec la fenêtre phénologique
+uv run python scripts/45_ndvi_pur.py                              # S2 : NDVI des pixels de blé purs (~30 min)
 # D1 : projections DRIAS (compte personnel ; DRIAS_LOGIN et DRIAS_PASSWORD dans .env ; Chromium : playwright install chromium)
 uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py commander     # 34 commandes (~1 h 15)
 uv run --with playwright==1.63.0 python scripts/37_drias_telechargement.py fenetres      # fenêtres TRACC par modèle

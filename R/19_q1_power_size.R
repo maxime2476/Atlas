@@ -22,7 +22,7 @@ rejection <- function(df, beta_vrai, R = 300, B = 399, seed = 20261013) {
   years <- sort(unique(df$annee))
   field <- tapply(df$dd_32_ja, list(df$dep_code, df$annee), identity)
   set.seed(seed)
-  perms <- lapply(seq_len(R), function(r) {   # permutations tirées avant les tests (wcr_pvalue fixe la graine)
+  perms <- lapply(seq_len(R), function(r) {   # permutations tirées avant les tests (indépendantes des tests)
     perm <- sample(years)
     while (any(perm == years)) perm <- sample(years)
     perm

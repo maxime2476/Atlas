@@ -1,6 +1,6 @@
 "diagnostic","taux","R","erreur_monte_carlo"
 "G3a H1, placebo intra-année",0.0366666666666667,300,0.0108508405545718
-"G4 H2b (non irrigué), dérangement",0.04,300,0.0113137084989848
-"G4 H2c (irrigué), dérangement",0.0233333333333333,300,0.0087156734084615
-"rappel H1, dérangement (R/14)",0.0366666666666667,300,0.0108508405545718
-"G9c matrices de Conley corrigées (dérangement)",0.243333333333333,300,0.0247737914082754
+"G4 H2b (non irrigué), dérangement",0.0566666666666667,300,0.0133486023682326
+"G4 H2c (irrigué), dérangement",0.0333333333333333,300,0.010363754503432
+"rappel H1, dérangement (R/14)",0.0533333333333333,300,0.0129729062394013
+"G9c matrices de Conley corrigées (dérangement)",0.196666666666667,300,0.0229484123553162

@@ -44,15 +44,14 @@ p_obs <- p_cv3(d, "dd_32_ja", "ecart_log")
 g9 <- read.csv("reports/tables/phase7_inferences.csv")
 stopifnot(abs(p_obs - g9$p_unilateral_droite[grepl("CV3", g9$specification)]) < 1e-12)
 
-# Taille : les 300 permutations de R/14, rejouées comme dans R/22 (contrôle : WCR = 3,7 %).
+# Taille : les 300 permutations de R/14, rejouées comme dans R/22 (contrôle : taille du WCR enregistrée par R/14).
 R <- 300
-perms14 <- vector("list", R)
-for (r in seq_len(R)) {
-  if (r == 1) set.seed(20261013) else { set.seed(r - 1); for (i in 1:399) webb_weights(length(years)) }
+set.seed(20261013)
+perms14 <- lapply(seq_len(R), function(r) {
   perm <- sample(years)
   while (any(perm == years)) perm <- sample(years)
-  perms14[[r]] <- perm
-}
+  perm
+})
 t0 <- Sys.time()
 size <- do.call(rbind, lapply(seq_len(R), function(r) {
   sim <- derange(perms14[[r]])

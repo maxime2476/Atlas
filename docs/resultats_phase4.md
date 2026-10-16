@@ -111,9 +111,11 @@ Le régresseur placebo est le champ réel `dd_32_remplissage` dont on **permute 
 
 | Effet réel ajouté | Cluster département | Conley 200 km | WCR par année |
 |---|---|---|---|
-| 0 (**taille**, attendue à 5 %) | **56,3 %** | **39,3 %** | **4,3 %** |
-| −0,015 (puissance) | 69,0 % | 54,7 % | 12,3 % |
-| −0,03 (puissance) | 87,3 % | 78,3 % | 29,3 % |
+| 0 (**taille**, attendue à 5 %) | **63,3 %** | **50,7 %** | **2,7 %** |
+| −0,015 (puissance) | 67,7 % | 50,7 % | 8,7 % |
+| −0,03 (puissance) | 78,7 % | 72,3 % | 31,3 % |
+
+*Valeurs recalculées le 2026-10-16 : le WCR tire désormais sous une graine locale, ce qui change les permutations placebo (voir `docs/decisions.md`). Valeurs précédentes, du même ordre : taille 56,3 / 39,3 / 4,3 % ; puissance du WCR 12,3 % et 29,3 %.*
 
 **Validation de l'implémentation du WCR :**
 
@@ -128,8 +130,8 @@ Relecture par l'agent `econometrics-reviewer` : aucun défaut bloquant ; ses cor
 ### Observé
 
 - **Chaleur extrême.** À département et année donnés, 1 °C·jour de plus au-delà de 32 °C en mai-juin est associé à un log-rendement plus faible d'environ 0,015 (≈ −1,5 %). Le signe est négatif dans la spécification principale, dans 9 robustesses sur 10 et dans les 16 estimations *leave-one-year-out*. Il s'inverse avec la fenêtre mai-juillet (R10 : +0,0036, non significatif).
-- **Inférence.** La simulation montre que, sur ces données, seule l'inférence par année (WCR) a la bonne taille. Le cluster par département et Conley rejettent à tort dans 56 % et 39 % des cas sous H0. Avec le WCR, aucun coefficient météo n'est significatif : p bilatérale ≥ 0,14 pour la chaleur extrême, quelle que soit la spécification (H1 étant unilatérale, la plus petite p unilatérale est 0,071, sans 2025 en R3 ; 0,19 pour M1) ; p = 0,32 pour le test joint du SWI.
-- **Puissance.** Le WCR ne détecte un vrai effet de −1,5 % par °C·jour que dans 12 % des cas, et de −3 % que dans 29 %.
+- **Inférence.** La simulation montre que, sur ces données, seule l'inférence par année (WCR) a la bonne taille. Le cluster par département et Conley rejettent à tort dans 63 % et 51 % des cas sous H0. Avec le WCR, aucun coefficient météo n'est significatif : p bilatérale ≥ 0,14 pour la chaleur extrême, quelle que soit la spécification (H1 étant unilatérale, la plus petite p unilatérale est 0,071, sans 2025 en R3 ; 0,19 pour M1) ; p = 0,32 pour le test joint du SWI.
+- **Puissance.** Le WCR ne détecte un vrai effet de −1,5 % par °C·jour que dans 9 % des cas, et de −3 % que dans 31 %.
 
 ### Interprétation
 

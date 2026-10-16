@@ -629,6 +629,36 @@ def main() -> None:
         n[f"SoilGap{key}"] = f"{p3.loc[hz, 'ecart_pct_total_mediane']:.0f}"
     n["SoilGapFourMin"], n["SoilGapFourMax"] = f"{p3.loc['France +4.0', 'ecart_pct_total_min']:.0f}", f"{p3.loc['France +4.0', 'ecart_pct_total_max']:.0f}"
     n["SoilRefSwi"], n["SoilObsSwi"] = f"{p3.swi_ref_mediane.iloc[0]:.2f}", f"{p3.swi_obs_1976_2005.iloc[0]:.2f}"
+    # L1, L2a, S1 (pistes d'amélioration, déclarées avant calcul).
+    lv = pd.read_csv(TAB / "phase7_l1_levier.csv").set_index("annee")
+    n["LevTwoThousandThreeRatio"] = f"{lv.loc[2003, 'levier_partiel'] * len(lv):.1f}"
+    n["LevSecondYear"] = str(int(lv.drop(2003).levier_partiel.idxmax()))
+    n["LevSecond"] = f"{100 * lv.drop(2003).levier_partiel.max():.0f}"
+    l1b = pd.read_csv(TAB / "phase7_l1_wcr_cv3.csv").iloc[0]
+    assert l1b.lecture == "le désaccord WCR / CV3 se résout en faveur de H1"
+    n["CvBootP"], n["CvBootSize"], n["CvThreeT"] = pv(l1b.p_unilateral_droite), pct(100 * l1b.taille_placebo), f"{l1b.t:.2f}"
+    l2 = pd.read_csv(TAB / "phase7_l2_sans_reconduits.csv").iloc[0]
+    n["NoRepeatPct"], n["NoRepeatP"], n["NoRepeatN"] = pct(l2.effet_pct_par_unite), pv(l2.p_wcb_annee_unilateral_droite), str(int(l2.n))
+    s1 = pd.read_csv(TAB / "phase7_s1_hierarchique.csv")
+    n["HierTauMed"], n["HierTauHigh"] = f"{s1.tau_mediane.iloc[0]:.4f}", f"{s1.tau_q95.iloc[0]:.4f}"
+    n["HierMin"], n["HierMax"] = f"{s1.moyenne_post.min():.3f}", f"{s1.moyenne_post.max():.3f}"
+    n["HierLowest"] = f"{s1.q05.min():.4f}"
+    s2 = pd.read_csv(TAB / "phase7_s2_ndvi_pur.csv").set_index(["famille", "date", "modele"])
+    n["PureRidgeJuly"] = f"{s2.loc[('phase 6 (B1)', 'juillet', 'RIDGE'), 'gain_pur_pct']:.0f}"
+    n["PureRidgeJune"] = f"{s2.loc[('phase 6 (B1)', 'juin', 'RIDGE'), 'gain_pur_pct']:.0f}"
+    b0c = s2.xs("corrections de B0", level="famille").drop(index="B0", level="modele").gain_pur_pct
+    n["PureBzeroAbs"] = f"{b0c.abs().max():.1f}"
+    l3 = pd.read_csv(TAB / "phase7_l3_ecostress.csv", dtype={"dep_code": str}).set_index("dep_code")
+    for dep_code, key in [("01", "Ain"), ("38", "Isere"), ("67", "BasRhin")]:
+        n[f"EcoDiff{key}"] = f"{l3.loc[dep_code, 'diff_dd_2003']:+.2f}"
+        n[f"EcoShare{key}"] = f"{100 * l3.loc[dep_code, 'part_surface_irriguee_proxy']:.0f}"
+        n[f"EcoSaa{key}"] = f"{100 * l3.loc[dep_code, 'part_surface_irriguee_saa_2022']:.0f}"
+    l4 = pd.read_csv(TAB / "phase7_l4_phenologie.csv")
+    assert l4.lecture.iloc[0] == "non soutenue avec la fenêtre phénologique"
+    n["PhenoPct"], n["PhenoP"], n["PhenoSize"] = pct(l4.effet_pct_par_unite[0]), pv(l4.p_wcb_annee_unilateral_droite[0]), pct(100 * l4.taille_placebo[0])
+    n["PhenoJaPct"], n["PhenoJaP"] = pct(l4.effet_pct_par_unite[1]), pv(l4.p_wcb_annee_unilateral_droite[1])
+    n["PhenoN"], n["PhenoDropped"] = str(int(l4.n[0])), str(int(l4.n_retires_sans_date[0]))
+    n["PhenoPeakMean"], n["PhenoPeakTwoThousandThree"] = f"{l4.pic_doy_moyen[0]:.0f}", f"{l4.pic_doy_2003[0]:.0f}"
     # V1 (revues simulées du 2026-10-14) : taille et puissance du CV3 avec le placebo des années.
     v1 = pd.read_csv(TAB / "phase7_v1_cv3.csv")
     sz = v1[v1.diagnostic.str.startswith("V1 taille")].iloc[0]

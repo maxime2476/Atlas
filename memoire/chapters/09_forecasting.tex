@@ -68,7 +68,7 @@ A natural objection is that weather describes the conditions, not the crop. The 
 \end{threeparttable}
 \end{table}
 
-NDVI helps each model a little: the gain over the same model without NDVI is positive in all \NdviTot{} cases, from \NdviGainMin{} to \NdviGainMax\,\%, and significant in \NdviSig. The largest gain, for ridge on 1 July, mostly reflects the stabilisation of a model that was unstable without NDVI. But no model with NDVI does better than the department mean, even on average (\cref{tab:ndvi}, last column). The NDVI is measured on 8~km cells weighted by wheat, not on wheat parcels alone, so it mixes crops; a parcel-level index might do better.
+NDVI helps each model a little: the gain over the same model without NDVI is positive in all \NdviTot{} cases, from \NdviGainMin{} to \NdviGainMax\,\%, and significant in \NdviSig. The largest gain, for ridge on 1 July, mostly reflects the stabilisation of a model that was unstable without NDVI. But no model with NDVI does better than the department mean, even on average (\cref{tab:ndvi}, last column). The NDVI is measured on 8~km cells weighted by wheat, not on wheat parcels alone, so it mixes crops. A check added later keeps only the 250~m pixels at least half covered by wheat parcels: it lowers the error of the ridge model by \PureRidgeJuly\,\% on 1 July and \PureRidgeJune\,\% on 1 June, but changes that of the tree models corrected from the department mean by at most \PureBzeroAbs\,\%, within the noise of ten test years. A purer index stabilises the weakest model, not the best ones.
 
 \subsection{What the forecasting results mean}
 

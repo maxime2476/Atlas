@@ -17,12 +17,27 @@
 #      RE-PROJETTE (demean + résidu sur z) à chaque tirage, comme si l'on réestimait le modèle complet ;
 #   5. on compare t = beta / se(grappes) à la distribution des t*.
 # Le facteur de petit échantillon du CR1 étant identique pour t et t*, il est omis (il se simplifie).
+# Démoyennage : tolérance DEMEAN_TOL (1e-12) au lieu de 1e-6 par défaut dans fixest, pour que la re-projection
+# coïncide avec une réestimation complète à la précision machine (contrôle : tests/test_r_inference.R).
+# Graine : les tirages utilisent `seed` sans toucher à l'état du générateur de l'appelant (with_seed).
 #
 # Fonctions :
 #   wcr_pvalue()      test d'un coefficient (p bilatérale, unilatérale à gauche et à droite)
 #   wcr_wald_pvalue() test joint de plusieurs coefficients (Wald)
 #   placebo_size()    taille empirique d'un test : exposition réelle, périodes permutées
 # Exemple autonome sur données simulées : R/wcr/exemple.R ; mode d'emploi : R/wcr/README.md.
+
+DEMEAN_TOL <- 1e-12
+
+# Évalue `expr` après set.seed(seed), puis restaure l'état du générateur aléatoire de l'appelant : appeler
+# wcr_pvalue() dans une boucle de simulation ne modifie donc pas la suite des tirages de la boucle.
+with_seed <- function(seed, expr) {
+  old <- if (exists(".Random.seed", envir = globalenv())) get(".Random.seed", envir = globalenv()) else NULL
+  on.exit(if (is.null(old)) rm(".Random.seed", envir = globalenv())
+          else assign(".Random.seed", old, envir = globalenv()))
+  set.seed(seed)
+  expr
+}
 
 webb_weights <- function(G) {
   sample(c(-sqrt(3 / 2), -1, -sqrt(1 / 2), sqrt(1 / 2), 1, sqrt(3 / 2)), G, replace = TRUE)
@@ -39,7 +54,7 @@ webb_weights <- function(G) {
 wcr_pvalue <- function(data, y, x, z, fe, cluster, weights, B = 9999, seed = 20261010) {
   w <- data[[weights]]
   X <- as.matrix(data[, c(y, x, z)])
-  dm <- fixest::demean(X, data[, fe], weights = w)
+  dm <- fixest::demean(X, data[, fe], weights = w, tol = DEMEAN_TOL)
   zt <- dm[, z, drop = FALSE]
   resid_on_z <- function(v) {
     if (ncol(zt) == 0) return(v)
@@ -59,15 +74,17 @@ wcr_pvalue <- function(data, y, x, z, fe, cluster, weights, B = 9999, seed = 202
     b / sqrt(colSums(score^2) / sxx^2)
   }
   t0 <- t_stats(matrix(y_t))
-  set.seed(seed)
-  t_star <- numeric(0)
-  for (start in seq(1, B, by = 1000)) {
-    n_b <- min(1000, B - start + 1)
-    V <- vapply(seq_len(n_b), function(i) webb_weights(G)[g], numeric(length(g)))
-    Ystar <- fixest::demean(y_t * V, data[, fe], weights = w)  # re-projection sur les effets fixes
-    Ystar <- resid_on_z(Ystar)                                 # puis sur les autres régresseurs
-    t_star <- c(t_star, t_stats(Ystar))
-  }
+  t_star <- with_seed(seed, {
+    t_star <- numeric(0)
+    for (start in seq(1, B, by = 1000)) {
+      n_b <- min(1000, B - start + 1)
+      V <- vapply(seq_len(n_b), function(i) webb_weights(G)[g], numeric(length(g)))
+      Ystar <- fixest::demean(y_t * V, data[, fe], weights = w, tol = DEMEAN_TOL)  # re-projection sur les effets fixes
+      Ystar <- resid_on_z(Ystar)                                                   # puis sur les autres régresseurs
+      t_star <- c(t_star, t_stats(Ystar))
+    }
+    t_star
+  })
   list(t = t0, p = mean(abs(t_star) >= abs(t0)), p_left = mean(t_star <= t0),
        p_right = mean(t_star >= t0), G = G, B = B)
 }
@@ -78,7 +95,7 @@ wcr_pvalue <- function(data, y, x, z, fe, cluster, weights, B = 9999, seed = 202
 # V en grappes (CR0), même principe restreint.
 wcr_wald_pvalue <- function(data, y, xs, z, fe, cluster, weights, B = 9999, seed = 20261010) {
   w <- data[[weights]]
-  dm <- fixest::demean(as.matrix(data[, c(y, xs, z)]), data[, fe], weights = w)
+  dm <- fixest::demean(as.matrix(data[, c(y, xs, z)]), data[, fe], weights = w, tol = DEMEAN_TOL)
   zt <- dm[, z, drop = FALSE]
   resid_on_z <- function(v) {
     if (ncol(zt) == 0) return(v)
@@ -98,12 +115,10 @@ wcr_wald_pvalue <- function(data, y, xs, z, fe, cluster, weights, B = 9999, seed
     as.numeric(t(b) %*% solve(V, b))
   }
   w0 <- wald(y_t)
-  set.seed(seed)
-  w_star <- numeric(B)
-  for (i in seq_len(B)) {
-    ys <- fixest::demean(matrix(y_t * webb_weights(G)[g]), data[, fe], weights = w)
-    w_star[i] <- wald(as.vector(resid_on_z(ys)))
-  }
+  w_star <- with_seed(seed, vapply(seq_len(B), function(i) {
+    ys <- fixest::demean(matrix(y_t * webb_weights(G)[g]), data[, fe], weights = w, tol = DEMEAN_TOL)
+    wald(as.vector(resid_on_z(ys)))
+  }, numeric(1)))
   list(wald = w0, p = mean(w_star >= w0), G = G, B = B)
 }
 
@@ -123,14 +138,13 @@ wcr_wald_pvalue <- function(data, y, xs, z, fe, cluster, weights, B = 9999, seed
 placebo_size <- function(data, x, unit, period, tests, R = 300, alpha = 0.05, seed = 20261013) {
   periods <- sort(unique(data[[period]]))
   field <- tapply(data[[x]], list(data[[unit]], data[[period]]), identity)
-  # Toutes les permutations sont tirées AVANT les tests : wcr_pvalue() réinitialise la graine à chaque
-  # appel, ce qui rendrait sinon toutes les permutations identiques après la première.
-  set.seed(seed)
-  perms <- lapply(seq_len(R), function(r) {
+  # Toutes les permutations sont tirées AVANT les tests, sous une graine locale : un test qui fixe lui-même
+  # une graine ne modifie pas la suite des permutations.
+  perms <- with_seed(seed, lapply(seq_len(R), function(r) {
     perm <- sample(periods)
     while (any(perm == periods)) perm <- sample(periods)
     perm
-  })
+  }))
   rej <- setNames(numeric(length(tests)), names(tests))
   for (r in seq_len(R)) {
     perm <- perms[[r]]

@@ -37,21 +37,23 @@ L'écart d'altitude et l'indicatrice de relief dépassent le seuil déclaré de 
 | Méthode | p unilatérale | Remarque |
 |---|---|---|
 | WCR par année (référence, règle de décision) | 0,007 | — |
-| G9a : jackknife par année (CV3), t à 25 ddl | **0,074** | Recommandé par MacKinnon, Nielsen et Webb (2023) avec peu de grappes ; taille mesurée ensuite (V1) : 7,3 %, donc pas plus conservateur que le WCR sur ces données |
+| G9a : jackknife par année (CV3), t à 25 ddl | **0,074** | Recommandé par MacKinnon, Nielsen et Webb (2023) avec peu de grappes ; taille mesurée ensuite (V1) : 8,0 %, donc pas plus conservateur que le WCR sur ces données |
 | G9b : randomisation (5 000 dérangements des années, statistique β̂) | 0,001 | L'effet réel éventuel reste dans l'erreur du placebo |
 | G8 : DML (forêts aléatoires sur SWI, P, ETP, GDD ; 5 plis par blocs d'années) + WCR | 0,016 (β = 0,0155) | Contrôles météo non linéaires : β inchangé |
 
-**Lecture :** le statut de H1 reste fixé par le WCR (règle de la phase 4 bis). Mais la significativité au seuil de 5 % **dépend de la méthode d'inférence** : le jackknife par grappes donne p = 0,074, et sa taille (7,3 %, V1) montre qu'il n'est pas plus conservateur sur ces données. C'est une réserve à citer.
+**Lecture :** le statut de H1 reste fixé par le WCR (règle de la phase 4 bis). Mais la significativité au seuil de 5 % **dépend de la méthode d'inférence** : le jackknife par grappes donne p = 0,074, et sa taille (8,0 %, V1) montre qu'il n'est pas plus conservateur sur ces données. C'est une réserve à citer.
 
 ## Taille et levier (relecture W4, W5, W8)
 
 | Diagnostic (R = 300) | Taux de rejet à 5 % |
 |---|---|
 | G3a : H1, placebo intra-année (chaleur permutée entre départements chaque année) | 3,7 % |
-| G4 : H2b (non irrigué), dérangement des années | 4,0 % |
-| G4 : H2c (irrigué), dérangement des années | 2,3 % |
-| Rappel : H1, dérangement (R/14, rejoué à l'identique) | 3,7 % |
-| G9c : matrices de Conley corrigées par fixest dans ces placebos | 24 % des répétitions |
+| G4 : H2b (non irrigué), dérangement des années | 5,7 % |
+| G4 : H2c (irrigué), dérangement des années | 3,3 % |
+| Rappel : H1, dérangement (R/14, rejoué à l'identique) | 5,3 % |
+| G9c : matrices de Conley corrigées par fixest dans ces placebos | 20 % des répétitions |
+
+*G4, rappel et G9c recalculés le 2026-10-16 (graine locale du WCR, voir `docs/decisions.md`) ; valeurs précédentes : 4,0 %, 2,3 %, 3,7 % et 24 %. G3a, dont les permutations étaient déjà tirées avant les tests, est inchangé.*
 
 - G3a ≤ 10 % : selon la règle déclarée, **la règle de décision est confortée**. G4 : les tailles de H2b et H2c sont proches du nominal ; leurs p-valeurs peuvent être lues normalement.
 - G3b : selon l'année qui reçoit le champ de 2003, le taux de rejet varie de 0 à 15 %, sur 4 à 19 permutations par année : pas d'année anormale (`phase7_placebo_par_annee_2003.csv`).
@@ -165,7 +167,7 @@ Repères observés : moyenne 2000-2025 1,9 ; 2019 et 2022 environ 4 ; 2003 14,7.
 
 ## Revues simulées du 2026-10-14 (V1, V2 ; déclarées avant calcul)
 
-- **V1, taille du CV3** : 7,3 % (300 placebos, erreur de Monte-Carlo 1,5 point), contre 3,7 % pour le WCR sur les mêmes permutations ; puissance 32 % et 66 % (β = 0,008 et 0,016), contre 24 % et 66 %. Lecture selon la règle : à peu près calibré ; le désaccord avec le WCR reste une réserve.
+- **V1, taille du CV3** : 8,0 % (300 placebos, erreur de Monte-Carlo 1,6 point ; 7,3 % avant le recalcul du 2026-10-16), contre 5,3 % pour le WCR sur les mêmes permutations ; puissance 32 % et 66 % (β = 0,008 et 0,016), contre 24 % et 66 %. Lecture selon la règle : calibré, à la limite haute de la plage (≤ 8 %) ; le désaccord avec le WCR reste une réserve.
 - **V2, ventilation SAA** : rapport Y_I/Y_R identique à celui de l'année précédente dans 4,3 % des transitions (référence par permutation : 1,0 %, 95ᵉ centile 1,9 %), dont 15 sur 18 dans l'ancienne série (2000-2009) et 2 en 2003 ; pas d'excès de rapports ronds (p = 0,50), pas de rupture en 2010, pas de lien avec la chaleur (p = 0,18). Signature retenue ; sans les 7 départements signalés par la règle, β = 1,0 % par degré-jour, p = 0,063 : menace « active » selon la règle déclarée.
 - Détail et règles de lecture : `docs/decisions.md` ; tables `reports/tables/phase7_v1_cv3.csv`, `phase7_v2_signatures.csv` ; script `R/28_q1_revues.R`.
 
@@ -175,3 +177,14 @@ Repères observés : moyenne 2000-2025 1,9 ; 2019 et 2022 environ 4 ; 2003 14,7.
 - **P2, statut de qualité** : pente des 21 départements de statut 2 : 2,2 % (p = 0,015) ; écart avec le statut 1 non détectable (p = 0,45).
 - **P3, humidité du sol projetée (DRIAS-Eau)** : ΔSWI de juillet-août −0,04, −0,06, −0,10 ; écart projeté 5 %, 11 %, 34 % avec le sol, contre 4 %, 10 %, 30 % avec la chaleur seule : pas de changement d'ordre de grandeur.
 - **P4, récolte 2026 (estimations au 1er octobre 2026)** : 10,6 degrés-jours, deuxième été le plus chaud après 2003 ; écart médian 150 % ; A1 sur 2000-2026 : 2,4 %, p = 0,001 (« cohérent avec H1 » sur des données provisoires très arrondies). Prévision figée du blé 2026 enregistrée avant comparaison.
+
+## Pistes d'amélioration (L1-L4, S1-S3 ; déclarées avant calcul, exploratoires)
+
+- **L1, inférence avec une année dominante** : 2003 porte 41 % du levier partiel (10,6 fois la part moyenne d'une année), 2023 17 %. La statistique du CV3 (t = 1,49), rapportée à sa distribution par bootstrap restreint par année, donne p = 0,019 avec une taille mesurée de 5,7 % (300 placebos ; 4,3 % avant le recalcul du 2026-10-16) ; rapportée à une Student à 25 ddl, p = 0,074. Lecture selon la règle : le désaccord WCR / CV3 se résout en faveur de H1. SCPC non calculé (choc annuel commun à tout le pays : hors du domaine de la méthode).
+- **L2, variable de résultat** : sans les 18 départements-années dont le rapport Y_I/Y_R est reconduit, β = 1,8 % par degré-jour, p = 0,012 (417 couples). Courrier au SSP : `docs/courrier_ssp.md` ; microdonnées : RICA au CASD (rendement du maïs par mode non confirmé), Pratiques culturales à demander au SSP.
+- **L3, pilote ECOSTRESS** : voir le tableau du README ; le groupe frais surestime l'irrigation (45-55 % des surfaces contre 21-38 %) ; écart de chaleur 2003 de +0,34 (Ain), +1,06 (Isère), +0,15 (Bas-Rhin).
+- **L4, fenêtre phénologique** : 182 couples datés ; 3,5 %, p = 0,065, taille 1,3 % ; juillet-août sur les mêmes couples 2,1 %, p = 0,053. Non soutenue au seuil déclaré, faute de couverture.
+- **S1, pentes hiérarchiques** : τ médian 0,0056 (95ᵉ centile 0,0114) ; borne basse minimale des intervalles à 90 % : 0,0008.
+- **S2, NDVI pur** : seul le modèle ridge s'améliore ; aucun changement pour les modèles corrigeant B0.
+- **S3, intégration continue** : `.github/workflows/tests.yml` (uv 0.12.18, `uv sync --frozen`, pytest) ; sur une copie neuve, 56 tests passent et ceux qui demandent des données sont sautés.
+- Tables `reports/tables/phase7_l1_*.csv`, `phase7_l2_*.csv`, `phase7_l3_*.csv`, `phase7_l4_phenologie.csv`, `phase7_s1_hierarchique.csv`, `phase7_s2_ndvi_pur.csv` ; scripts `R/30_q1_inference.R`, `R/31_q1_phenologie.R`, `scripts/43-45`.

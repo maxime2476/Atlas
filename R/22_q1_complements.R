@@ -94,12 +94,12 @@ p_wcr_left <- function(sim, y, seed) {
   wcr_pvalue(sim, y, "x_placebo", "swi_ja", FE, "annee", "surface_ref_ha", B = 399, seed = seed)$p_left
 }
 
-# (b) et (c) : permutations de R/14 rejouées. Dans R/14, la permutation r (r >= 2) est tirée APRÈS l'appel
-# wcr_pvalue(seed = r - 1), qui réinitialise la graine puis tire B = 399 vecteurs de Webb de 26 poids : on refait
-# exactement cette séquence de tirages (contrôlée ci-dessous par la taille publiée, 3,7 %).
+# (b) et (c) : permutations de R/14 rejouées. wcr_pvalue() ne modifiant pas l'état du générateur, R/14 tire ses
+# permutations à la suite après set.seed(20261013) : on refait cette séquence (contrôlée ci-dessous par la taille
+# du WCR enregistrée par R/14).
+set.seed(20261013)
 perms <- vector("list", R)
 for (r in seq_len(R)) {
-  if (r == 1) set.seed(20261013) else { set.seed(r - 1); for (i in 1:399) webb_weights(length(years)) }
   perm <- sample(years)
   while (any(perm == years)) perm <- sample(years)
   perms[[r]] <- perm

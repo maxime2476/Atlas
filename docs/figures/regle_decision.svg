@@ -41,7 +41,7 @@
 <text x="700" y="404" class="s">ex. blé 1959-2025 : p = 0,125</text>
 <rect x="228" y="484" width="264" height="56" rx="20" fill="rgba(191,69,32,0.08)" stroke="#bf4520"/>
 <text x="360" y="508" class="n">Établie, au sens de la règle</text>
-<text x="360" y="524" class="s">ex. maïs : p = 0,007, taille 3,7 %</text>
+<text x="360" y="524" class="s">ex. maïs : p = 0,007, taille 5,3 %</text>
 <rect x="228" y="572" width="264" height="48" rx="6" fill="rgba(45,49,66,0.02)" stroke="rgba(45,49,66,0.30)" stroke-dasharray="4,3"/>
 <text x="360" y="592" class="n">Vérifications ajoutées</text>
 <text x="360" y="608" class="s">rapportées, sans changer le statut</text>

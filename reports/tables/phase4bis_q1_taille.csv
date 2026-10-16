@@ -1,4 +1,4 @@
 "test","inference","taille_5pct","R","B","n_moyen"
-"Q1-H1 (unilatéral à droite)","cluster_dep",0.163333333333333,300,399,428.283333333333
-"Q1-H1 (unilatéral à droite)","conley_200",0.22,300,399,428.283333333333
-"Q1-H1 (unilatéral à droite)","wcr_annee",0.0366666666666667,300,399,428.283333333333
+"Q1-H1 (unilatéral à droite)","cluster_dep",0.17,300,399,428.37
+"Q1-H1 (unilatéral à droite)","conley_200",0.19,300,399,428.37
+"Q1-H1 (unilatéral à droite)","wcr_annee",0.0533333333333333,300,399,428.37

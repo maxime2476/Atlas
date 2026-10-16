@@ -1,0 +1,3 @@
+"specification","estimation","effet_pct_par_unite","p_wcb_annee_unilateral_droite","taille_placebo","n","n_retires_sans_date","pic_doy_moyen","pic_doy_2003","tendance_pic_jours_par_an","correlation_dd_ph_ja","lecture"
+"L4 A1, fenêtre phénologique [pic - 20 j, pic + 40 j]",0.0343503657711986,3.4947153269965,0.0647064706470647,0.0133333333333333,182,236,201.46131152843,181.045779895931,0.0500047209977131,0.856562467095375,"non soutenue avec la fenêtre phénologique"
+"même échantillon, juillet-août",0.020912367413942,2.11325632293118,0.0532053205320532,NA,182,236,201.46131152843,181.045779895931,0.0500047209977131,0.856562467095375,NA

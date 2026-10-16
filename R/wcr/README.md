@@ -10,15 +10,15 @@ Dans ces panels, l'exposition et le résidu sont corrélés entre unités une m�
 
 | Inférence | Rejets à tort au seuil de 5 % |
 |---|---|
-| Cluster par région | 19,7 % |
-| Cluster par année (CR1) | 5,0 % |
-| **Wild cluster bootstrap restreint par année (WCR)** | **4,0 %** |
+| Cluster par région | 22,3 % |
+| Cluster par année (CR1) | 5,3 % |
+| **Wild cluster bootstrap restreint par année (WCR)** | **5,3 %** |
 
 **Sur les données réelles d'ATLAS** (rendements départementaux, `docs/resultats_phase4.md` et `docs/resultats_phase4bis.md`) :
 
-- le cluster par département rejette à tort dans 16 à 56 % des cas ;
-- Conley à 200 km, dans 16 à 39 % ;
-- le WCR par année, dans 3,5 à 7,0 % (tests bilatéraux en phases 4 et 6, unilatéraux en phase 4 bis).
+- le cluster par département rejette à tort dans 17 à 63 % des cas ;
+- Conley à 200 km, dans 19 à 51 % ;
+- le WCR par année, dans 2,7 à 6,0 % (tests bilatéraux en phases 4 et 6, unilatéraux en phase 4 bis).
 
 Dans l'exemple simulé, le CR1 par année a lui aussi la bonne taille : avec 25 périodes, il ne montre pas d'avantage du WCR sur le CR1. Avec peu de périodes (une dizaine ou moins), le CR1 par période devient peu fiable. Le WCR avec poids de Webb est alors recommandé (Cameron, Gelbach & Miller 2008 ; Webb 2023), sans garantie : sa taille se vérifie avec `placebo_size`.
 
@@ -57,23 +57,23 @@ placebo_size(df, x = "chaleur", unit = "departement", period = "annee", tests = 
 
 ## Méthode (résumé)
 
-1. **Frisch-Waugh-Lovell :** on retire les effets fixes (`fixest::demean`, pondéré), puis on projette sur `z`.
+1. **Frisch-Waugh-Lovell :** on retire les effets fixes (`fixest::demean`, pondéré, tolérance 1e-12 au lieu de 1e-6 par défaut), puis on projette sur `z`.
 2. **Tirages :** sous H0, chaque résidu restreint est multiplié par un poids de Webb tiré par grappe. Les poids prennent six valeurs : ±√(3/2), ±1, ±√(1/2).
 3. **Re-projection :** à chaque tirage, la variable simulée est re-projetée sur les effets fixes et sur `z`. Sans cette étape, la taille est faussée : dans un premier diagnostic du projet, avec un placebo iid peu informatif, elle était de 8,7 % sans re-projection et de 6,6 % avec (R = 500). Ces deux chiffres comparent les versions ; ce ne sont pas des tailles de référence.
 4. **Comparaison :** on compare la statistique t observée (erreurs-types par grappe, sans facteur de petit échantillon puisqu'il se simplifie) à celle des tirages.
 
 **Validation :**
 
-- la statistique t observée est identique au t de `fixest` avec erreurs-types CR0 par grappe (sur M1 : −1,040 dans les deux cas) ;
+- la statistique t observée et chaque t* re-projeté sont identiques, à moins de 1e-12 près, à ceux d'une réestimation complète pondérée par `feols` (effets fixes en indicatrices, CR0 par grappe) ; à la tolérance par défaut de `fixest::demean` (1e-6), l'écart serait d'environ 1e-7 ;
 - la taille est vérifiée par simulation, dans `exemple.R` et sur chaque jeu de données du projet.
 
-Il n'y a pas de suite de tests unitaires R.
+Ces contrôles sont automatisés dans `tests/test_r_inference.R` (`Rscript tests/test_r_inference.R`), avec ceux du jackknife par année (CV3) de `R/30` et des graines.
 
 ## Limites
 
 - `placebo_size` garde y fixe et ne permute que les périodes de x : avec T périodes, les placebos sont peu nombreux et non indépendants, et la dépendance temporelle de y au sein d'une unité n'est pas testée. La régression placebo retire la vraie exposition, dont l'effet éventuel reste dans l'erreur. C'est un diagnostic indicatif.
 - La p-valeur est la part des tirages au moins aussi extrêmes, sans la convention (1 + #)/(B + 1) : une p de 0 se lit p < 1/B.
-- **Graine :** `wcr_pvalue` appelle `set.seed(seed)`. Dans une boucle de simulation, il faut tirer les permutations avant les tests (comme `placebo_size`) ou passer une graine différente à chaque tour (comme `R/14_q1_maize.R`). Sinon, les tirages se répètent.
+- **Graine :** `wcr_pvalue`, `wcr_wald_pvalue` et `placebo_size` tirent sous une graine locale (`with_seed`) et restaurent ensuite l'état du générateur de l'appelant. Dans une boucle de simulation, les tirages de la boucle ne sont donc pas perturbés. En revanche, avec une même `seed` à chaque tour, les poids de Webb sont les mêmes d'un tour à l'autre : passer `seed = r` pour des tirages différents.
 - Le test porte sur un coefficient à la fois, ou sur un test joint, avec des grappes à une seule dimension.
 - Le temps de calcul est proportionnel à n × B.
 

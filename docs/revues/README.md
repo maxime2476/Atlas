@@ -19,4 +19,6 @@ Ces rapports viennent de quatre skills publics pour Claude Code, appliqués au m
 
 Les remarques mineures (notation, termes, verbes, notes de tableaux, figures) ont ensuite été traitées. Les analyses nouvelles suggérées ont ensuite été déclarées et faites (P1 à P4 dans `docs/decisions.md`) : moyenne SIM2/E-OBS, hétérogénéité selon le statut de qualité, humidité du sol dans les projections (DRIAS-Eau), première lecture de la récolte 2026 sur des estimations provisoires.
 
+Les pistes d'amélioration proposées ensuite (L1 à L4, S1 à S3) ont été déclarées avant calcul et faites ; la réserve principale des revues sur l'inférence (le CV3) est discutée à nouveau avec le bootstrap de sa statistique (L1 : p = 0,019, taille 4,3 %). Résultats dans `docs/resultats_complements.md`.
+
 **Erreur connue dans ces rapports.** La revue 2 (section 3, point 6) affirme que l'hypothèse « même dose pour toutes les cultures » gonflerait la dose du maïs. C'est l'inverse : si le maïs reçoit plus d'eau par hectare que les autres cultures, sa dose est sous-estimée et la valeur par m³ surestimée. Le mémoire écrit le sens correct.

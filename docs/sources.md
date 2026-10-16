@@ -203,6 +203,14 @@
 
 **Recommandation.** P3 est faisable avec le produit mensuel de DRIAS-Eau (17 simulations, juillet et août, niveaux TRACC). P4 est faisable seulement comme pré-lecture exploratoire : la spécification figée (`docs/specification_recoltes_futures.md`) exige des chiffres définitifs, et la note d'Agreste elle-même met en garde contre l'usage départemental des estimations de conjoncture. La note de ce fichier documente aussi, pour la première fois, la façon dont les rendements sont produits : à dire d'experts, puis à partir de l'enquête Terres labourables (17 000 exploitants, rendements moyens constatés après récolte).
 
+## 8 octies. Sources des pistes d'amélioration (L3, L4), téléchargées les 2026-10-15 et 2026-10-16
+
+| Source | Accès | Licence | Fichiers | Usage et limites |
+|---|---|---|---|---|
+| NASA LP DAAC, MCD12Q2 v061, « Land Cover Dynamics Yearly L3 Global 500m SIN Grid » (Friedl, Gray et Sulla-Menashe 2022, DOI 10.5067/MODIS/MCD12Q2.061) | Recherche CMR, puis téléchargement direct au LP DAAC avec le jeton Earthdata (`scripts/44_phenologie_mais.py telecharger`) ; 2025 existe en deux traitements, le plus récent est gardé | Données de mission NASA, CC0, citation demandée | 25 HDF4, tuile h18v04, 2001-2025, 7,2 Go, dans `data/raw/nasa_mcd12q2/` ; lus avec `pyhdf` 0.11.6 (dépendance éphémère, `uv run --with`) | L4 : date du pic (`Peak`, jours depuis 1970 ; `QA_Overall` ≤ 1). Pixels de 500 m : dans les plaines de grande culture, la plupart des pixels de maïs ne donnent pas un cycle unique de juin-septembre ; 183 départements-années sur 425 sont datés |
+| NASA LP DAAC, ECOSTRESS ECO_L2T_LSTE v002 (Hook et Hulley 2022, DOI 10.5067/ECOSTRESS/ECO_L2T_LSTE.002) | Recherche CMR par emprise départementale, juillet-août 2022, passages de 9 h à 15 h UTC ; téléchargement direct avec le jeton Earthdata (`scripts/43_ecostress_pilote.py telecharger`) | Données de mission NASA, CC0, citation demandée | 295 scènes × 3 couches (`LST`, `cloud`, `QC`), 885 GeoTIFF, 0,62 Go, dans `data/raw/ecostress/` ; liste des scènes dans `granules.csv` (produite par le script) | L3 : anomalie de température de surface des parcelles de maïs. Passages à heures variables (orbite de l'ISS) ; ciel clair seulement ; l'anomalie fraîche mêle irrigation, sol et date de semis |
+| RPG 2.0 2022, régions R84 (Auvergne-Rhône-Alpes) et R44 (Grand Est) | Archives 7z en plusieurs volumes, listées sur la page `https://data.geopf.fr/telechargement/resource/RPG/<identifiant>` (en-tête User-Agent requis) ; `scripts/01_download_raw.py --rpg2022` ; extraction avec `7z e` vers `data/interim/rpg/2022_<région>/` | Licence Ouverte 2.0 | `RPG_2-0__SHP_LAMB93_R84_2022-01-01.7z.001` (335,6 Mo) et `..._R44_...` (174,4 Mo) ; un seul volume chacune | L3 : parcelles `MIS` de 2022 d'au moins 2 ha dans l'Ain, l'Isère et le Bas-Rhin |
+
 ## 9. Sources auditées mais non utilisées
 
 | Source | Statut | Raison |

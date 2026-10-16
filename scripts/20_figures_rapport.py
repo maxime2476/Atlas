@@ -177,7 +177,7 @@ def fig_taille_4bis():
         ax.axhline(5, color=ORANGE, linewidth=1.5, label="Taux nominal : 5 %")
         ax.set_xticks(x, list(labels.values()))
         ax.set_title(d["titre"].iloc[0], loc="left", fontsize=9, color=INK)
-        ax.set_ylim(0, 31)
+        ax.set_ylim(0, 1.15 * max(31, q1.taille_5pct.max() * 100, q2.taille_5pct.max() * 100))  # marge pour les étiquettes
         style(ax)
     axes[0].set_ylabel("Faux positifs sous H0 (%)", color=INK2)
     axes[0].legend(frameon=False, fontsize=8.5, loc="upper left", labelcolor=INK)

@@ -162,7 +162,8 @@ def test_drias_panel():
 TAB = ROOT / "reports" / "tables"
 
 
-@pytest.mark.skipif(not (TAB / "phase7_v2_signatures.csv").exists(), reason="V2 absent")
+@pytest.mark.skipif(not ((TAB / "phase7_v2_signatures.csv").exists() and (PROC / "panel_mais_long.parquet").exists()),
+                    reason="V2 ou panel absent")
 def test_v2_signatures_recomputed_from_panel():
     # S1 et S2 de R/28 recalculés indépendamment depuis le panel (échantillon principal).
     m = pd.read_parquet(PROC / "panel_mais_long.parquet").query("echantillon_principal")
@@ -225,3 +226,41 @@ def test_p3_soil_projection_identities():
     assert np.allclose(out.terme_chaleur, beta * out.delta_dd_32_ja)
     assert np.allclose(out.ecart_pct_total, 100 * (np.exp(beta * out.delta_dd_32_ja + delta * out.delta_swi_ja) - 1))
     assert out.delta_swi_ja.between(-0.5, 0.5).all()
+
+
+@pytest.mark.skipif(not (TAB / "phase7_l1_levier.csv").exists(), reason="L1 absent")
+def test_l1_leverage_and_wcr_cv3():
+    lev = pd.read_csv(TAB / "phase7_l1_levier.csv")
+    assert len(lev) == 26 and np.isclose(lev.levier_partiel.sum(), 1)       # parts de la variance résiduelle
+    assert lev.loc[lev.levier_partiel.idxmax(), "annee"] == 2003
+    l1b = pd.read_csv(TAB / "phase7_l1_wcr_cv3.csv").iloc[0]
+    g9 = pd.read_csv(TAB / "phase7_inferences.csv")
+    assert np.isclose(l1b.se_cv3, g9.se[g9.specification.str.contains("CV3")].iloc[0])  # même CV3 que G9a
+    assert 0 <= l1b.taille_placebo <= 1 and 0 <= l1b.p_unilateral_droite <= 1
+
+
+@pytest.mark.skipif(not (TAB / "phase7_s1_hierarchique.csv").exists(), reason="S1 absent")
+def test_s1_posterior_between_raw_and_mean():
+    s1 = pd.read_csv(TAB / "phase7_s1_hierarchique.csv")
+    assert len(s1) == 17 and (s1.q05 < s1.moyenne_post).all() and (s1.moyenne_post < s1.q95).all()
+    mu = np.average(s1.pente_brute, weights=1 / s1.se ** 2)
+    # Le rétrécissement rapproche chaque pente de la moyenne commune.
+    assert (np.abs(s1.moyenne_post - mu) <= np.abs(s1.pente_brute - mu) + 1e-4).all()
+
+
+@pytest.mark.skipif(not (TAB / "phase7_l3_ecostress.csv").exists(), reason="L3 absent")
+def test_l3_ecostress_table():
+    l3 = pd.read_csv(TAB / "phase7_l3_ecostress.csv", dtype={"dep_code": str})
+    assert list(l3.dep_code) == ["01", "38", "67"]
+    assert l3.part_surface_irriguee_proxy.between(0, 1).all() and (l3.ecart_lst_moyen_irrigue < l3.ecart_lst_moyen_pluvial).all()
+    assert np.allclose(l3.diff_dd_2003, l3.dd_32_ja_2003_irrigue - l3.dd_32_ja_2003_pluvial)
+
+
+@pytest.mark.skipif(not (PROC / "phenologie_mais.parquet").exists(), reason="phénologie absente")
+def test_l4_phenology_window():
+    ph = pd.read_parquet(PROC / "phenologie_mais.parquet")
+    assert not ph.duplicated(["dep_code", "annee"]).any() and len(ph) == 17 * 25
+    dated = ph.dropna(subset=["pic_doy"])
+    assert (dated.part_valide >= 0.5).all() and ph[ph.pic_doy.isna()].dd_32_ph.isna().all()
+    assert dated.pic_doy.between(152, 274).all()                       # pic en juin-septembre, comme déclaré
+    assert ((dated.fin_doy - dated.debut_doy) == 60).all() and (dated.dd_32_ph >= 0).all()

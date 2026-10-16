@@ -1,7 +1,7 @@
 "variable_expliquee","inference","taille_5pct","R"
-"ecart_log","cluster_dep",0.23,200
-"ecart_log","conley_200",0.355,200
-"ecart_log","wcr_annee",0.035,200
-"log_non_irrigue","cluster_dep",0.25,200
-"log_non_irrigue","conley_200",0.34,200
-"log_non_irrigue","wcr_annee",0.07,200
+"ecart_log","cluster_dep",0.255,200
+"ecart_log","conley_200",0.385,200
+"ecart_log","wcr_annee",0.06,200
+"log_non_irrigue","cluster_dep",0.325,200
+"log_non_irrigue","conley_200",0.4,200
+"log_non_irrigue","wcr_annee",0.06,200

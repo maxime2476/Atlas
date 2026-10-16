@@ -1,0 +1,20 @@
+# Intégration continue (S3) : tests qui ne demandent pas les données brutes ni les panels (non versionnés).
+# Les tests qui en ont besoin sont sautés automatiquement ; les contrôles d'empreinte des fichiers bruts aussi.
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: "0.12.18"
+      - name: Environnement Python figé par uv.lock
+        run: uv sync --frozen
+      - name: Tests sans données
+        run: uv run pytest -q

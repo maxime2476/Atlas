@@ -48,10 +48,12 @@ Rscript R/13_maize_gap.R
 
 | Variable expliquée | Cluster département | Conley 200 km | WCR par année |
 |---|---|---|---|
-| Écart | 23,0 % | 35,5 % | **3,5 %** |
-| Non irrigué | 25,0 % | 34,0 % | **7,0 %** |
+| Écart | 25,5 % | 38,5 % | **6,0 %** |
+| Non irrigué | 32,5 % | 40,0 % | **6,0 %** |
 
-Comme pour le blé, cluster et Conley sont fortement surdimensionnés, et seul le WCR est jugé fiable. Sa taille (3,5 % à 7,0 %, avec une erreur Monte-Carlo d'environ 1,5 point) reste proche de 5 %, mais 7,0 % est environ 1,3 erreur-type au-dessus : pour le rendement non irrigué, le WCR rejette peut-être un peu trop souvent.
+Comme pour le blé, cluster et Conley sont fortement surdimensionnés, et seul le WCR est jugé fiable. Sa taille (6,0 % dans les deux cas, avec une erreur Monte-Carlo d'environ 1,5 point) reste proche de 5 %, à moins d'une erreur-type au-dessus.
+
+*Tailles recalculées le 2026-10-16 (graine locale du WCR, voir `docs/decisions.md`). Valeurs précédentes : écart 23,0 / 35,5 / 3,5 % ; non irrigué 25,0 / 34,0 / 7,0 % ; la lecture d'alors (« le WCR rejette peut-être un peu trop souvent » pour le non irrigué) ne tient plus.*
 
 **Interprétation (prudente) :**
 

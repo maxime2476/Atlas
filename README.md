@@ -3,15 +3,15 @@
 *Projet individuel de recherche appliquée : économétrie de panel, apprentissage automatique, données géospatiales et satellitaires. Python (ingestion, géospatial, prévision), R (économétrie), DuckDB (agrégation météo).*
 
 > **En bref.**
-> - **Maïs grain, 17 départements hors Sud-Ouest, 2000-2025 (résultat principal, pré-spécifié par l'auteur).** Chaque degré-jour au-delà de 32 °C en juillet-août est **associé** à un écart de rendement plus large d'environ **1,6 %** en faveur du maïs irrigué (p = 0,007 avec un bootstrap par année dont la taille empirique est de 3,7 %).
->   - Le maïs non irrigué y est associé à −2,5 % par °C·jour, l'irrigué à −1,0 % (taille de ces deux tests, mesurée ensuite : 4,0 % et 2,3 %).
+> - **Maïs grain, 17 départements hors Sud-Ouest, 2000-2025 (résultat principal, pré-spécifié par l'auteur).** Chaque degré-jour au-delà de 32 °C en juillet-août est **associé** à un écart de rendement plus large d'environ **1,6 %** en faveur du maïs irrigué (p = 0,007 avec un bootstrap par année dont la taille empirique est de 5,3 %).
+>   - Le maïs non irrigué y est associé à −2,5 % par °C·jour, l'irrigué à −1,0 % (taille de ces deux tests, mesurée ensuite : 5,7 % et 3,3 %).
 >   - **Force de la preuve :** la règle fixée d'avance est remplie, mais 62 % de l'échantillon vient des années (2010-2025) qui ont suggéré l'hypothèse. La seule preuve nouvelle, 2000-2009, garde le signe à environ la moitié de l'estimation (p = 0,049, puissance de 11 %), un écart dû à 2003.
 >   - **Ampleur :** intervalle à 90 % de 0,55 % à 4,5 % par °C·jour (inversion du bootstrap) : le signe est soutenu, pas l'ampleur.
 >   - **Dépendance aux départements de relief :** retirer un département quelconque laisse le résultat significatif (1,2 à 1,9 %), mais **sans les six départements de relief, il tombe à 1,0 % et n'est plus significatif (p = 0,146)**. Le résultat tient sans contrôle d'humidité du sol (1,7 %) et avec le bilan hydrique P − ETP (1,2 %, p = 0,035). Analyses ajoutées après une relecture simulée, déclarées avant calcul.
 >   - **Datation :** la spécification, le journal des décisions et les résultats sont publiés ensemble ; l'ordre « spécification puis estimation », comme la déclaration avant calcul des vérifications ajoutées ensuite, repose sur le journal de l'auteur.
 >   - Puissance du test (diagnostic ajouté dans un second temps, déclaré avant calcul) : environ 66 % pour un vrai effet de cette taille, 11 % seulement pour la réplication sur 2000-2009.
 >   - Le résultat ne dépend pas de la température SAFRAN : recalculée avec E-OBS (grille interpolée de stations), la chaleur donne +1,5 % par °C·jour, p = 0,005 ; avec la température de surface satellitaire MODIS, +4,2 % par °C, p = 0,002 (vérifications ajoutées dans un second temps, déclarées avant calcul).
->   - **Analyses complémentaires (ajoutées après un audit, déclarées avant calcul, exploratoires) :** la pente ne diffère pas de façon détectable entre départements de relief et autres (p = 0,78), ni selon la part irriguée ; aucun passage du grain à l'ensilage n'est détecté les étés chauds (2010-2025) ; un placebo intra-année confirme la taille du test (3,7 %). Mais **un jackknife par grappes (CV3) donne p = 0,074**, alors que sa taille mesurée par le même placebo (7,3 %) et sa puissance sont proches de celles du WCR : la significativité dépend de la méthode d'inférence. Une vérification ajoutée après des revues simulées trouve aussi, dans l'ancienne série SAA (2000-2009), des rapports irrigué/pluvial répétés d'une année sur l'autre plus souvent que le hasard, compatibles avec une imputation ; la règle déclarée classe cette menace comme active (sans 7 départements signalés : 1,0 %, p = 0,063). Avec la moyenne des températures SIM2 et E-OBS, l'association tient (1,6 %, p = 0,004) ; elle ne diffère pas selon le statut de qualité (p = 0,45). Une première lecture de l'été 2026, le deuxième plus chaud après 2003, sur des estimations Agreste provisoires, va dans le même sens ; le test figé attend les chiffres définitifs (automne 2027). Sur 2000-2009, 2003 porte 80 % de l'information sur la chaleur.
+>   - **Analyses complémentaires (ajoutées après un audit, déclarées avant calcul, exploratoires) :** la pente ne diffère pas de façon détectable entre départements de relief et autres (p = 0,78), ni selon la part irriguée ; aucun passage du grain à l'ensilage n'est détecté les étés chauds (2010-2025) ; un placebo intra-année confirme la taille du test (3,7 %). Mais **un jackknife par grappes (CV3) donne p = 0,074** lu sur une loi de Student, alors que sa taille mesurée par le même placebo (8,0 %, contre 5,3 % pour le WCR) et sa puissance sont proches de celles du WCR ; 2003 porte 41 % du levier, et la même statistique t, rapportée à sa distribution bootstrap (taille mesurée 5,7 %), donne **p = 0,019** (vérification ajoutée ensuite, déclarée avant calcul). Une vérification ajoutée après des revues simulées trouve aussi, dans l'ancienne série SAA (2000-2009), des rapports irrigué/pluvial répétés d'une année sur l'autre plus souvent que le hasard, compatibles avec une imputation ; la règle déclarée classe cette menace comme active (sans 7 départements signalés : 1,0 %, p = 0,063). Avec la moyenne des températures SIM2 et E-OBS, l'association tient (1,6 %, p = 0,004) ; elle ne diffère pas selon le statut de qualité (p = 0,45). Une première lecture de l'été 2026, le deuxième plus chaud après 2003, sur des estimations Agreste provisoires, va dans le même sens ; le test figé attend les chiffres définitifs (automne 2027). Sur 2000-2009, 2003 porte 80 % de l'information sur la chaleur.
   - **Réplication sur une autre culture :** le même modèle appliqué au maïs fourrage irrigué et non irrigué (28 départements, 2010-2025) donne +1,6 % par °C·jour (p = 0,006, taille 3,0 %). La chaleur de l'été suivant, qui ne peut pas agir sur la récolte, n'est pas associée à l'écart.
   - **Chaleur ou air sec ?** Avec le déficit de pression de vapeur dans le modèle, l'association passe à la sécheresse de l'air ; les deux sont trop corrélés pour être séparés (et ce partage ne se retrouve pas sur le maïs fourrage). Le résultat concerne les étés chauds et secs plutôt que la chaleur seule.
   - **Multivers :** sur 76 combinaisons raisonnables des choix d'analyse, toutes les estimations sont positives et 68 significatives ; les 8 autres utilisent la météo moyennée sur tout le département.
@@ -20,7 +20,7 @@
 >   - C'est une association, pas un effet causal de l'irrigation.
 > - **Blé tendre, 83 départements, 1959-2025.** La chaleur en fin de cycle est associée à −1,1 % de rendement par °C·jour, mais ce n'est **pas distinguable de zéro** (p = 0,125). Malgré 67 récoltes, l'information se réduit à quelques étés très chauds. Aucune évolution de la sensibilité depuis 1959 n'est détectable (puissance faible).
 > - **Prévision :** ni la météo ni le NDVI satellitaire ne battent de façon démontrée la **moyenne historique du département**.
-> - **Leçon transversale (connue, mais décisive ici) :** sur ces panels, les erreurs-types usuelles (cluster par département, Conley à noyau uniforme de 200 km) concluent à tort dans **16 à 56 %** des cas sans effet réel, au seuil nominal de 5 %. Seul le bootstrap par année reste proche de son niveau (3,5 à 7,0 % de rejets à tort selon le jeu de données).
+> - **Leçon transversale (connue, mais décisive ici) :** sur ces panels, les erreurs-types usuelles (cluster par département, Conley à noyau uniforme de 200 km) concluent à tort dans **17 à 63 %** des cas sans effet réel, au seuil nominal de 5 %. Seul le bootstrap par année reste proche de son niveau (2,7 à 6,0 % de rejets à tort selon le jeu de données).
 
 ![Maïs : écart irrigué − non irrigué selon la spécification](docs/figures/fig4_mais_robustesse.png)
 
@@ -64,11 +64,12 @@ Résultat : l'association est négative mais non établie, faute d'information (
 | **INSEE**, IPPAP blé tendre et maïs + **Eurostat** `apri_ap_crpouta` | Prix (valorisation descriptive) | Licence Ouverte 2.0 (INSEE) ; réutilisation avec mention de la source (Eurostat) |
 | **NASA LP DAAC**, MOD13Q1 v6.1 via AppEEARS | NDVI 250 m (prévision) | CC0, citation demandée (Didan 2021, DOI 10.5067/MODIS/MOD13Q1.061) |
 | **NASA LP DAAC**, MOD11A2 v6.1 via AppEEARS | Température de surface de jour, 1 km, juillet-août 2000-2025 (vérification) | CC0, citation demandée (Wan, Hook et Hulley 2021, DOI 10.5067/MODIS/MOD11A2.061) |
+| **NASA LP DAAC**, MCD12Q2 v061 et ECOSTRESS ECO_L2T_LSTE v002, téléchargement direct | Date du pic de végétation (500 m, 2001-2025) ; température de surface à 70 m, juillet-août 2022 (pistes L3, L4) | CC0, citation demandée (Friedl, Gray et Sulla-Menashe 2022, DOI 10.5067/MODIS/MCD12Q2.061 ; Hook et Hulley 2022, DOI 10.5067/ECOSTRESS/ECO_L2T_LSTE.002) |
 | **ECA&D / Copernicus**, E-OBS v33.0e (0,1°), 2000-2025 | Tmin et Tmax : vérification de la mesure de chaleur du maïs | Recherche et enseignement non commerciaux ; citation de Cornes et al. 2018 (DOI 10.1029/2017JD028200) obligatoire |
 
 **Reproductibilité des données :**
 
-- les données brutes (≈ 26 Go, NDVI et E-OBS compris) ne sont **pas versionnées** ;
+- les données brutes (≈ 59 Go d'après le manifeste, dont 21 Go de projections DRIAS et 7 Go de phénologie MODIS) ne sont **pas versionnées** ;
 - leurs URL, dates d'accès et **SHA-256** sont dans `docs/manifest_raw.csv`, et `tests/test_manifest.py` les vérifie ;
 - les points d'attention de chaque source sont détaillés dans `docs/sources.md` et `docs/phase0bis_cadrage.md`. La SAA 2000-2009 a été localisée par exploration du site Agreste (navigation automatisée en lecture seule), puis contrôlée : sur 2010-2020, 95 % des rendements concordent à 0,5 q/ha près avec les séries actuelles (1 674 paires comparées).
 
@@ -113,7 +114,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/figures/regle_decision_dark.svg">
-  <img src="docs/figures/regle_decision.svg" alt="Règle de décision : une hypothèse principale fixée avant estimation est estimée avec effets fixes département et année ; si la taille du test mesurée par placebo dépasse 10 %, elle n'est pas établie ; sinon, elle n'est établie que si la p-valeur unilatérale du bootstrap par année est inférieure à 0,05, par exemple le maïs (p = 0,007, taille 3,7 %), contrairement au blé 1959-2025 (p = 0,125) ; les vérifications ajoutées ensuite sont rapportées sans changer ce statut.">
+  <img src="docs/figures/regle_decision.svg" alt="Règle de décision : une hypothèse principale fixée avant estimation est estimée avec effets fixes département et année ; si la taille du test mesurée par placebo dépasse 10 %, elle n'est pas établie ; sinon, elle n'est établie que si la p-valeur unilatérale du bootstrap par année est inférieure à 0,05, par exemple le maïs (p = 0,007, taille 5,3 %), contrairement au blé 1959-2025 (p = 0,125) ; les vérifications ajoutées ensuite sont rapportées sans changer ce statut.">
 </picture>
 - **Prévision :**
   - origine glissante (entraînement 2010…*t*−1, test *t* = 2016-2025) ;
@@ -129,7 +130,7 @@ Les choix principaux sont **fixés avant estimation** (`docs/specification_phase
 
 | | Estimation | p WCR par année (unilatérale) |
 |---|---|---|
-| **H1 : écart irrigué − non irrigué, °C·jour > 32 °C** | **+1,6 % par °C·jour** | **0,007** (taille du test : 3,7 %) |
+| **H1 : écart irrigué − non irrigué, °C·jour > 32 °C** | **+1,6 % par °C·jour** | **0,007** (taille du test : 5,3 %) |
 | Réplication sur 2000-2009 seulement (10 années) | +1,1 % (environ deux fois moins que sur 2010-2025) | 0,049 (bilatérale 0,10 ; taille 5,7 % à 10 grappes, mais puissance de 11 % seulement) |
 | H2b : maïs non irrigué | −2,5 % | < 0,001 (Holm) |
 | H2c : maïs irrigué | −1,0 % | 0,005 (Holm) |
@@ -156,7 +157,12 @@ Déclarées avant calcul dans `docs/decisions.md`, non pré-spécifiées, explor
 | Analyse | Résultat | Intéressant ? |
 |---|---|---|
 | Inférence de H1 : jackknife par année (CV3), randomisation, DML (forêts aléatoires) | p = 0,074 ; 0,001 ; β = 0,0155 (p = 0,016) | **Oui** : la significativité dépend de la méthode ; β est stable |
-| Placebo intra-année (relecture W4) ; tailles de H2b et H2c | 3,7 % ; 4,0 % et 2,3 % | Oui : règle confortée |
+| Bootstrap de la statistique du CV3 (L1) ; sans les rapports SAA reconduits (L2a) | p = 0,019, taille 5,7 % ; β = 1,8 %, p = 0,012 (417 couples) | **Oui** : le désaccord WCR / CV3 tient à la loi de référence, pas aux données ; H1 ne dépend pas des rapports reconduits |
+| Pentes hiérarchiques (S1) | τ médian 0,0056 ; 17 pentes postérieures de 1,1 à 2,2 %, toutes avec un intervalle à 90 % au-dessus de 0 | Oui : pas de département à pente nulle détectable |
+| Pilote ECOSTRESS, 70 m, 2022 (L3 ; Ain, Isère, Bas-Rhin) | Parcelles fraîches : 45 à 55 % des surfaces contre 21 à 38 % irriguées (SAA) ; chaleur 2003 de +0,15 à +1,06 °C·jour par rapport aux autres | Partiellement : classement grossier ; même chaleur dans la plaine, un peu plus de chaleur dans l'Isère |
+| Fenêtre centrée sur le pic de végétation MODIS (L4) | Pic moyen au jour 201, jour 181 en 2003 ; 182 couples datés sur 418 ; 3,5 % (p = 0,065) contre 2,1 % (p = 0,053) avec juillet-août sur les mêmes couples | Peu : la moitié des couples manque ; ni confirmation ni infirmation |
+| NDVI des pixels de blé purs (S2) | Ridge −16 % et −7 % de MSE ; meilleurs modèles inchangés (±1,4 %) | Non : la prévision n'est pas changée |
+| Placebo intra-année (relecture W4) ; tailles de H2b et H2c | 3,7 % ; 5,7 % et 3,3 % | Oui : règle confortée |
 | Levier de 2003 | 41 % (2000-2025), 80 % (2000-2009, N_eff = 1,5) | **Oui** : la réplication repose sur un été |
 | Hétérogénéité (relief, part irriguée, pentes rétrécies, forêt causale) | Aucune différence détectée | Partiellement : explique E2b (perte d'information, pas pente différente) ; forêt causale non informative |
 | Ensilage (SAA maïs fourrage, 2010-2025) | Pas de hausse de la part ensilée les étés chauds (p = 0,43) | Oui, mais 2003 hors période |
@@ -184,7 +190,7 @@ Déclarées avant calcul dans `docs/decisions.md`, non pré-spécifiées, explor
 
 | | Estimation | p WCR par année |
 |---|---|---|
-| Q2-H1 : degrés-jours > 32 °C en fin de cycle | −1,1 % par °C·jour | 0,125 (unilatérale ; taille 4,3 %) |
+| Q2-H1 : degrés-jours > 32 °C en fin de cycle | −1,1 % par °C·jour | 0,125 (unilatérale ; taille 4,0 %) |
 | Q2-H2 : égalité des pentes 1959-1981, 1982-2003, 2004-2025 | −0,1 %, −2,8 %, −1,1 % | 0,49 (test joint) |
 
 - **Robustesse :** le signe est négatif dans les 6 spécifications ; une seule est significative, celle qui exclut 2025 (p = 0,028). Elle n'est pas retenue, car la conclusion a été fixée avant estimation.
@@ -197,7 +203,7 @@ Déclarées avant calcul dans `docs/decisions.md`, non pré-spécifiées, explor
 | M1 : degrés-jours > 32 °C, mai-juin | −0,0149 (≈ −1,5 % / °C·jour) | 0,004 | 0,047 | **0,374** |
 | M2 : idem, à humidité du sol égale | −0,0152 | 0,007 | 0,111 | **0,327** |
 
-Le signe est négatif dans 11 des 12 spécifications alternatives R1 à R13 qui changent le coefficient (R9 ne change que le seuil de Conley) et dans les 16 estimations *leave-one-year-out*. Mais sans aucun effet réel, le cluster par département conclut à tort dans **56 %** des cas et Conley dans **39 %**. Le bootstrap par année a la bonne taille (4,3 %), mais il ne détecte un vrai effet de −1,5 % que dans 12 % des cas.
+Le signe est négatif dans 11 des 12 spécifications alternatives R1 à R13 qui changent le coefficient (R9 ne change que le seuil de Conley) et dans les 16 estimations *leave-one-year-out*. Mais sans aucun effet réel, le cluster par département conclut à tort dans **63 %** des cas et Conley dans **51 %**. Le bootstrap par année a la bonne taille (2,7 %), mais il ne détecte un vrai effet de −1,5 % que dans 9 % des cas.
 
 ![Taille des tests, blé (phase 4) et maïs (phase 6)](docs/figures/fig2_taille_inference.png)
 
@@ -254,8 +260,8 @@ Le signe est négatif dans 11 des 12 spécifications alternatives R1 à R13 qui 
 - [uv](https://docs.astral.sh/uv/) (Python 3.12, installé par `uv`) ;
 - R ≥ 4.5 ;
 - `7zip` (archives RPG) ;
-- environ 40 Go de disque pendant le traitement ;
-- pour le NDVI seulement, un compte NASA Earthdata.
+- environ 60 Go de disque pour les données brutes, plus les extractions du RPG et les fichiers intermédiaires ;
+- pour le NDVI, la température de surface et la phénologie MODIS (L4) et ECOSTRESS (L3), un compte NASA Earthdata.
 
 ```bash
 uv sync                                   # environnement Python (uv.lock)
